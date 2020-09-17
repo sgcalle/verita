@@ -70,7 +70,6 @@ class Contact(models.Model):
         self._compute_allow_name_edition()
 
     name = fields.Char(index=True, compute="_compute_name", store=True, readonly=False)
-
     company_type = fields.Selection(SELECT_COMPANY_TYPES, string="Company Type")
     person_type = fields.Selection(SELECT_PERSON_TYPES, string="Person Type")
 

@@ -16,7 +16,6 @@
     # for the full list
     'category': 'Administration',
     'version': '0.8.1',
-
     # any module necessary for this one to work correctly
     'depends': [
         'base',
