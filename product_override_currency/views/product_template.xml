@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="product_template_form_view_inherit_currency" model="ir.ui.view">
+        <field name="name">product.template.common.form.inherit.currency</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="arch" type="xml">
+            <div name="standard_price_uom" position="after">
+                <field name="force_currency_id"/>
+            </div>
+        </field>
+    </record>
+
+</odoo>
