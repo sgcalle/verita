@@ -121,6 +121,15 @@ class Contact(models.Model):
 
     id_documentation_file = fields.Binary(attachment=True)
     id_documentation_file_name = fields.Char()
+    
+    passport_id = fields.Char('Passport ID')
+    passport_expiration_date = fields.Date('Passport expiration date')
+    
+    passport_id_file = fields.Binary(attachment=True)
+    passport_id_file_name = fields.Char()
+    
+    residency_permit_id_file = fields.Binary(attachment=True)
+    residency_permit_id_file_name = fields.Char()
 
     medical_allergies_ids = fields.One2many("school_base.medical_allergy", "partner_id", string="Medical Allergies")
     medical_conditions_ids = fields.One2many("school_base.medical_condition", "partner_id", string="Medical conditions")

@@ -269,50 +269,48 @@
                     </div>
                 </section>
 
-                <section class="row mt-3">
+                <section class="row mt-3" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
                     <hr class="col-12"/>
                     <div class="col-12 text-center h2">Passport</div>
 
                     <div class="col-12 col-md-6">
-                        <label>Passport number 1 <span class="text-danger" t-if="is_required('passport_number_1')">*</span>: </label>
-                        <input type="text" name="passport_number_1" class="form-control"
-                               data-adm-field="passport_number_1"
-                               t-att-required="is_required('passport_number_1')"
-                               t-att-value="application_id.passport_number_1"/>
+                        <label for="partner_passport_id">Passport ID<span class="text-danger" t-if="is_required('partner_id.passport_id')">*</span>: </label>
+                        <input type="text" name="partner_passport_id" class="form-control"
+                               data-adm-field="passport_id"
+                               t-att-required="is_required('partner_id.passport_id')"
+                               t-att-value="application_id.partner_id.passport_id"/>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label>Passport number 2 <span class="text-danger" t-if="is_required('passport_number_2')">*</span>:</label>
-                        <input type="text" name="passport_number_2" class="form-control"
-                               data-adm-field="passport_number_2"
-                               t-att-required="is_required('passport_number_2')"
-                               t-att-value="application_id.passport_number_2"/>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label>Passport Expiration Date <span class="text-danger" t-if="is_required('passport_expiration_date')">*</span></label>
+                        <label for="passport_expiration_date">Passport Expiration Date <span class="text-danger" t-if="is_required('partner_id.passport_expiration_date')">*</span></label>
                         <input type="date" name="passport_expiration_date"
                                data-adm-field="passport_expiration_date"
-                               t-att-required="is_required('passport_expiration_date')"
-                               t-att-value="application_id.passport_expiration_date"
+                               t-att-required="is_required('partner_id.passport_expiration_date')"
+                               t-att-value="application_id.partner_id.passport_expiration_date"
                                class="form-control"/>
                     </div>
                 </section>
 
-                <section class="row">
+                <section class="row" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
                     <hr class="col-12"/>
                     <div class="col-12 text-center h2">Documentation</div>
 
                     <div class="col-12 col-md-6 form-group">
-                        <label for="upload_passport_copy_file" class="label">
-                            Upload passport copy <span class="text-danger" t-if="is_required('upload_passport_copy_attachment_id')">*</span></label>
+                        <label for="passport_id_file" class="label">
+                            Upload passport <span t-if="is_required('partner_id.passport_id_file')" class="text-danger">*</span>
+                        </label>
                         <div class="form-upload">
-                            <label class="label-upload" for="upload_passport_copy_file"><i
-                                    class="fa fa-upload"></i></label>
-                            <input type="file" id="upload_passport_copy_file"
-                                   data-adm-field="upload_passport_copy_attachment_id"
-                                   data-adm-field-type="ATTACHMENT"/>
+                            <label class="label-upload" for="passport_id_file">
+                                <i class="fa fa-upload"></i>
+                            </label>
+                            <input type="file" id="passport_id_file"
+                                    data-adm-field="passport_id_file"/>
+                            <input type="hidden" class="js_input_file_name"
+                                    data-adm-field="passport_id_file_name"
+                                    t-att-required="is_required('partner_id.passport_id_file_name')"
+                                    t-att-value="application_id.partner_id.passport_id_file_name"/>
                             <span class="js_input_file_label">
-                                <t t-if="application_id.upload_passport_copy_attachment_id">
-                                    <t t-esc="application_id.upload_passport_copy_attachment_id.name"/>
+                                <t t-if="application_id.partner_id.passport_id_file">
+                                    <t t-esc="application_id.partner_id.passport_id_file_name"/>
                                 </t>
                                 <t t-else="">
                                     No file uploaded
@@ -320,20 +318,24 @@
                             </span>
                         </div>
                     </div>
-
+                    
                     <div class="col-12 col-md-6 form-group">
-                        <label for="permit_copy_attachment_id" class="label">
-                            Residency Permit Copy
-                            <span class="text-danger" t-if="is_required('permit_copy_attachment_id')">*</span></label>
+                        <label for="residency_permit_id_file" class="label">
+                            Residency Permit <span t-if="is_required('partner_id.residency_permit_id_file')" class="text-danger">*</span>
+                        </label>
                         <div class="form-upload">
-                            <label class="label-upload" for="permit_copy_attachment_id"><i
-                                    class="fa fa-upload"></i></label>
-                            <input type="file" id="permit_copy_attachment_id"
-                                   data-adm-field="permit_copy_attachment_id"
-                                   data-adm-field-type="ATTACHMENT"/>
+                            <label class="label-upload" for="residency_permit_id_file">
+                                <i class="fa fa-upload"></i>
+                            </label>
+                            <input type="file" id="residency_permit_id_file"
+                                    data-adm-field="residency_permit_id_file"/>
+                            <input type="hidden" class="js_input_file_name"
+                                    data-adm-field="residency_permit_id_file_name"
+                                    t-att-required="is_required('partner_id.residency_permit_id_file_name')"
+                                    t-att-value="application_id.partner_id.residency_permit_id_file_name"/>
                             <span class="js_input_file_label">
-                                <t t-if="application_id.permit_copy_attachment_id">
-                                    <t t-esc="application_id.permit_copy_attachment_id.name"/>
+                                <t t-if="application_id.partner_id.residency_permit_id_file">
+                                    <t t-esc="application_id.partner_id.residency_permit_id_file_name"/>
                                 </t>
                                 <t t-else="">
                                     No file uploaded
@@ -341,7 +343,6 @@
                             </span>
                         </div>
                     </div>
-
                 </section>
 
                 <section class="row mt-3">
@@ -365,18 +366,6 @@
                                 </option>
                             </t>
                         </select>
-                    </div>
-
-                    <div class="col-12 col-md-6">
-                        <label for="field_expected_starting_date">
-                            Expected starting date
-                            <span class="text-danger" t-if="is_required('expected_starting_date')">*</span>
-                        </label>
-                        <input id="field_expected_starting_date" type="date"
-                               data-adm-field="expected_starting_date"
-                               t-att-required="is_required('expected_starting_date')"
-                               t-att-value="application_id.expected_starting_date"
-                               name="expected_starting_date" class="form-control"/>
                     </div>
                 </section>
             </form>
