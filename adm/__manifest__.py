@@ -68,8 +68,6 @@
         'views/web/reports/report_application_default.xml',
         'views/web/reports/report_internal_custom.xml',
 
-        '../theme_school/views/assets.xml',
-
         'data/menudata.xml',
         'data/sequences_data.xml',
         'data/statics_data.xml',
