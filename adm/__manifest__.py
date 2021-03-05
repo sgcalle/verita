@@ -43,6 +43,7 @@
         'views/school_base_models_views.xml',
 
         # Web templates
+        'views/web/portal_templates.xml',
         'views/web/application/menu/family/template_application_parents.xml',
         'views/web/application/menu/family/template_application_siblings_info.xml',
 
