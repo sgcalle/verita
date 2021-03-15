@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from . import application
+from . import question
+
 from . import admission_inquiry
 from . import attachment
 from . import contact_time
@@ -10,7 +12,7 @@ from . import medical_allergy
 from . import medical_condition
 from . import medication
 from . import previous_school
-from . import relationship
+from . import res_company
 from . import res_config_settings
 from . import res_partner
 from . import res_users

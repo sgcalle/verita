@@ -17,7 +17,7 @@
                 <field name="user_id"/>
                 <field name="id"/>
                 <field name="activity_ids"/>
-                <field name="activity_state" />
+                <field name="activity_state"/>
                 <progressbar field="activity_state"
                              colors='{"planned": "success", "today": "warning", "overdue": "danger"}'
                              help="This bar allows to filter the applications based on scheduled activities."/>
@@ -29,13 +29,15 @@
                             <div class="o_kanban_image_fill_left d-none d-md-block"
                                  t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value, placeholder)}')">
                                 <img t-att-src="kanban_image('res.users', 'image_128', record.responsible_user_id.raw_value)"
-                                     t-att-title="record.responsible_user_id.value" t-att-alt="record.responsible_user_id.value"
+                                     t-att-title="record.responsible_user_id.value"
+                                     t-att-alt="record.responsible_user_id.value"
                                      class="o_kanban_image_inner_pic"/>
                             </div>
                             <div class="o_kanban_image d-md-none"
                                  t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_128', record.partner_id.raw_value, placeholder)}')">
                                 <img t-att-src="kanban_image('res.users', 'image_128', record.responsible_user_id.raw_value)"
-                                     t-att-title="record.responsible_user_id.value" t-att-alt="record.responsible_user_id.value"
+                                     t-att-title="record.responsible_user_id.value"
+                                     t-att-alt="record.responsible_user_id.value"
                                      class="o_kanban_image_inner_pic"/>
                             </div>
                             <div class="o_dropdown_kanban dropdown">
@@ -74,7 +76,8 @@
                                     </div>
                                     <div class="oe_kanban_bottom_right">
                                         <img t-att-src="kanban_image('res.users', 'image_128', record.user_id.raw_value)"
-                                         t-att-title="record.user_id.value" t-att-alt="record.user_id.value" class="oe_kanban_avatar"/>
+                                             t-att-title="record.user_id.value" t-att-alt="record.user_id.value"
+                                             class="oe_kanban_avatar"/>
                                     </div>
                                 </div>
                             </div>
@@ -155,6 +158,29 @@
                         </group>
                     </group>
                     <notebook id="application_notebook">
+                        <page name="responsible_users" string="Users">
+                            <group>
+                                <field name="user_access_ids">
+                                    <tree>
+                                        <field name="family_id"/>
+                                        <field name="user_id"/>
+                                        <field name="page_access_ids" widget="many2many_tags"/>
+                                    </tree>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="user_id"/>
+                                                <field name="family_id"/>
+                                                <field name="page_access_ids"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                                <field name="custodial_relationship_ids"/>
+                                <field name="partner_family_ids" invisible="1"/>
+                                <field name="partner_family_member_ids" invisible="1"/>
+                            </group>
+                        </page>
                         <page name="tasks" string="Tasks">
                             <field name="state_tasks" attrs="{'invisible': True}"/>
                             <field name="task_ids" widget="many2many_checkboxes" domain="[('id', 'in', state_tasks)]"/>
@@ -168,17 +194,92 @@
                                     <field name="school_year"/>
                                 </group>
                                 <group colspan="2" col="12">
-                                    <label for="previous_school_ids" colspan="12" class="text-center w-100"/>
-                                    <field name="previous_school_ids" nolabel="1" colspan="12"/>
+                                    <label for="previous_school_ids" colspan="12" class="text-center w-100 h3"/>
+                                    <field name="previous_school_ids" nolabel="1" colspan="12">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="grade_completed"/>
+                                            <field name="from_date"/>
+                                            <field name="to_date"/>
+                                            <field name="reason_for_leaving"/>
+                                        </tree>
+                                        <form>
+                                            <sheet>
+                                                <group>
+                                                    <group>
+                                                        <field name="name"/>
+                                                        <field name="grade_completed"/>
+                                                        <field name="reason_for_leaving"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="from_date"/>
+                                                        <field name="to_date" min="2022-01-01"/>
+                                                    </group>
+                                                </group>
+                                            </sheet>
+                                        </form>
+                                    </field>
                                 </group>
                             </group>
                         </page>
                         <page name="family" string="Family">
                             <notebook>
                                 <page name="parents" string="Parents/Guardian">
+                                    <field name="parent_relationship_ids"
+                                           context="{'default_partner_id': partner_id}">
+                                        <tree editable="bottom">
+                                            <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
+                                            <field name="partner_2"
+                                                   domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
+                                            <field name="relationship_type_id"
+                                                   domain="[('type', 'in', ['parent', 'father', 'mother'])]"/>
+                                            <field name="custody"/>
+                                            <field name="correspondence"/>
+                                            <field name="grand_parent"/>
+                                            <field name="grade_related"/>
+                                            <field name="family_portal"/>
+                                            <field name="is_emergency_contact"/>
+                                            <field name="financial_responsability"/>
+                                        </tree>
+                                    </field>
                                 </page>
-                                <page name="siblings" string="Sibling">
-                                    <field name="sibling_ids"/>
+                                <page name="siblings" string="Siblings">
+                                    <field name="sibling_relationship_ids"
+                                           context="{'default_partner_id': partner_id}">
+                                        <tree editable="bottom">
+                                            <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
+                                            <field name="partner_2"
+                                                   domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
+                                            <field name="relationship_type_id"
+                                                   domain="[('type', 'in', ['sibling', 'father', 'mother'])]"/>
+                                            <field name="custody"/>
+                                            <field name="correspondence"/>
+                                            <field name="grand_parent"/>
+                                            <field name="grade_related"/>
+                                            <field name="family_portal"/>
+                                            <field name="is_emergency_contact"/>
+                                            <field name="financial_responsability"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page name="others" string="Others">
+                                    <field name="other_relationship_ids"
+                                           context="{'default_partner_id': partner_id}">
+                                        <tree editable="bottom">
+                                            <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
+                                            <field name="partner_2"
+                                                   domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
+                                            <field name="relationship_type_id"
+                                                   domain="[('type', 'not in', ['sibling', 'father', 'mother', 'parent', 'father', 'mother'])]"/>
+                                            <field name="custody"/>
+                                            <field name="correspondence"/>
+                                            <field name="grand_parent"/>
+                                            <field name="grade_related"/>
+                                            <field name="family_portal"/>
+                                            <field name="is_emergency_contact"/>
+                                            <field name="financial_responsability"/>
+                                        </tree>
+                                    </field>
                                 </page>
                                 <page name="custiodial_rights" string="Custodials">
                                     <field name="custodial_relationship_ids" mode="kanban"/>
@@ -250,16 +351,22 @@
                             </field>
                         </page>
                         <page name="relationship_ids" string="Relationships">
-                            <field name="relationship_ids" context="{'default_partner_1': partner_id}">
-                                <tree>
-                                    <field name="family_id"/>
-                                    <field name="partner_2" string="Partner"/>
-                                    <field name="custody"/>
-                                    <field name="financial_responsability"/>
-                                    <field name="relationship_type_id"/>
-                                </tree>
-                            </field>
                         </page>
+                        <page name="custom_page" string="Custom">
+                            <notebook>
+
+                            </notebook>
+                        </page>
+
+                        <!--                            <field name="relationship_ids" context="{'default_partner_1': partner_id}">-->
+                        <!--                                <tree>-->
+                        <!--                                    <field name="family_id"/>-->
+                        <!--                                    <field name="partner_2" string="Partner"/>-->
+                        <!--                                    <field name="custody"/>-->
+                        <!--                                    <field name="financial_responsability"/>-->
+                        <!--                                    <field name="relationship_type_id"/>-->
+                        <!--                                </tree>-->
+                        <!--                            </field>-->
                     </notebook>
                 </sheet>
 
@@ -299,12 +406,12 @@
                 <filter name="current_school_year" string="Current School Year"
                         domain="[('is_current_school_year', '=', True)]"/>
 
-<!--                <filter name="required_completed" string="Completed required fields"-->
-<!--                        domain="[('required_fields_completed', '=', 100)]"/>-->
+                <!--                <filter name="required_completed" string="Completed required fields"-->
+                <!--                        domain="[('required_fields_completed', '=', 100)]"/>-->
                 <separator/>
 
-<!--                <filter name="required_uncompleted" string="Uncompleted required fields"-->
-<!--                        domain="[('required_fields_completed', '<', 100)]"/>-->
+                <!--                <filter name="required_uncompleted" string="Uncompleted required fields"-->
+                <!--                        domain="[('required_fields_completed', '<', 100)]"/>-->
 
                 <searchpanel>
                     <field name="status_id" icon="fa-columns"/>
@@ -326,5 +433,73 @@
                     'default_composition_mode': 'mass_mail',
                     'default_partner_to': '${object.id or \'\'}',
                 }"/>
+
+    <record id="adm_application_question_how_hear_about_us_view_tree" model="ir.ui.view">
+        <field name="name">adm.application.option.how.hear.about.us.view.tree</field>
+        <field name="model">adm.application.option.how.hear.about.us</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_application_fields_configurations">
+        <field name="name">Application fields configuration</field>
+        <field name="res_model">adm.application.fields.configuration</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="adm_menu_fields_configurations"
+              action="action_application_fields_configurations"
+              parent="adm_menu_configurations"
+              name="Application fields configuration"/>
+
+    <record id="adm_application_fields_configuration_view_form" model="ir.ui.view">
+        <field name="name">adm.application.fields.configuration.view.form</field>
+        <field name="model">adm.application.fields.configuration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="sequence" groups="base.group_no_one"/>
+                        </group>
+                        <group colspan="2">
+                            <field name="field_ids">
+                                <tree>
+                                    <field name="sequence" widget="handle" />
+                                    <field name="adm_application_model_id" invisible="1"/>
+                                    <field name="field_id" context="{'default_model_id': adm_application_model_id}"/>
+                                    <field name="custom_attrs" widget="ace" options="{'mode': 'python'}"/>
+                                    <field name="custom_context" widget="ace" options="{'mode': 'python'}"/>
+                                    <field name="custom_xml_to_render" widget="ace" options="{'mode': 'xml'}"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="adm_application_model_id" invisible="1"/>
+                                                <field name="field_id" context="{'default_model_id': adm_application_model_id}"/>
+                                            </group>
+                                            <group>
+                                                <field name="custom_context" widget="ace" options="{'mode': 'python'}"/>
+                                                <field name="custom_attrs" widget="ace" options="{'mode': 'xml'}"/>
+                                                <field name="custom_xml_to_render" widget="ace" options="{'mode': 'xml'}"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 </odoo>

@@ -11,7 +11,7 @@
                         <div class="col">
                             <section class="card mt-4">
                                 <section class="card-header">
-                                    <h1><t t-esc="title"/></h1>
+                                    <h1 class="text-primary"><t t-esc="title"/></h1>
                                 </section>
                                 <section class="card-body pb-2">
                                     <div class="container">
@@ -73,9 +73,12 @@
         <t t-call="website.layout">
             <t t-set="head_application_common">
                 <meta name="_adm_res_id" t-att-value="application_id.id"/>
+                <t t-call="web._assets_helpers">
+                    <t t-call="web._assets_backend_helpers"/>
+                </t>
                 <t t-call-assets="adm.assets_application_common" defer_load="True"/>
             </t>
-            <t t-set="head" t-value="head_application_common + (head or '')"/>
+            <t t-set="head" t-value="(head or '') + head_application_common"/>
 
             <t t-if="not skip_sent_message and application_id.status_id.type_id not in ['return', 'started']">
 

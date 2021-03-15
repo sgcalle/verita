@@ -62,14 +62,17 @@ class AdmissionController(http.Controller):
             required_fields_name_list = application_id.get_required_fields().get_as_list_of_names()
             return fieldname in required_fields_name_list
 
+        application_page_ids = SUPER_ENV['adm.application.page'].search(
+            [('parent_id', '=', False)])
+
         return {
             "country_ids": country_ids,
             "state_ids": state_ids,
             'contact_id': contact_id,
             'application_id': application_id,
             'application_status_ids': application_status_ids,
-            'language_ids': language_ids.ids,
-            'language_level_ids': language_level_ids.ids,
+            'language_ids': language_ids,
+            'language_level_ids': language_level_ids,
             'contact_time_ids': contact_time_ids,
             "gender_ids": gender_ids,
             'degree_program_ids': degree_program_ids,
@@ -83,6 +86,7 @@ class AdmissionController(http.Controller):
             'SUPER_ENV': SUPER_ENV,
             'USER_ENV': http.request.env,
             'is_required': is_required,
+            'application_page_ids': application_page_ids,
             # 'custody_types': custody_types,
             }
 
@@ -119,10 +123,13 @@ class AdmissionController(http.Controller):
                             rel_id = val_array.pop('id')
                             parsed_vals.append((4, rel_id, False))
                             if len(val_array.keys()):
+                                write_values =\
+                                    AdmissionController\
+                                    ._parse_json_to_odoo_fields(
+                                        rel_model_env, val_array)
                                 rel_model_env.browse(rel_id).write(
-                                    AdmissionController
-                                    ._parse_json_to_odoo_fields(rel_model_env,
-                                                                val_array))
+                                    write_values)
+
                     value_to_json = parsed_vals
             elif isinstance(value, dict):
                 model_name = model_env._fields[field].comodel_name

@@ -248,14 +248,30 @@
                                 <field name="home_address_id" domain="[('id', 'in', family_home_address_ids)]"/>
                             </group>
                         </page>
-                        <page string="Relationships" name="partner_relationships"
+                        <page string="Member Relationships" name="member_relationships"
+                              attrs="{'invisible': [('is_family', '!=', True)]}">
+                            <field name="member_relationship_ids">
+                                <tree editable="bottom">
+                                    <field name="partner_individual_id" domain="[('id', 'in', parent.member_ids), ('id', '!=', partner_relation_id)]"/>
+                                    <field name="partner_relation_id" domain="[('id', 'in', parent.member_ids), ('id', '!=', partner_individual_id)]" />
+                                    <field name="relationship_type_id"/>
+                                    <field name="custody"/>
+                                    <field name="correspondence"/>
+                                    <field name="grand_parent"/>
+                                    <field name="grade_related"/>
+                                    <field name="family_portal"/>
+                                    <field name="is_emergency_contact"/>
+                                    <field name="financial_responsability"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Relationships" name="self_relationships"
                               attrs="{'invisible': [('is_family', '=', True)]}">
                             <field name="family_member_ids" invisible="1"/>
-                            <field name="relationship_ids">
+                            <field name="self_relationship_ids">
                                 <tree editable="bottom">
-                                    <field name="family_id" domain="[('id', 'in', parent.family_ids)]"/>
-                                    <field name="partner_2"
-                                           domain="[('id', 'in', parent.family_member_ids), ('id', '!=', parent.id), ('family_ids', '=', family_id)]"/>
+                                    <field name="family_id" />
+                                    <field name="partner_relation_id" />
                                     <field name="relationship_type_id"/>
                                     <field name="custody"/>
                                     <field name="correspondence"/>

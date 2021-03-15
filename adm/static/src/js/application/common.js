@@ -149,8 +149,6 @@ odoo.define('adm.form.common', require => {
         } else {
             ajaxSend();
         }
-
-
     }
 
     function getValueFromGenericInput($el) {

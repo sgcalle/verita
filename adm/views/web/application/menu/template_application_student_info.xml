@@ -67,7 +67,9 @@
                 <div id="change_name_div"
                      style="display:none; padding:10px; margin-top:5px;" class="row">
                     <div class="container">
-                        <div class="row" data-adm-field="partner_id"
+                        <div class="row pt-2 rounded"
+                             style="background-color: #e9ecef;"
+                             data-adm-field="partner_id"
                              data-adm-field-type="MANY2ONE">
                             <section class="col-12 col-md form-group">
                                 <label> First Name
@@ -82,7 +84,7 @@
                                 />
 
                             </section>
-                            <section class="d-none col-12 col-md form-group">
+                            <section class="col-12 col-md form-group">
                                 <label> Middle Name
                                     <span class="text-danger"
                                           t-if="is_required('partner_id.middle_name')">*</span>
@@ -108,265 +110,362 @@
                     </div>
                 </div>
                 <section class="row">
-                    <div class="col-12 col-md-6 form-group">
-                        <label for="selStudentGradeLevel">
-                            Grade Level:
-                            <span class="text-danger"
-                                  t-if="is_required('grade_level')">*</span>
-                        </label>
-                        <select id="selStudentGradeLevel" class="form-control"
-                                t-att-required="is_required('grade_level')"
-                                data-adm-field="grade_level" data-adm-field-type="INTEGER">
-                            <t t-foreach="grade_level_ids" t-as="grade_level">
-                                <option t-att-selected="application_id.grade_level == grade_level"
-                                        t-att-value="grade_level.id"><t
-                                        t-esc="grade_level.name"/></option>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-6 form-group">
-                        <label> School Year: <span class="text-danger"
-                                                   t-if="is_required('school_year_id')">*</span></label>
-                        <select data-adm-field="school_year" data-adm-field-type="INTEGER"
-                                t-att-required="is_required('school_year_id')"
-                                class="form-control">
-                            <t t-foreach="school_year_ids" t-as="school_year_id">
-                                <option t-att-value="school_year_id.id"
-                                        t-att-selected="application_id.school_year == school_year_id">
-                                    <t t-esc="school_year_id.name"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
-                </section>
-                <section class="row">
-                    <div class="col-12 col-md-6 form-group">
-                        <label> Street Address: <span class="text-danger"
-                                                   t-if="is_required('street')">*</span></label>
-                        <input required="required" type="text"
-                               name="street" class="form-control"
-                               data-adm-field="street"
-                               t-att-required="is_required('street')"
-                               t-att-value="application_id.street"/>
-                    </div>
-                </section>
-                <section class="row">
-                    <div class="col-12 col-md-4 form-group">
-                        <label> City: <span class="text-danger"
-                                                   t-if="is_required('city')">*</span></label>
-                        <input required="required" type="text"
-                               name="city" class="form-control"
-                               data-adm-field="city"
-                               t-att-required="is_required('city')"
-                               t-att-value="application_id.city"/>
-                    </div>
-                    <div class="col-12 col-md-4 form-group">
-                        <label for="state_id"> State <span class="text-danger"
-                                                           t-if="is_required('state_id')">*</span></label>
-                        <select required="required" type="text"
-                                id="state_id" name="state_id" placeholder="State"
-                                data-adm-field="state_id" data-adm-field-type="INTEGER"
-                               t-att-required="is_required('city')"
-                                class="form-control">
-                            <option value="-1" selected="selected" disabled="disabled">
-                                -Select a state-
-                            </option>
-                            <t t-foreach="state_ids" t-as="state">
-                                <option t-att-selected="application_id.state_id.id == state.id"
-                                        t-att-data-country="state.country_id.id"
-                                        t-att-value="state.id" style="display: none;">
-                                    <t t-esc="state.name"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-4 form-group">
-                        <label for="country_id">
-                            Country <span class="text-danger"
-                                          t-if="is_required('country_id')">*</span>
-                        </label>
-                        <select required="required" type="text"
-                                id="country_id" name="country_id" placeholder="Country"
-                                data-adm-field="country_id" data-adm-field-type="INTEGER"
-                                t-att-required="is_required('country_id')"
-                                class="form-control">
-                            <option value="-1" selected="selected" disabled="disabled">
-                                -Select a country-
-                            </option>
-                            <t t-foreach="country_ids" t-as="country">
-                                <option t-att-selected="application_id.country_id.id == country.id"
-                                        t-att-value="country.id">
-                                    <t t-esc="country.name"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
-                </section>
+                    <fieldset class="col-12 border">
+                        <legend class="w-auto">Address</legend>
+                        <section class="row">
+                            <div class="col-12 col-md-4 form-group">
+                                <label> City: <span class="text-danger"
+                                                    t-if="is_required('city')">*</span></label>
+                                <input type="text"
+                                       name="city" class="form-control"
+                                       data-adm-field="city"
+                                       t-att-required="is_required('city')"
+                                       t-att-value="application_id.city"/>
+                            </div>
+                            <div class="col-12 col-md-4 form-group">
+                                <label for="country_id">
+                                    Country <span class="text-danger"
+                                                  t-if="is_required('country_id')">*</span>
+                                </label>
+                                <select type="text"
+                                        id="country_id" name="country_id" placeholder="Country"
+                                        data-adm-field="country_id" data-adm-field-type="INTEGER"
+                                        t-att-required="is_required('country_id')"
+                                        class="form-control">
+                                    <option value="-1" selected="selected" disabled="disabled">
+                                        -Select a country-
+                                    </option>
+                                    <t t-foreach="country_ids" t-as="country">
+                                        <option t-att-selected="application_id.country_id.id == country.id"
+                                                t-att-value="country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 form-group">
+                                <label for="state_id"> State <span class="text-danger"
+                                                                   t-if="is_required('state_id')">*</span></label>
+                                <select type="text"
+                                        id="state_id" name="state_id" placeholder="State"
+                                        data-adm-field="state_id" data-adm-field-type="INTEGER"
+                                        t-att-required="is_required('city')"
+                                        class="form-control">
+                                    <option value="-1" selected="selected" disabled="disabled">
+                                        -Select a state-
+                                    </option>
+                                    <t t-foreach="state_ids" t-as="state">
+                                        <option t-att-selected="application_id.state_id.id == state.id"
+                                                t-att-data-country="state.country_id.id"
+                                                t-att-value="state.id" style="display: none;">
+                                            <t t-esc="state.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label> Street Address: <span class="text-danger"
+                                                              t-if="is_required('street')">*</span></label>
+                                <input type="text"
+                                       name="street" class="form-control"
+                                       data-adm-field="street"
+                                       t-att-required="is_required('street')"
+                                       t-att-value="application_id.street"/>
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label>Zip:
+                                    <span class="text-danger"
+                                          t-if="is_required('zip')">*</span>
+                                </label>
+                                <input type="text"
+                                       name="zip" class="form-control"
+                                       data-adm-field="zip"
+                                       t-att-required="is_required('zip')"
+                                       t-att-value="application_id.zip"/>
+                            </div>
+                        </section>
+                    </fieldset>
 
-                <section class="row">
-                    <div class="col-12 col-md-6 form-group">
-                        <label>
-                            Date of Birth:
-                            <span class="text-danger" t-if="is_required('date_of_birth')">*</span>
-                        </label>
-                        <!-- Three inputs with Day, Month and Year -->
-                        <input required="required" type="date" name="date_of_birth"
-                               data-adm-field="date_of_birth"
-                                t-att-required="is_required('date_of_birth')"
-                               class="form-control"
-                               t-att-value="application_id.date_of_birth"/>
-                    </div>
-                </section>
-                <section class="row">
-                    <div class="col-12 col-md-6 form-group">
-                        <label>
-                            Gender:
-                            <span class="text-danger" t-if="is_required('gender')">*</span>
-                        </label>
-                        <select required="required" class="form-control" name="gender"
-                                t-att-required="is_required('gender')"
-                                data-adm-field="gender" data-adm-field-type="INTEGER">
-                            <t t-foreach="gender_ids" t-as="gender_id">
-                                <option t-att-selected="application_id.gender == gender_id"
-                                        t-att-value="gender_id.id">
-                                    <t t-esc="gender_id.name"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-6 form-group">
-                        <label>
-                            Nationality:
-                            <span class="text-danger"
-                                  t-if="is_required('citizenship')">*</span>
-                        </label>
-                        <select name="citizenship" class="form-control"
-                                t-att-required="is_required('citizenship')"
-                                data-adm-field="citizenship" data-adm-field-type="INTEGER">
-                            <option value="-1" selected="selected" disabled="disabled">
-                                -Select a country-
-                            </option>
-                            <t t-foreach="country_ids" t-as="country">
-                                <option t-att-selected="application_id.citizenship.id == country.id"
-                                        t-att-value="country.id">
-                                    <t t-esc="country.name"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
-                </section>
-                <section class="row">
-                    <div class="col-12 col-md-6" data-adm-field="partner_id"
-                         data-adm-field-type="MANY2ONE">
-                        <label>
-                            ID number:
-                            <span class="text-danger" t-if="is_required('partner_id.identification')">*</span>
-                        </label>
-                        <input type="text" name="identification" class="form-control"
-                               data-adm-field="identification"
-                               t-att-value="application_id.partner_id.identification"
-                               t-att-required="is_required('partner_id.identification')"/>
-                    </div>
-                </section>
+                    <!--                    <div class="col-12 col-md-6 form-group">-->
+                    <!--                        <label for="selStudentGradeLevel">-->
+                    <!--                            Grade Level:-->
+                    <!--                            <span class="text-danger"-->
+                    <!--                                  t-if="is_required('grade_level')">*</span>-->
+                    <!--                        </label>-->
+                    <!--                        <select id="selStudentGradeLevel" class="form-control"-->
+                    <!--                                t-att-required="is_required('grade_level')"-->
+                    <!--                                data-adm-field="grade_level" data-adm-field-type="INTEGER">-->
+                    <!--                            <t t-foreach="grade_level_ids" t-as="grade_level">-->
+                    <!--                                <option t-att-selected="application_id.grade_level == grade_level"-->
+                    <!--                                        t-att-value="grade_level.id"><t-->
+                    <!--                                        t-esc="grade_level.name"/></option>-->
+                    <!--                            </t>-->
+                    <!--                        </select>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="col-12 col-md-6 form-group">-->
+                    <!--                        <label> School Year: <span class="text-danger"-->
+                    <!--                                                   t-if="is_required('school_year_id')">*</span></label>-->
+                    <!--                        <select data-adm-field="school_year" data-adm-field-type="INTEGER"-->
+                    <!--                                t-att-required="is_required('school_year_id')"-->
+                    <!--                                class="form-control">-->
+                    <!--                            <t t-foreach="school_year_ids" t-as="school_year_id">-->
+                    <!--                                <option t-att-value="school_year_id.id"-->
+                    <!--                                        t-att-selected="application_id.school_year == school_year_id">-->
+                    <!--                                    <t t-esc="school_year_id.name"/>-->
+                    <!--                                </option>-->
+                    <!--                            </t>-->
+                    <!--                        </select>-->
+                    <!--                    </div>-->
 
-                <section class="row mt-3" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
-                    <hr class="col-12"/>
-                    <div class="col-12 text-center h2">Passport</div>
+                    <fieldset class="col-12 border mt-1">
+                        <legend class="w-auto">Demographics</legend>
+                        <section class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label>
+                                    Date of Birth:
+                                    <span class="text-danger" t-if="is_required('date_of_birth')">*</span>
+                                </label>
+                                <!-- Three inputs with Day, Month and Year -->
+                                <input type="date" name="date_of_birth"
+                                       data-adm-field="date_of_birth"
+                                       t-att-required="is_required('date_of_birth')"
+                                       class="form-control"
+                                       t-att-value="application_id.date_of_birth"/>
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label>
+                                    Gender:
+                                    <span class="text-danger" t-if="is_required('gender')">*</span>
+                                </label>
+                                <select class="form-control" name="gender"
+                                        t-att-required="is_required('gender')"
+                                        data-adm-field="gender" data-adm-field-type="INTEGER">
+                                    <t t-foreach="gender_ids" t-as="gender_id">
+                                        <option t-att-selected="application_id.gender == gender_id"
+                                                t-att-value="gender_id.id">
+                                            <t t-esc="gender_id.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </section>
+                        <section class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label>
+                                    Nationality:
+                                    <span class="text-danger"
+                                          t-if="is_required('citizenship')">*</span>
+                                </label>
+                                <select name="citizenship" class="form-control"
+                                        t-att-required="is_required('citizenship')"
+                                        data-adm-field="citizenship" data-adm-field-type="INTEGER">
+                                    <option value="-1" selected="selected" disabled="disabled">
+                                        -Select a country-
+                                    </option>
+                                    <t t-foreach="country_ids" t-as="country">
+                                        <option t-att-selected="application_id.citizenship.id == country.id"
+                                                t-att-value="country.id">
+                                            <t t-esc="country.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
 
-                    <div class="col-12 col-md-6">
-                        <label for="partner_passport_id">Passport ID<span class="text-danger" t-if="is_required('partner_id.passport_id')">*</span>: </label>
-                        <input type="text" name="partner_passport_id" class="form-control"
-                               data-adm-field="passport_id"
-                               t-att-required="is_required('partner_id.passport_id')"
-                               t-att-value="application_id.partner_id.passport_id"/>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label for="passport_expiration_date">Passport Expiration Date <span class="text-danger" t-if="is_required('partner_id.passport_expiration_date')">*</span></label>
-                        <input type="date" name="passport_expiration_date"
-                               data-adm-field="passport_expiration_date"
-                               t-att-required="is_required('partner_id.passport_expiration_date')"
-                               t-att-value="application_id.partner_id.passport_expiration_date"
-                               class="form-control"/>
-                    </div>
-                </section>
+                            <div class="col-12 col-md-6 form-group">
+                                <label>
+                                    Email address:
+                                    <span class="text-danger"
+                                          t-if="is_required('email')">*</span>
+                                </label>
+                                <input type="email"
+                                       name="email" class="form-control"
+                                       data-adm-field="email"
+                                       placeholder="mail@example.com"
+                                       t-att-required="is_required('email')"
+                                       t-att-value="application_id.email"/>
+                            </div>
 
-                <section class="row" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
-                    <hr class="col-12"/>
-                    <div class="col-12 text-center h2">Documentation</div>
+                            <div class="col-12 col-md-6 form-group" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                <label>
+                                    Cell Phone:
+                                    <span class="text-danger"
+                                          t-if="is_required('partner_id.mobile')">*</span>
+                                </label>
+                                <input type="tel"
+                                       name="mobile" class="form-control"
+                                       data-adm-field="mobile"
+                                       t-att-required="is_required('partner_id.mobile')"
+                                       t-att-value="application_id.partner_id.mobile"/>
+                            </div>
 
-                    <div class="col-12 col-md-6 form-group">
-                        <label for="passport_id_file" class="label">
-                            Upload passport <span t-if="is_required('partner_id.passport_id_file')" class="text-danger">*</span>
-                        </label>
-                        <div class="form-upload">
-                            <label class="label-upload" for="passport_id_file">
-                                <i class="fa fa-upload"></i>
-                            </label>
-                            <input type="file" id="passport_id_file"
-                                    data-adm-field="passport_id_file"/>
-                            <input type="hidden" class="js_input_file_name"
-                                    data-adm-field="passport_id_file_name"
-                                    t-att-required="is_required('partner_id.passport_id_file_name')"
-                                    t-att-value="application_id.partner_id.passport_id_file_name"/>
-                            <span class="js_input_file_label">
-                                <t t-if="application_id.partner_id.passport_id_file">
-                                    <t t-esc="application_id.partner_id.passport_id_file_name"/>
-                                </t>
-                                <t t-else="">
-                                    No file uploaded
-                                </t>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="col-12 col-md-6 form-group">
-                        <label for="residency_permit_id_file" class="label">
-                            Residency Permit <span t-if="is_required('partner_id.residency_permit_id_file')" class="text-danger">*</span>
-                        </label>
-                        <div class="form-upload">
-                            <label class="label-upload" for="residency_permit_id_file">
-                                <i class="fa fa-upload"></i>
-                            </label>
-                            <input type="file" id="residency_permit_id_file"
-                                    data-adm-field="residency_permit_id_file"/>
-                            <input type="hidden" class="js_input_file_name"
-                                    data-adm-field="residency_permit_id_file_name"
-                                    t-att-required="is_required('partner_id.residency_permit_id_file_name')"
-                                    t-att-value="application_id.partner_id.residency_permit_id_file_name"/>
-                            <span class="js_input_file_label">
-                                <t t-if="application_id.partner_id.residency_permit_id_file">
-                                    <t t-esc="application_id.partner_id.residency_permit_id_file_name"/>
-                                </t>
-                                <t t-else="">
-                                    No file uploaded
-                                </t>
-                            </span>
-                        </div>
-                    </div>
-                </section>
+                            <div class="col-12 col-md-6 form-group">
+                                <label>
+                                    Primary Language Spoken at Home:
+                                    <span class="text-danger"
+                                          t-if="is_required('primary_language_at_home_id')">*</span>
+                                </label>
+                                <select name="primary_language_at_home_id" class="form-control"
+                                        t-att-required="is_required('primary_language_at_home_id')"
+                                        data-adm-field="primary_language_at_home_id" data-adm-field-type="INTEGER">
+                                    <option selected="selected" disabled="disabled">
+                                        -Select a language-
+                                    </option>
+                                    <t t-foreach="language_ids" t-as="language">
+                                        <option t-att-selected="application_id.primary_language_at_home_id.id == language.id"
+                                                t-att-value="language.id">
+                                            <t t-esc="language.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
 
-                <section class="row mt-3">
-                    <hr class="col-12"/>
-                    <div class="col-12 text-center h2">Additional info</div>
+                            <div class="col-12 col-md-6 form-group">
+                                <t t-set="hear_about_us_options"
+                                   t-value="SUPER_ENV['adm.application.option.how.hear.about.us'].search([])"/>
+                                <label>
+                                    How did you hear about us?
+                                    <span class="text-danger"
+                                          t-if="is_required('how_hear_about_us_id')">*</span>
+                                </label>
+                                <select name="how_hear_about_us_id" class="form-control"
+                                        t-att-required="is_required('how_hear_about_us_id')"
+                                        data-adm-field="how_hear_about_us_id" data-adm-field-type="INTEGER">
+                                    <option selected="selected" disabled="disabled">
+                                        -Select a option-
+                                    </option>
+                                    <t t-foreach="hear_about_us_options" t-as="option">
+                                        <option t-att-selected="application_id.how_hear_about_us_id.id == option.id"
+                                                t-att-value="option.id">
+                                            <t t-esc="option.name"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </section>
+                    </fieldset>
+                    <fieldset class="col-12 border mt-1">
+                        <legend class="w-auto">Legality</legend>
+                        <section class="row">
+                            <div class="col-12 col-md-6" data-adm-field="partner_id"
+                                 data-adm-field-type="MANY2ONE">
+                                <label>
+                                    ID number:
+                                    <span class="text-danger" t-if="is_required('partner_id.identification')">*</span>
+                                </label>
+                                <input type="text" name="identification" class="form-control"
+                                       data-adm-field="identification"
+                                       t-att-value="application_id.partner_id.identification"
+                                       t-att-required="is_required('partner_id.identification')"/>
+                            </div>
+                        </section>
+                        <section class="row mt-3" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                            <hr class="w-100"/>
+                            <div class="col-12 text-center h2 text-secondary">Passport</div>
 
-                    <div class="col-12 col-md-6">
-                        <label>Which semester are you applying for?
-                            <span class="text-danger" t-if="is_required('applying_semester')">*</span></label>
-                        <select name="applying_semester" class="form-control"
-                                t-att-required="is_required('applying_semester')"
-                                data-adm-field="applying_semester">
-                            <option value="-1" selected="selected" disabled="disabled">
-                                -Select a state-
-                            </option>
-                            <t t-foreach="applying_semester_values"
-                               t-as="applying_semester_value">
-                                <option t-att-selected="application_id.applying_semester == applying_semester_value['value']"
-                                        t-att-value="applying_semester_value['value']">
-                                    <t t-esc="applying_semester_value['name']"/>
-                                </option>
-                            </t>
-                        </select>
-                    </div>
+                            <div class="col-12 col-md-6">
+                                <label for="partner_passport_id">Passport ID<span class="text-danger"
+                                                                                  t-if="is_required('partner_id.passport_id')">
+                                    *</span>: </label>
+                                <input type="text" name="partner_passport_id" class="form-control"
+                                       data-adm-field="passport_id"
+                                       t-att-required="is_required('partner_id.passport_id')"
+                                       t-att-value="application_id.partner_id.passport_id"/>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="passport_expiration_date">Passport Expiration Date <span class="text-danger"
+                                                                                                     t-if="is_required('partner_id.passport_expiration_date')">
+                                    *</span></label>
+                                <input type="date" name="passport_expiration_date"
+                                       data-adm-field="passport_expiration_date"
+                                       t-att-required="is_required('partner_id.passport_expiration_date')"
+                                       t-att-value="application_id.partner_id.passport_expiration_date"
+                                       class="form-control"/>
+                            </div>
+                        </section>
+
+                        <section class="row" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                            <hr class="w-100"/>
+                            <div class="col-12 text-center h2 text-secondary">Documentation</div>
+
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="passport_id_file" class="label">
+                                    Upload passport <span t-if="is_required('partner_id.passport_id_file')"
+                                                          class="text-danger">
+                                    *</span>
+                                </label>
+                                <div class="form-upload">
+                                    <label class="label-upload" for="passport_id_file">
+                                        <i class="fa fa-upload"></i>
+                                    </label>
+                                    <input type="file" id="passport_id_file"
+                                           data-adm-field="passport_id_file"/>
+                                    <input type="hidden" class="js_input_file_name"
+                                           data-adm-field="passport_id_file_name"
+                                           t-att-required="is_required('partner_id.passport_id_file_name')"
+                                           t-att-value="application_id.partner_id.passport_id_file_name"/>
+                                    <span class="js_input_file_label">
+                                        <t t-if="application_id.partner_id.passport_id_file">
+                                            <t t-esc="application_id.partner_id.passport_id_file_name"/>
+                                        </t>
+                                        <t t-else="">
+                                            No file uploaded
+                                        </t>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="residency_permit_id_file" class="label">
+                                    Residency Permit <span t-if="is_required('partner_id.residency_permit_id_file')"
+                                                           class="text-danger">*</span>
+                                </label>
+                                <div class="form-upload">
+                                    <label class="label-upload" for="residency_permit_id_file">
+                                        <i class="fa fa-upload"></i>
+                                    </label>
+                                    <input type="file" id="residency_permit_id_file"
+                                           data-adm-field="residency_permit_id_file"/>
+                                    <input type="hidden" class="js_input_file_name"
+                                           data-adm-field="residency_permit_id_file_name"
+                                           t-att-required="is_required('partner_id.residency_permit_id_file_name')"
+                                           t-att-value="application_id.partner_id.residency_permit_id_file_name"/>
+                                    <span class="js_input_file_label">
+                                        <t t-if="application_id.partner_id.residency_permit_id_file">
+                                            <t t-esc="application_id.partner_id.residency_permit_id_file_name"/>
+                                        </t>
+                                        <t t-else="">
+                                            No file uploaded
+                                        </t>
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+                    </fieldset>
+
+                    <fieldset class="col-12 border mt-1">
+                        <legend class="w-auto">Application</legend>
+                        <section class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label>Which semester are you applying for?
+                                    <span class="text-danger" t-if="is_required('applying_semester')">*</span></label>
+                                <select name="applying_semester" class="form-control"
+                                        t-att-required="is_required('applying_semester')"
+                                        data-adm-field="applying_semester">
+                                    <option value="-1" selected="selected" disabled="disabled">
+                                        -Select a state-
+                                    </option>
+                                    <t t-foreach="applying_semester_values"
+                                       t-as="applying_semester_value">
+                                        <option t-att-selected="application_id.applying_semester == applying_semester_value['value']"
+                                                t-att-value="applying_semester_value['value']">
+                                            <t t-esc="applying_semester_value['name']"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </div>
+                        </section>
+                    </fieldset>
+
                 </section>
             </form>
         </t>

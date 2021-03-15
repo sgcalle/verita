@@ -21,7 +21,7 @@
 }
 @media (max-height: 719px) {
   .card-sticky-save {
-    bottom: 0;
+    top: 0;
   }
 }
 

@@ -2,9 +2,7 @@
 <odoo>
 
     <template id="adm.template_application_additional_questions_form">
-        <section class="container-fluid">
-            <div class="row" id="school_forms"/>
-        </section>
+        <section class="container-fluid" id="school_forms"/>
     </template>
 
     <template id="adm.template_application_additional_questions_webpage">

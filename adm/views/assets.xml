@@ -38,16 +38,21 @@
         <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_select.scss"/>
     </template>
 
-    <template id="assets_application_common" name="Assets Application Common">
-        <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.js"></script>
-        <link rel="stylesheet" href="/adm/static/src/css/main.css"/>
-        <script type="text/javascript" src="/adm/static/src/js/jquery_fix.js"></script>
-        <script type="text/javascript" src="/adm/static/src/js/application/common.js"></script>
+    <template id="assets_application_invite_partner" name="Assets Invite Application">
+        <script type="text/javascript" src="/adm/static/src/js/application/invite.js"></script>
         <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_select.scss"/>
     </template>
 
-    <template id="assets_application_family_parents">
-        <script type="text/javascript" src="/adm/static/src/js/application/family/parents.js"></script>
+    <template id="assets_application_common" name="Assets Application Common">
+        <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.js"></script>
+        <script type="text/javascript" src="/adm/static/src/js/jquery_fix.js"></script>
+        <script type="text/javascript" src="/adm/static/src/js/application/common.js"></script>
+        <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_select.scss"/>
+        <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_upload_button.scss"/>
+    </template>
+
+    <template id="assets_application_relationships">
+        <script type="text/javascript" src="/adm/static/src/js/application/family/relationships.js"></script>
     </template>
 
 </odoo>

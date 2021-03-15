@@ -39,6 +39,8 @@ $selection_item_width: 120px;
         flex: 0 1 10%;
         min-width: $selection_item_width;
         max-width: $selection_item_width;
+        display: flex;
+        flex-direction: column;
     }
 
     &_family_selection {

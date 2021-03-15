@@ -61,6 +61,10 @@ class ResConfigSettings(models.TransientModel):
         relation='adm_app_optional_field_settings',
         string="Application optional fields")
 
+    adm_mail_inviting_partner_to_application_id = fields.Many2one('mail.template',
+                                                                  related='company_id.mail_inviting_partner_to_application_id',
+                                                                  readonly=False)
+
     @api.model
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()

@@ -81,6 +81,9 @@
     <menuitem id="adm_menu_configurations" sequence="4"
         parent="adm_menu" name="Configurations" />
 
+    <menuitem id="adm_menu_question_parameters" sequence="5"
+        parent="adm_menu" name="Question parameters" />
+
     <!-- Status -->
     <menuitem id="adm_menu_status"
         parent="adm_menu_configurations" name="Inquiry Status"

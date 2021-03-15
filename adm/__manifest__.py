@@ -30,12 +30,13 @@
         # Backend views
         'views/adm_application_status_views.xml',
         'views/adm_application_views.xml',
+        'views/adm_application_page.xml',
+        'views/adm_application_questions_views.xml',
         'views/adm_contact_time_views.xml',
         'views/adm_degree_program_views.xml',
         'views/adm_inquiry_views.xml',
         'views/adm_language_level_views.xml',
         'views/adm_language_views.xml',
-        'views/adm_siblings_views.xml',
         'views/assets.xml',
         'views/res_config_settings_views.xml',
         # 'views/res_partner_views.xml',
@@ -44,9 +45,10 @@
 
         # Web templates
         'views/web/portal_templates.xml',
-        'views/web/application/menu/family/template_application_parents.xml',
-        'views/web/application/menu/family/template_application_siblings_info.xml',
-
+        # 'views/web/application/menu/family/template_application_parents.xml',
+        # 'views/web/application/menu/template_application_family_members.xml',
+        # 'views/web/application/menu/family/template_application_family_parents.xml',
+        'views/web/application/menu/family/template_application_family_relationships.xml',
         'views/web/application/menu/template_application_additional_questions.xml',
         'views/web/application/menu/template_application_health.xml',
         'views/web/application/menu/template_application_menu.xml',
@@ -60,7 +62,7 @@
 
         'views/web/application/template_application_create_application.xml',
         'views/web/application/template_application_list.xml',
-        # 'views/web/application/template_application_menu_invoice.xml',
+        'views/web/application/template_application_invite_partner.xml',
         'views/web/application/template_application_menu_progress.xml',
 
         'views/web/inquiry/template_inquiry_form.xml',
@@ -76,6 +78,7 @@
         'data/language_types.xml',
         'data/status_type_data.xml',
         'data/gender_data.xml',
+        'data/default_page_structure.xml',
 
         # Wizard
         'wizard/sale_confirm_limit_wizard.xml',

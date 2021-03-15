@@ -14,24 +14,18 @@
                         <span class="text-danger" t-if="is_required('medical_conditions_ids.name')">*</span>
                     </label>
                     <t t-if="not condition">
+                        <t t-set="options_medical_conditions"
+                           t-value="SUPER_ENV['adm.application.option.medical.conditions'].search([])"/>
                         <input type="checkbox" class="js_condition_select"/> Other
                         <select class="form-control js_select_health"
                                 data-adm-field="name" required="required"
                                 t-att-required="is_required('medical_conditions_ids.name')"
                                 name="medical_condition_name">
-                            <option value="Asthma">Asthma</option>
-                            <option value="Attention Deficit Disorder/Hyperactive">Attention Deficit
-                                Disorder/Hyperactive</option>
-                            <option value="Neurological Concerns">Neurological Concerns</option>
-                            <option value="Seizure disorder/Epilepsy">Seizure disorder/Epilepsy</option>
-                            <option value="Diabetes">Diabetes</option>
-                            <option value="Frequent ear infections">Frequent ear infections</option>
-                            <option value="Frequent Headaches">Frequent Headaches</option>
-                            <option value="Heart Problems">Heart Problems</option>
-                            <option value="Kidney/urinary problems">Kidney/urinary problems</option>
-                            <option value="Menstrual problems">Menstrual problems</option>
-                            <option value="Glasses/contact lens">Glasses/contact lens</option>
-                            <option value="Emotional concerns">Emotional concerns</option>
+                            <t t-foreach="options_medical_conditions" t-as="options_medical">
+                                <option t-att-value="options_medical.name">
+                                    <t t-esc="options_medical.name"/>
+                                </option>
+                            </t>
                         </select>
                     </t>
                     <input required="required" class="form-control js_select_health"
@@ -75,7 +69,24 @@
                         Name
                         <span class="text-danger" t-if="is_required('medical_allergies_ids.name')">*</span>
                     </label>
-                    <input required="required" class="form-control" type="text" name="medical_allergy_name"
+
+                    <t t-if="not allergy">
+                        <t t-set="options_medical_allergies"
+                           t-value="SUPER_ENV['adm.application.option.medical.allergies'].search([])"/>
+                        <input type="checkbox" class="js_allergy_toggle"/> Other
+                        <select class="form-control js_allergy_select"
+                                data-adm-field="name" required="required"
+                                t-att-required="is_required('medical_conditions_ids.name')"
+                                name="medical_condition_name">
+                            <t t-foreach="options_medical_allergies" t-as="options_medical">
+                                <option t-att-value="options_medical.name">
+                                    <t t-esc="options_medical.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </t>
+                    <input required="required" class="form-control js_allergy_text"
+                           type="text" name="medical_allergy_name"
                            data-adm-field="name"
                            t-att-required="is_required('medical_allergies_ids.name')"
                            t-att-value="allergy and allergy.name"/>
@@ -111,7 +122,23 @@
                         Name
                         <span class="text-danger" t-if="is_required('medical_medications_ids.name')">*</span>
                     </label>
-                    <input required="required" class="form-control" type="text" name="medical_medication_name"
+                    <t t-if="not medication">
+                        <t t-set="options_medical_medication"
+                           t-value="SUPER_ENV['adm.application.option.medical.medications'].search([])"/>
+                        <input type="checkbox" class="js_medication_toggle"/> Other
+                        <select class="form-control js_medication_select"
+                                data-adm-field="name" required="required"
+                                t-att-required="is_required('medical_conditions_ids.name')"
+                                name="medical_condition_name">
+                            <t t-foreach="options_medical_medication" t-as="options_medical">
+                                <option t-att-value="options_medical.name">
+                                    <t t-esc="options_medical.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </t>
+                    <input required="required" class="form-control js_medication_text" type="text"
+                           name="medical_medication_name"
                            data-adm-field="name"
                            t-att-required="is_required('medical_medications_ids.name')"
                            t-att-value="medication and medication.name"/>
@@ -155,7 +182,7 @@
 
             <section class="container-fluid mt-3">
                 <form class="row mb-4 justify-content-center align-items-center"
-                     data-adm-model-fields="1">
+                      data-adm-model-fields="1">
                     <div class="col-12 col-md-9">
                         <div class="row">
                             <section class="col-12 col-md-4">
@@ -171,7 +198,8 @@
                             </section>
 
                             <section class="col-12 col-md-4">
-                                <label> Hospital <span class="text-danger" t-if="is_required('hospital')">*</span></label>
+                                <label> Hospital <span class="text-danger" t-if="is_required('hospital')">
+                                    *</span></label>
                                 <input required="required" class="form-control"
                                        type="text"
                                        name="hospital"
@@ -237,7 +265,8 @@
                                 </t>
                             </section>
                             <button type="button"
-                                    class="add-medical_condition btn btn-secondary d-block ml-auto mr-1 mt-3 mb-3 btn-add">&#10010;</button>
+                                    class="add-medical_condition btn btn-secondary d-block ml-auto mr-1 mt-3 mb-3 btn-add">
+                                &#10010;</button>
                         </div>
 
                         <div class="card mt-2">
