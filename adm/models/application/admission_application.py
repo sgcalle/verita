@@ -933,12 +933,12 @@ class Application(models.Model):
 
         if view_type == 'form':
             doc = etree.XML(res['arch'])
+            res_fields = res.get('fields', {})
             for node in doc.xpath('//page[@name="custom_page"]/notebook'):
                 pages = self.env['adm.application.fields.configuration'].search([])
                 for page in pages:
-                    xml_page = etree.SubElement(node, 'page', string=page.name)
+                    xml_page = etree.Element('page', string=page.name)
                     xml_group = etree.SubElement(xml_page, 'group')
-
                     for field_config in page.field_ids:
                         field_id = field_config.field_id
                         context = field_config.custom_context
@@ -947,16 +947,16 @@ class Application(models.Model):
                                                     name=field_id.name,
                                                     attrs=attrs,
                                                     context=context,)
+                        self.fields_get()
                         if field_config.custom_xml_to_render:
-                            # field_el.text = "<tree><field name='id'/><field name='name'/></tree>"
                             xml_to_render_el = etree.fromstring(field_config.custom_xml_to_render)
                             field_el.append(xml_to_render_el)
 
-                # res['fields'].update(self.fields_get(pages.mapped('field_ids.field_id.name')))
-            xarch, xfields = View.postprocess_and_fields(self._name, doc, view_id)
-            res['arch'] = xarch
-            res['fields'] = xfields
-                    # node.append(xml_page)
+                    xarch, xfields = View.postprocess_and_fields(self._name, xml_page, view_id)
+                    node.append(etree.XML(xarch))
+                    res_fields.update(xfields)
+            res['arch'] = etree.tostring(doc, encoding='unicode', method='xml')
+            res['fields'] = res_fields
 
         return res
 
