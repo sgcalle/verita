@@ -484,31 +484,67 @@ class Application(models.Model):
             application_id.other_relationship_ids = other_ids
             application_id.custodial_relationship_ids = custody_ids
 
+    @api.model
+    def _create_relation_if_not_exists(self, relationships):
+        rels = relationships.filtered(lambda r: r._origin)
+        for relation in relationships:
+            if not relation._origin:
+                rels += relation.copy()
+        return rels
+
     def _set_parent_relationships(self):
         for application_id in self:
             parent_types = ['parent', 'father', 'mother']
-            parent_ids = application_id.parent_relationship_ids 
+            family_ids = application_id.mapped('parent_relationship_ids.family_id')
+
             default_parent_type = \
                 self.env['school_base.relationship_type'].search([
                     ('type', 'in', parent_types)
                     ])[:1]
-            for parent in parent_ids:
-                if parent.relationship_type_id.type not in parent_types:
-                    parent.relationship_type_id = default_parent_type
-            application_id.partner_id.self_relationship_ids += parent_ids
+
+            def filter_parent(relationship):
+                return relationship.filtered_domain([
+                    ('relationship_type_id.type', 'in', parent_types)
+                    ])
+
+            for family_id in family_ids:
+                family_relations = filter_parent(family_id.member_relationship_ids)
+                rel_to_remove = family_relations - application_id.parent_relationship_ids
+                rel_to_add = application_id.parent_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+
+                for parent in rel_to_add:
+                    if parent.relationship_type_id.type not in parent_types:
+                        parent.relationship_type_id = default_parent_type
+
+                family_id.member_relationship_ids += rel_to_add
+                family_id.member_relationship_ids -= rel_to_remove
 
     def _set_sibling_relationships(self):
         for application_id in self:
             sibling_types = ['sibling', 'father', 'mother']
-            sibling_ids = application_id.sibling_relationship_ids 
             default_sibling_type = \
                 self.env['school_base.relationship_type'].search([
                     ('type', 'in', sibling_types)
                     ])[:1]
-            for sibling in sibling_ids:
-                if sibling.relationship_type_id.type not in sibling_types:
-                    sibling.relationship_type_id = default_sibling_type
-            application_id.partner_id.self_relationship_ids += sibling_ids
+
+            family_ids = application_id.mapped('sibling_relationship_ids.family_id')
+
+            def filter_sibling(relationship):
+                return relationship.filtered_domain([
+                    ('relationship_type_id.type', 'in', sibling_types)
+                    ])
+
+            for family_id in family_ids:
+                family_relations = filter_sibling(family_id.member_relationship_ids)
+                rel_to_remove = family_relations - application_id.sibling_relationship_ids
+                rel_to_add = application_id.sibling_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+
+                for parent in rel_to_add:
+                    if parent.relationship_type_id.type not in sibling_types:
+                        parent.relationship_type_id = default_sibling_type
+
+                family_id.member_relationship_ids += rel_to_add
+                family_id.member_relationship_ids -= rel_to_remove
 
     def _set_other_relationships(self):
         for application_id in self:
