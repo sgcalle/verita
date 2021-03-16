@@ -53,7 +53,7 @@
         'views/web/application/menu/template_application_health.xml',
         'views/web/application/menu/template_application_menu.xml',
         'views/web/application/menu/template_application_menu_instructions.xml',
-        'views/web/application/menu/template_application_menu_upload_file_comun.xml',
+        'views/web/application/menu/template_application_documents_upload.xml',
         'views/web/application/menu/template_application_page_commons.xml',
         'views/web/application/menu/template_application_parent_questionnaire.xml',
         'views/web/application/menu/template_application_signature.xml',
@@ -89,6 +89,9 @@
         'report/adm_activity_report_views.xml',
         'report/grade_level_student_count_views.xml',
         ],
-    'qweb': ['static/src/xml/kanban_view_button.xml'],
+    'qweb': [
+        'static/src/xml/kanban_view_button.xml',
+        'static/src/xml/attachment_widget.xml',
+        ],
     'application': True
 }

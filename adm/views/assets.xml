@@ -44,15 +44,29 @@
     </template>
 
     <template id="assets_application_common" name="Assets Application Common">
-        <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.js"></script>
-        <script type="text/javascript" src="/adm/static/src/js/jquery_fix.js"></script>
-        <script type="text/javascript" src="/adm/static/src/js/application/common.js"></script>
         <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_select.scss"/>
         <link rel="stylesheet" type="text/scss" href="/adm/static/src/scss/family_upload_button.scss"/>
+
+        <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.js"></script>
+
+        <script defer="defer" src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+        <script defer="defer" src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
+        <script defer="defer" src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js"></script>
+        <script defer="defer" src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css"/>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/filepond/dist/filepond.min.css"/>
+
+        <script type="text/javascript" src="/adm/static/src/js/jquery_fix.js"></script>
+        <script type="text/javascript" src="/adm/static/src/js/application/common.js"></script>
     </template>
 
     <template id="assets_application_relationships">
         <script type="text/javascript" src="/adm/static/src/js/application/family/relationships.js"></script>
+    </template>
+
+    <template id="assets_application_documents">
+        <script type="text/javascript" src="/adm/static/src/js/application/documents.js"></script>
     </template>
 
 </odoo>

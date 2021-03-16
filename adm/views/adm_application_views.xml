@@ -179,6 +179,7 @@
                                 <field name="custodial_relationship_ids"/>
                                 <field name="partner_family_ids" invisible="1"/>
                                 <field name="partner_family_member_ids" invisible="1"/>
+                                <field name="id" invisible="1"/>
                             </group>
                         </page>
                         <page name="tasks" string="Tasks">
@@ -340,7 +341,13 @@
                             </notebook>
                         </page>
                         <page name="documents" string="Documents">
-
+                            <group>
+                                <field name="birth_certificate_attachment_ids" widget="many2many_binary"/>
+                                <field name="custody_documents_attachment_ids" widget="many2many_binary"/>
+                                <field name="immunization_records_attachment_ids" widget="many2many_binary"/>
+                                <field name="current_report_card_attachment_ids" widget="many2many_binary"/>
+                                <field name="standardized_test_attachment_ids" widget="many2many_binary"/>
+                            </group>
                         </page>
                         <page name="status_history" string="Status history">
                             <field name="status_history_ids">

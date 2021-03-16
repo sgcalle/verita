@@ -26,3 +26,9 @@
 }
 
 /*# sourceMappingURL=main.css.map */
+/**
+ * FilePond Custom Styles
+ */
+.filepond--root .filepond--credits {
+  display: none !important;
+}

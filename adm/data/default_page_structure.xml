@@ -45,7 +45,7 @@
     <record id="application_page_documents" model="adm.application.page">
         <field name="name">Documents</field>
         <field name="url">documents</field>
-        <field name="view_template_id" ref="adm.download_application_attachments_view_form"/>
+        <field name="view_template_id" ref="adm.template_application_documents_upload"/>
     </record>
 
 </odoo>

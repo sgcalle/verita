@@ -2,25 +2,49 @@ odoo.define('adm.form.common', require => {
     "use strict";
 
     require('web.core');
+
+    const fileList = {};
+
     const utils = require('web.utils')
 
     async function buildAdmJSONObject(rootEl) {
         let auxJson = {};
 
         async function getValueDependingOnType($el) {
-            if ($el.is(':file')) {
-                const fileFromEl = $el[0].files[0];
-                const urlEncodedFile = await utils.getDataURLFromFile(fileFromEl);
-                const base64EncodedFile = urlEncodedFile.split(',')[1];
-                if (($el.data('admFieldType') || '').toUpperCase() === 'ATTACHMENT') {
-                    return {
-                        'content_type': fileFromEl.type,
-                        'name': fileFromEl.name,
-                        'base64_encoded_file': base64EncodedFile,
+            if (Object.hasOwnProperty.call(fileList, $el.data('admField'))) {
+                const filesObjectList = fileList[$el.data('admField')];
+                const files = [];
+                _.each(filesObjectList, fileObject => {
+                    if (fileObject.getMetadata('id')) {
+                        files.push({
+                            'id': fileObject.getMetadata('id')
+                        })
+                    } else {
+                        files.push({
+                            'content_type': fileObject.fileType,
+                            'name': fileObject.filename,
+                            'base64_encoded_file': fileObject.getFileEncodeBase64String(),
+                        });
                     }
-                } else {
-                    return base64EncodedFile;
+                });
+                return files;
+            } else {
+
+                if ($el.is(':file')) {
+                    const fileFromEl = $el[0].files[0];
+                    const urlEncodedFile = await utils.getDataURLFromFile(fileFromEl);
+                    const base64EncodedFile = urlEncodedFile.split(',')[1];
+                    if (($el.data('admFieldType') || '').toUpperCase() === 'ATTACHMENT') {
+                        return {
+                            'content_type': fileFromEl.type,
+                            'name': fileFromEl.name,
+                            'base64_encoded_file': base64EncodedFile,
+                        }
+                    } else {
+                        return base64EncodedFile;
+                    }
                 }
+
             }
             let val;
 
@@ -188,4 +212,7 @@ odoo.define('adm.form.common', require => {
         $('.js_submit_json').on('click', sendJson);
     });
 
+    return {
+        fileList
+    }
 });

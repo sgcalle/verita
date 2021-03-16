@@ -356,6 +356,17 @@ class Application(models.Model):
             ], string="Applying semester")
 
     # Files
+    birth_certificate_attachment_ids = fields.Many2many(
+        'ir.attachment', relation='application_birth_certificates')
+    immunization_records_attachment_ids = fields.Many2many(
+        'ir.attachment', relation='application_immunization_records')
+    custody_documents_attachment_ids = fields.Many2many(
+        'ir.attachment', relation='application_custody_documents')
+    current_report_card_attachment_ids = fields.Many2many(
+        'ir.attachment', relation='application_current_report_cards')
+    standardized_test_attachment_ids = fields.Many2many(
+        'ir.attachment', relation='application_standardized_tests')
+
     passport_file_ids = fields.Many2many(
         'ir.attachment', 'application_passport_id')
     residency_file_ids = fields.Many2many(
@@ -364,6 +375,7 @@ class Application(models.Model):
     residency_permit_id_number = fields.Many2one('ir.attachment')
     parent_passport_upload = fields.Many2one('ir.attachment')
 
+    # Fields compute percentage
     required_fields_completed = fields.Integer(
         string="Required fields completed",
         compute="_compute_application_fields")

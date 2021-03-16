@@ -115,10 +115,24 @@ class AdmissionController(http.Controller):
                     parsed_vals = [(5, 0, 0)]
                     for val_array in value:
                         if 'id' not in val_array or not val_array['id']:
-                            parsed_vals.append((0, 0,
-                                                AdmissionController
-                                                ._parse_json_to_odoo_fields(
-                                                    rel_model_env, val_array)))
+                            model_name = model_env._fields[field].comodel_name
+                            if len(model_env) == 1 and model_name == 'ir.attachment':
+                                attachment_id = \
+                                    model_env.env['ir.attachment'].sudo().create({
+                                        'name': val_array['name'],
+                                        'datas': val_array['base64_encoded_file'],
+                                        'mimetype': val_array['content_type'],
+                                        'res_id': model_env.id,
+                                        'res_model': model_env._name,
+                                        'type': 'binary',
+                                        })
+                                rel_id = attachment_id.id
+                                parsed_vals.append((4, rel_id, False))
+                            else:
+                                parsed_vals.append((0, 0,
+                                                    AdmissionController
+                                                    ._parse_json_to_odoo_fields(
+                                                        rel_model_env, val_array)))
                         else:
                             rel_id = val_array.pop('id')
                             parsed_vals.append((4, rel_id, False))
@@ -134,7 +148,6 @@ class AdmissionController(http.Controller):
             elif isinstance(value, dict):
                 model_name = model_env._fields[field].comodel_name
                 rel_model_env = request.env[model_name].sudo()
-
                 if 'id' not in value or not value['id']:
                     if len(model_env) == 1 and model_name == 'ir.attachment':
                         attachment_id = model_env.env[

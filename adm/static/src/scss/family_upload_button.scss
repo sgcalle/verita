@@ -10,7 +10,7 @@
         cursor: pointer;
     }
 
-    input[type="file"]{
+    input[type="file"] {
         display: none;
     }
 }
@@ -22,5 +22,16 @@
     }
     @media (max-height: 719px) {
         bottom: 0;
+    }
+}
+
+.filepond--root {
+    .filepond--credits {
+        display: none !important;
+    }
+
+    [aria-hidden="true"], [aria-hidden="1"] {
+
+        display: block !important;
     }
 }
