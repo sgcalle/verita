@@ -5,13 +5,11 @@
         <div t-att-class="not parent or 'mt-4'">
             <section t-attf-class="card #{not parent and 'd-none'}"
                      t-att-id="parent or 'template_application_family_parents_card'">
-
                 <t t-if="parent">
                     <input class="form-control" type="hidden"
                            data-adm-field="id"
                            t-att-value="parent.id"
                            data-adm-field-type="INTEGER"/>
-
                     <input class="form-control" type="hidden"
                            data-adm-field="family_id"
                            t-att-value="parent.family_id.id"
@@ -36,7 +34,7 @@
                             </t>
                         </button>
                     </h2>
-                    <button type="button" class="btn btn-danger remove-relationship position-absolute"
+                    <button type="button" class="btn btn-danger move-other-relationship position-absolute"
                             style="top: 1em; right: 1em;">&#10006;</button>
                 </div>
                 <div class="collapse" t-attf-id="parentCollapse_#{parent and parent.id}">
@@ -341,7 +339,7 @@
             </div>
             <div class="row">
                 <div class="col" id="parent_relationship_card_list">
-                    <t t-foreach="application_id.parent_relationship_ids.filtered_domain([('family_id', '=', application_id.current_user_access_id.family_id.id)])"
+                    <t t-foreach="application_id.parent_relationship_ids"
                        t-as="parent">
                         <div data-adm-rel="rel">
                             <t t-call="adm.template_application_family_parents_card"/>
@@ -387,7 +385,7 @@
                             </t>
                         </button>
                     </h2>
-                    <button type="button" class="btn btn-danger remove-relationship position-absolute"
+                    <button type="button" class="btn btn-danger move-other-relationship position-absolute"
                             style="top: 1em; right: 1em;">&#10006;</button>
                 </div>
                 <div class="collapse" t-attf-id="siblingCollapse_#{sibling and sibling.id}">
@@ -669,11 +667,15 @@
                         &#10010; Add Member</button>
                 </div>
             </div>
-            <t t-foreach="application_id.other_relationship_ids" t-as="other_member">
-                <div data-adm-rel="rel">
-                    <t t-call="adm.template_application_family_others_card"/>
+            <div class="row">
+                <div class="col" id="other_relationship_card_list">
+                    <t t-foreach="application_id.other_relationship_ids" t-as="parent">
+                        <div data-adm-rel="rel">
+                            <t t-call="adm.template_application_family_parents_card"/>
+                        </div>
+                    </t>
                 </div>
-            </t>
+            </div>
         </div>
     </template>
 

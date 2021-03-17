@@ -9,6 +9,18 @@ odoo.define('adm.family.relationships', require => {
         $(event.currentTarget).closest('[data-adm-rel]').remove();
     }
 
+    function moveToOtherRelationship(event) {
+        const relationRowEl = event.currentTarget.closest('[data-adm-rel]');
+        const otherRelationListEl = document.getElementById('other_relationship_card_list');
+
+        const selectRelationTypeEl = relationRowEl.querySelector('[data-adm-field="relationship_type_id"]');
+        if (selectRelationTypeEl) {
+            selectRelationTypeEl.value = null;
+        }
+
+        otherRelationListEl.appendChild(relationRowEl);
+    }
+
     function appendNewRelationship(event) {
         counter--;
 
@@ -42,6 +54,7 @@ odoo.define('adm.family.relationships', require => {
     $(document).ready(() => {
         $('.add-relationship').on('click', appendNewRelationship);
         $('.remove-relationship').on('click', removeNewRelationship);
+        $('.move-other-relationship').on('click', moveToOtherRelationship);
     });
 
 })

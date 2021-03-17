@@ -109,20 +109,23 @@ class Application(models.Model):
     # Demographic
     name = fields.Char(string="Name", related="partner_id.name")
     first_name = fields.Char(
-        string="First Name", related="partner_id.first_name")
+        string="First Name", related="partner_id.first_name", readonly=False)
     middle_name = fields.Char(
-        string="Middle Name", related="partner_id.middle_name")
-    last_name = fields.Char(string="Last Name", related="partner_id.last_name")
+        string="Middle Name", related="partner_id.middle_name", readonly=False)
+    last_name = fields.Char(
+        string="Last Name", related="partner_id.last_name", readonly=False)
     date_of_birth = fields.Date(
-        string="Date of birth", related="partner_id.date_of_birth")
+        string="Date of birth", related="partner_id.date_of_birth", readonly=False)
     identification = fields.Char(
-        string="Identification", related="partner_id.identification")
+        string="Identification", related="partner_id.identification",
+        readonly=False)
     birth_country = fields.Many2one(
-        "res.country", string="Birth Country", related="partner_id.country_id")
-    birth_city = fields.Char("Birth City", related="partner_id.city")
+        "res.country", string="Birth Country",
+        related="partner_id.country_id", readonly=False)
+    birth_city = fields.Char(
+        "Birth City", related="partner_id.city", readonly=False)
     gender = fields.Many2one(
-        "adm.gender", string="Gender", related="partner_id.gender",
-        inverse="_set_gender")
+        "adm.gender", string="Gender", related="partner_id.gender", readonly=False)
     status_history_ids = fields.One2many(
         'adm.application.history.status', 'application_id',
         string="Status history")
@@ -494,74 +497,15 @@ class Application(models.Model):
 
     def _set_parent_relationships(self):
         for application_id in self:
-            parent_types = ['parent', 'father', 'mother']
-            family_ids = application_id.mapped('parent_relationship_ids.family_id')
-
-            default_parent_type = \
-                self.env['school_base.relationship_type'].search([
-                    ('type', 'in', parent_types)
-                    ])[:1]
-
-            def filter_parent(relationship):
-                return relationship.filtered_domain([
-                    ('relationship_type_id.type', 'in', parent_types)
-                    ])
-
-            for family_id in family_ids:
-                family_relations = filter_parent(family_id.member_relationship_ids)
-                rel_to_remove = family_relations - application_id.parent_relationship_ids
-                rel_to_add = application_id.parent_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
-
-                for parent in rel_to_add:
-                    if parent.relationship_type_id.type not in parent_types:
-                        parent.relationship_type_id = default_parent_type
-
-                family_id.member_relationship_ids += rel_to_add
-                family_id.member_relationship_ids -= rel_to_remove
+            application_id.partner_id.parent_relationship_ids = application_id.parent_relationship_ids
 
     def _set_sibling_relationships(self):
         for application_id in self:
-            sibling_types = ['sibling', 'father', 'mother']
-            default_sibling_type = \
-                self.env['school_base.relationship_type'].search([
-                    ('type', 'in', sibling_types)
-                    ])[:1]
-
-            family_ids = application_id.mapped('sibling_relationship_ids.family_id')
-
-            def filter_sibling(relationship):
-                return relationship.filtered_domain([
-                    ('relationship_type_id.type', 'in', sibling_types)
-                    ])
-
-            for family_id in family_ids:
-                family_relations = filter_sibling(family_id.member_relationship_ids)
-                rel_to_remove = family_relations - application_id.sibling_relationship_ids
-                rel_to_add = application_id.sibling_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
-
-                for parent in rel_to_add:
-                    if parent.relationship_type_id.type not in sibling_types:
-                        parent.relationship_type_id = default_sibling_type
-
-                family_id.member_relationship_ids += rel_to_add
-                family_id.member_relationship_ids -= rel_to_remove
+            application_id.partner_id.sibling_relationship_ids = application_id.sibling_relationship_ids
 
     def _set_other_relationships(self):
         for application_id in self:
-            other_types = [
-                'sibling', 'father', 'mother', 'parent', 'father', 'mother'
-                ]
-            other_ids = application_id.other_relationship_ids
-            default_other_type = \
-                self.env['school_base.relationship_type'].search([
-                    ('type', '=', 'other')
-                    ])[:1]
-            for other in other_ids:
-                if (other.relationship_type_id
-                        and other.relationship_type_id.type
-                        not in other_types):
-                    other.relationship_type_id = default_other_type
-            application_id.partner_id.self_relationship_ids += other_ids
+            application_id.partner_id.other_relationship_ids = application_id.other_relationship_ids
 
     def _compute_application_fields(self):
         for application_id in self:
@@ -616,10 +560,6 @@ class Application(models.Model):
                 record.first_name, record.middle_name, record.last_name)
             record.partner_id.first_name = record.first_name
 
-    def _set_gender(self):
-        for application_id in self:
-            application_id.partner_id.gender = self.gender
-
     def _set_family_id(self):
         for application_id in self:
             application_id.family_id = application_id.family_id
@@ -670,7 +610,6 @@ class Application(models.Model):
 
     @api.model
     def create(self, values):
-
         if not values.get('status_id', False):
             status_id = self.env['adm.application.status'].search(
                 [], order="sequence")[0]
@@ -706,7 +645,6 @@ class Application(models.Model):
         return application_id
 
     def write(self, values):
-
         for application_id in self:
             first_name = values.get('first_name', application_id.first_name)
             middle_name = values.get('middle_name', application_id.middle_name)

@@ -22,11 +22,12 @@
         'base',
         'portal',
         'contacts',
-    ],
+        ],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/relationships_rules.xml',
 
         'data/menudata.xml',
         'data/name_sorting.xml',
@@ -40,5 +41,5 @@
         'views/portal_views.xml',
         'views/config_views.xml',
         'views/views.xml'
-    ],
+        ],
 }

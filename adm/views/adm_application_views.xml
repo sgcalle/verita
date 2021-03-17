@@ -232,8 +232,7 @@
                                             <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
                                             <field name="partner_relation_id"
                                                    domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
-                                            <field name="relationship_type_id"
-                                                   domain="[('type', 'in', ['parent', 'father', 'mother'])]"/>
+                                            <field name="relationship_type_id" />
                                             <field name="custody"/>
                                             <field name="partner_individual_id"/>
                                             <field name="correspondence"/>
@@ -250,10 +249,9 @@
                                            context="{'default_partner_id': partner_id}">
                                         <tree editable="bottom">
                                             <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
-                                            <field name="partner_2"
+                                            <field name="partner_relation_id"
                                                    domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
-                                            <field name="relationship_type_id"
-                                                   domain="[('type', 'in', ['sibling', 'father', 'mother'])]"/>
+                                            <field name="relationship_type_id" />
                                             <field name="custody"/>
                                             <field name="correspondence"/>
                                             <field name="grand_parent"/>
@@ -269,10 +267,9 @@
                                            context="{'default_partner_id': partner_id}">
                                         <tree editable="bottom">
                                             <field name="family_id" domain="[('id', 'in', parent.partner_family_ids)]"/>
-                                            <field name="partner_2"
+                                            <field name="partner_relation_id"
                                                    domain="[('id', 'in', parent.partner_family_member_ids), ('id', '!=', parent.partner_id), ('family_ids', '=', family_id)]"/>
-                                            <field name="relationship_type_id"
-                                                   domain="[('type', 'not in', ['sibling', 'father', 'mother', 'parent', 'father', 'mother'])]"/>
+                                            <field name="relationship_type_id" />
                                             <field name="custody"/>
                                             <field name="correspondence"/>
                                             <field name="grand_parent"/>

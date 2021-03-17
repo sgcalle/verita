@@ -153,11 +153,28 @@ class Contact(models.Model):
 
     member_relationship_ids = fields.One2many(
         'school_base.relationship', 'family_id',
+        domain="[('partner_relation_id.active', '=', True), ('partner_individual_id.active', '=', True)]",
         string="Relationships Members")
 
     self_relationship_ids = fields.Many2many(
         'school_base.relationship', compute='compute_self_relationship_ids')
 
+    parent_relationship_ids = fields.One2many('school_base.relationship',
+        string="Parents/Guardian", compute="compute_self_relationship_ids",
+        inverse="_set_parent_relationships", readonly=False, )
+
+    sibling_relationship_ids = fields.One2many('school_base.relationship',
+        string="Siblings", compute="compute_self_relationship_ids",
+        inverse="_set_sibling_relationships", readonly=False, store=False)
+
+    other_relationship_ids = fields.One2many('school_base.relationship',
+        string="Others", compute="compute_self_relationship_ids",
+        inverse="_set_other_relationships", readonly=False, store=False)
+
+    custodial_relationship_ids = fields.Many2many('school_base.relationship',
+        string="Custody contacts", compute="compute_self_relationship_ids",
+        store=False)
+    
     relationship_ids = fields.One2many("school_base.relationship", "partner_1",
                                        string="Relationships")
     relationship_members_ids = fields.One2many("school_base.relationship", "family_id", string="Relationships Members", readonly=True)
@@ -233,7 +250,7 @@ class Contact(models.Model):
     home_address_street = fields.Char(realated='home_address_id.street')
     home_address_street2 = fields.Char(realated='home_address_id.street2')
     home_address_phone = fields.Char(realated='home_address_id.phone')
-
+    
     @api.onchange('parent_id', 'home_address_id',
                   'home_address_country_id', 
                   'home_address_state_id',
@@ -383,8 +400,130 @@ class Contact(models.Model):
             partner_id.self_relationship_ids = \
                 partner_id.family_ids.mapped('member_relationship_ids')\
                 .filtered_domain([
-                    ('partner_individual_id', '=', partner_id.id)
+                    ('partner_individual_id', '=', partner_id.id),
+                    ('partner_individual_id.active', '=', True),
+                    ('partner_relation_id.active', '=', True),
                     ])
+
+            parent_types = ['parent', 'father', 'mother']
+            sibling_types = ['brother', 'sister', 'sibling']
+
+            parent_ids = partner_id.self_relationship_ids.filtered_domain([
+                ('relationship_type_id.type', 'in', parent_types)
+                ])
+            sibling_ids = partner_id.self_relationship_ids.filtered_domain([
+                ('relationship_type_id.type', 'in', sibling_types)
+                ])
+            other_ids = partner_id.self_relationship_ids\
+                .filtered_domain([
+                ('relationship_type_id.type', 'not in'
+                  , parent_types + sibling_types)
+                ])
+
+            custody_ids = partner_id.self_relationship_ids.filtered('custody')
+
+            partner_id.parent_relationship_ids = parent_ids
+            partner_id.sibling_relationship_ids = sibling_ids
+            partner_id.other_relationship_ids = other_ids
+            partner_id.custodial_relationship_ids = custody_ids
+    
+    def _set_parent_relationships(self):
+        """ If you remove someone as parents
+            Normally you expect that the person still belong to the family
+            So, we just change"""
+        for partner_id in self:
+            parent_types = ['parent', 'father', 'mother']
+            family_ids = partner_id.mapped('parent_relationship_ids.family_id')
+
+            default_parent_type = \
+                self.env['school_base.relationship_type'].search([
+                    ('type', 'in', parent_types)
+                    ])[:1]
+
+            def filter_parent(relationship):
+                return relationship.filtered_domain([
+                    ('relationship_type_id.type', 'in', parent_types),
+                    ('partner_individual_id', '=', partner_id.id),
+                    ('partner_individual_id.active', '=', True),
+                    ('partner_relation_id.active', '=', True),
+                    ])
+
+            for family_id in partner_id.family_ids:
+                family_relations = filter_parent(family_id.member_relationship_ids)
+                rel_to_remove = family_relations - partner_id.parent_relationship_ids
+                rel_to_add = partner_id.parent_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+
+                for parent in rel_to_add:
+                    if not parent.relationship_type_id.type:
+                        parent.relationship_type_id = default_parent_type
+                    if parent.partner_individual_id != partner_id:
+                        parent.partner_individual_id = partner_id
+
+                    family_id.sudo().member_relationship_ids += parent
+
+                    # Add as family member if it's new
+                    if parent.partner_relation_id not in family_id.member_ids:
+                        # parent.partner_relation_id.write({
+                        #     'family_ids', [(4, family_id.id, 0)]
+                        #     })
+                        family_id.member_ids += parent.partner_relation_id
+
+                # family_id.member_relationship_ids -= rel_to_remove
+                rel_to_remove.write({'relationship_type_id': False})
+
+    def _set_sibling_relationships(self):
+        for partner_id in self:
+            sibling_types = ['sibling', 'father', 'mother']
+            default_sibling_type = \
+                self.env['school_base.relationship_type'].search([
+                    ('type', 'in', sibling_types)
+                    ])[:1]
+
+            family_ids = partner_id.mapped('sibling_relationship_ids.family_id')
+
+            def filter_sibling(relationship):
+                return relationship.filtered_domain([
+                    ('relationship_type_id.type', 'in', sibling_types),
+                    ('partner_individual_id', '=', partner_id.id),
+                    ('partner_individual_id.active', '=', True),
+                    ('partner_relation_id.active', '=', True),
+                    ])
+
+            for family_id in partner_id.family_ids:
+                family_relations = filter_sibling(family_id.member_relationship_ids)
+                rel_to_remove = family_relations - partner_id.sibling_relationship_ids
+                rel_to_add = partner_id.sibling_relationship_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+
+                for sibling in rel_to_add:
+                    if not sibling.relationship_type_id.type:
+                        sibling.relationship_type_id = default_sibling_type
+
+                family_id.sudo().member_relationship_ids += rel_to_add
+                rel_to_remove.write({'relationship_type_id': False})
+
+    def _set_other_relationships(self):
+        for partner_id in self:
+            other_types = [
+                'sibling', 'father', 'mother', 'parent', 'father', 'mother'
+                ]
+            other_ids = partner_id.other_relationship_ids
+
+            def filter_other(relationship):
+                return relationship.filtered_domain([
+                    ('relationship_type_id.type', 'not in', other_types),
+                    ('partner_individual_id', '=', partner_id.id),
+                    ('partner_individual_id.active', '=', True),
+                    ('partner_relation_id.active', '=', True),
+                    ])
+
+            for family_id in partner_id.family_ids:
+                family_relations = filter_other(
+                    family_id.member_relationship_ids)
+                rel_to_remove = family_relations - other_ids
+                rel_to_add = other_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+
+                family_id.sudo().member_relationship_ids += rel_to_add
+                rel_to_remove.mapped('partner_relation_id').active = False
 
     @api.constrains('member_relationship_ids')
     def _constrains_member_relationship_ids(self):
@@ -413,6 +552,8 @@ class Contact(models.Model):
             values["name"] = self.format_name(first_name, middle_name,
                                               last_name)
         partners = super().create(values)
+
+        partners.check_school_fields_integrity()
 
         ctx = self._context
         for record in partners:
@@ -494,14 +635,16 @@ class Contact(models.Model):
                         relationship_values = values.get('member_relationship_ids', [])
                         for new_member_id in new_member_ids:
                             for member in member_ids.filtered(lambda m: m != new_member_id):
-                                relationship_values.append((TYPE_CREATE, 0, {
-                                    'partner_individual_id': member.id,
-                                    'partner_relation_id': new_member_id.id,
-                                    }))
-                                relationship_values.append((TYPE_CREATE, 0, {
-                                    'partner_individual_id': new_member_id.id,
-                                    'partner_relation_id': member.id,
-                                    }))
+                                if not partner_id.member_relationship_ids.filtered(lambda m: m.partner_individual_id == member and m.partner_relation_id == new_member_id):
+                                    relationship_values.append((TYPE_CREATE, 0, {
+                                        'partner_individual_id': member.id,
+                                        'partner_relation_id': new_member_id.id,
+                                        }))
+                                if not partner_id.member_relationship_ids.filtered(lambda m: m.partner_relation_id == member and m.partner_individual_id == new_member_id):
+                                    relationship_values.append((TYPE_CREATE, 0, {
+                                        'partner_individual_id': new_member_id.id,
+                                        'partner_relation_id': member.id,
+                                        }))
 
                         # Remove duplicated
                         no_duplicated = set(map(lambda rel: (rel[0], rel[1], tuple(rel[2].items())), relationship_values))
@@ -524,7 +667,30 @@ class Contact(models.Model):
                             for relation in relations_to_remove])
                         values['member_relationship_ids'] = relationship_values
 
-        return super().write(values)
+        res = super().write(values)
+        self.check_school_fields_integrity()
+        return res
+
+    def check_school_fields_integrity(self):
+        for partner in self:
+            if (partner.is_family
+                    or partner.person_type
+                    or partner.member_ids
+                    or partner.family_ids):
+                # Email check
+                if partner.email:
+                    email_partner = self.search(['&',
+                                               ('email', '=', partner.email),
+                                               '|', '|', '|',
+                                               ('is_family', '=', True),
+                                               ('person_type', '!=', False),
+                                               ('member_ids', '!=', False),
+                                               ('family_ids', '!=', False),
+                                               ])
+                    if len(email_partner) > 1 or email_partner != partner:
+                        raise UserError(_(
+                            "There is other existing family with the same email "
+                            "address, please, use another one"))
 
     # Helpers methods
     # devuelve familias de un partner
