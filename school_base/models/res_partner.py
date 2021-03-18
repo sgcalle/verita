@@ -533,6 +533,26 @@ class Contact(models.Model):
                 if rel_ids_pairs.count(rel_pair) > 1:
                     raise UserError(_("Duplicated member relationships is not supported"))
 
+    def generate_missing_relationships(self):
+        for family_id in self.filtered('is_family'):
+            relationship_values = []
+            for member in family_id.member_ids:
+                for aux_member in family_id.member_ids.filtered(lambda m: m != member):
+                    if not family_id.member_relationship_ids.filtered(
+                            lambda m: m.partner_individual_id == member and m.partner_relation_id == aux_member):
+                        relationship_values.append((0, 0, {
+                            'partner_individual_id': member.id,
+                            'partner_relation_id': aux_member.id,
+                            }))
+                    if not family_id.member_relationship_ids.filtered(
+                            lambda m: m.partner_relation_id == aux_member and m.partner_individual_id == member):
+                        relationship_values.append((0, 0, {
+                            'partner_individual_id': aux_member.id,
+                            'partner_relation_id': member.id,
+                            }))
+            if relationship_values:
+                family_id.write({'member_relationship_ids': relationship_values})
+
     @api.model
     def create(self, values):
         """ Student custom creation for family relations and other stuffs """

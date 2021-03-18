@@ -15,7 +15,7 @@
     # Check https://github.com/odoo/odoo/blob/12.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Administration',
-    'version': '0.14',
+    'version': '0.15',
 
     # any module necessary for this one to work correctly
     'depends': [
@@ -34,6 +34,7 @@
         'data/add_static.xml',
         'data/settings_default.xml',
         'data/gender_data.xml',
+        'data/actions/res_partner_actions.xml',
 
         'views/inherited/res_partner.xml',
         'views/res_company.xml',
