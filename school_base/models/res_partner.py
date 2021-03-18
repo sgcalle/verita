@@ -463,9 +463,6 @@ class Contact(models.Model):
 
                     # Add as family member if it's new
                     if parent.partner_relation_id not in family_id.member_ids:
-                        # parent.partner_relation_id.write({
-                        #     'family_ids', [(4, family_id.id, 0)]
-                        #     })
                         family_id.member_ids += parent.partner_relation_id
 
                 # family_id.member_relationship_ids -= rel_to_remove
@@ -497,8 +494,15 @@ class Contact(models.Model):
                 for sibling in rel_to_add:
                     if not sibling.relationship_type_id.type:
                         sibling.relationship_type_id = default_sibling_type
+                    if sibling.partner_individual_id != partner_id:
+                        sibling.partner_individual_id = partner_id
 
-                family_id.sudo().member_relationship_ids += rel_to_add
+                    family_id.sudo().member_relationship_ids += sibling
+
+                    # Add as family member if it's new
+                    if sibling.partner_relation_id not in family_id.member_ids:
+                        family_id.member_ids += sibling.partner_relation_id
+
                 rel_to_remove.write({'relationship_type_id': False})
 
     def _set_other_relationships(self):
@@ -521,8 +525,16 @@ class Contact(models.Model):
                     family_id.member_relationship_ids)
                 rel_to_remove = family_relations - other_ids
                 rel_to_add = other_ids.filtered(lambda r: r.family_id == family_id and r not in family_id.member_relationship_ids)
+                
+                for other in rel_to_add:
+                    if other.partner_individual_id != partner_id:
+                        other.partner_individual_id = partner_id
 
-                family_id.sudo().member_relationship_ids += rel_to_add
+                    family_id.sudo().member_relationship_ids += other
+
+                    # Add as family member if it's new
+                    if other.partner_relation_id not in family_id.member_ids:
+                        family_id.member_ids += other.partner_relation_id
                 rel_to_remove.mapped('partner_relation_id').active = False
 
     @api.constrains('member_relationship_ids')
