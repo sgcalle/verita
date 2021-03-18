@@ -26,6 +26,7 @@
         # Security
         'security/security_groups.xml',
         'security/ir.model.access.csv',
+        'data/menudata.xml',
 
         # Backend views
         'views/adm_application_status_views.xml',
@@ -71,7 +72,6 @@
         'views/web/reports/report_application_default.xml',
         'views/web/reports/report_internal_custom.xml',
 
-        'data/menudata.xml',
         'data/sequences_data.xml',
         'data/statics_data.xml',
         'data/email_template_data.xml',
