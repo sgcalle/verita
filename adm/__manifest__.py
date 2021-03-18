@@ -46,9 +46,8 @@
 
         # Web templates
         'views/web/portal_templates.xml',
-        # 'views/web/application/menu/family/template_application_parents.xml',
-        # 'views/web/application/menu/template_application_family_members.xml',
-        # 'views/web/application/menu/family/template_application_family_parents.xml',
+        'views/web/application/menu/family/template_application_family_info.xml',
+        'views/web/application/menu/family/template_application_family_finance.xml',
         'views/web/application/menu/family/template_application_family_relationships.xml',
         'views/web/application/menu/template_application_additional_questions.xml',
         'views/web/application/menu/template_application_health.xml',

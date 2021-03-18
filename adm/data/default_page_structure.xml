@@ -21,6 +21,7 @@
         <field name="name">Information</field>
         <field name="url">family/info</field>
         <field name="parent_id" ref="adm.application_page_family_parent"/>
+        <field name="view_template_id" ref="adm.template_application_family_info"/>
     </record>
 
     <record id="application_page_family_relationships" model="adm.application.page">
@@ -34,6 +35,7 @@
         <field name="name">Finance</field>
         <field name="url">family/finance</field>
         <field name="parent_id" ref="adm.application_page_family_parent"/>
+        <field name="view_template_id" ref="adm.template_application_family_finance"/>
     </record>
 
     <record id="application_page_medical_info" model="adm.application.page">

@@ -243,9 +243,8 @@ class ApplicationController(AdmissionController):
                 methods=["GET"], website=True, strict_slashes=False)
     def generic_page_controller(self, application_id, page_path, **params):
         page = request.env['adm.application.page'].search([('url', '=', page_path)])
-        template_ref = page.view_template_id.get_view_xmlid()
         page_params = self.compute_view_render_params(application_id)
         page_params.update({
             'page_id': page
             })
-        return request.render(template_ref, page_params)
+        return page.view_template_id.render(page_params)

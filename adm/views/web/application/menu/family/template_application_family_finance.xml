@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="adm.template_application_family_finance">
+        <t t-call="adm.template_application_form_commons">
+            <t t-set="title">Family finance</t>
+            <t t-set="head">
+
+            </t>
+            <form class="row mb-4 justify-content-center align-items-center"
+                  data-adm-model-fields="1">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div class="alert alert-warning w-100" role="alert">
+                                Under construction
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </t>
+    </template>
+</odoo>
