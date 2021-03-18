@@ -687,7 +687,7 @@ class Contact(models.Model):
                                                ('member_ids', '!=', False),
                                                ('family_ids', '!=', False),
                                                ])
-                    if len(email_partner) > 1 or email_partner != partner:
+                    if email_partner and (len(email_partner) > 1 or email_partner != partner):
                         raise UserError(_(
                             "There is other existing family with the same email "
                             "address, please, use another one"))

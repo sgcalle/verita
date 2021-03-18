@@ -11,14 +11,39 @@ odoo.define('adm.family.relationships', require => {
 
     function moveToOtherRelationship(event) {
         const relationRowEl = event.currentTarget.closest('[data-adm-rel]');
-        const otherRelationListEl = document.getElementById('other_relationship_card_list');
+        const moveToSelector = event.currentTarget.dataset.target;
+        const toggleTab = event.currentTarget.dataset.toggleTab;
+        const relationType = event.currentTarget.dataset.relationType;
+        const otherRelationListEl = document.querySelector(moveToSelector);
 
         const selectRelationTypeEl = relationRowEl.querySelector('[data-adm-field="relationship_type_id"]');
+        otherRelationListEl.appendChild(relationRowEl);
+        const $tab = $(toggleTab);
+        $tab.tab('show');
+
+        // Get options depending on tab
         if (selectRelationTypeEl) {
-            selectRelationTypeEl.value = null;
+
+            let option = null;
+
+            switch (relationType) {
+                case 'parent':
+                    option = _.filter(selectRelationTypeEl.options, opt => !opt.classList.contains('o_adm_hide_if_parent'))[1];
+                    break;
+                case 'sibling':
+                    option = _.filter(selectRelationTypeEl.options, opt => !opt.classList.contains('o_adm_hide_if_sibling'))[1];
+                    break;
+                default:
+                    option = selectRelationTypeEl.options[0];
+                    break;
+            }
+
+            if (option) {
+                selectRelationTypeEl.value = option.value;
+            }
+
         }
 
-        otherRelationListEl.appendChild(relationRowEl);
     }
 
     function appendNewRelationship(event) {
@@ -40,6 +65,7 @@ odoo.define('adm.family.relationships', require => {
         });
         // We remove the style display none
         $clonedNewRelationshipTemplate.removeAttr('style');
+        $clonedNewRelationshipTemplate.removeAttr('id');
         $clonedNewRelationshipTemplate.removeClass('d-none');
         $clonedNewRelationshipTemplate.addClass('mt-4');
 
@@ -48,13 +74,34 @@ odoo.define('adm.family.relationships', require => {
         newMany2manyRev.dataset.admRel = "rel";
         $clonedNewRelationshipTemplate.appendTo(newMany2manyRev);
         $clonedNewRelationshipTemplate.find('.remove-relationship').on('click', removeNewRelationship);
+        $clonedNewRelationshipTemplate.find('.move-relationship').on('click', moveToOtherRelationship);
+
+        // Just a friky effect to make it cool ;)
+        const $shownRelationShipCollapse = $(relationshipList).find('.collapse.show');
+        // Hide shown relations
+
+        function smoothScroll() {
+            $("html, body").animate({ scrollTop: $clonedNewRelationshipTemplate.offset().top - 120 }, 800);
+        }
+
         relationshipList.appendChild(newMany2manyRev);
+        if ($shownRelationShipCollapse.length) {
+            $shownRelationShipCollapse.on('hidden.bs.collapse', () => {
+                $shownRelationShipCollapse.off('hidden.bs.collapse');
+                smoothScroll();
+            }).collapse('hide');
+            $clonedNewRelationshipTemplate.find('.collapse').collapse('show');
+        } else {
+            $clonedNewRelationshipTemplate.find('.collapse').collapse('show');
+            smoothScroll();
+        }
+
     }
 
     $(document).ready(() => {
         $('.add-relationship').on('click', appendNewRelationship);
         $('.remove-relationship').on('click', removeNewRelationship);
-        $('.move-other-relationship').on('click', moveToOtherRelationship);
+        $('.move-relationship').on('click', moveToOtherRelationship);
     });
 
 })

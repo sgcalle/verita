@@ -36,6 +36,10 @@ class SchoolBaseRelationship(models.Model):
 
     financial_responsability = fields.Boolean()
 
+    def write(self, vals):
+        res = super(SchoolBaseRelationship, self).write(vals)
+        return res
+
 
 class RelationshipType(models.Model):
     """ SubStatus for students """

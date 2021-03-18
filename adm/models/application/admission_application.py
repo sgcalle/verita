@@ -224,16 +224,18 @@ class Application(models.Model):
     parent_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Parents/Guardian",
-        compute="compute_relationships",
-        inverse="_set_parent_relationships",
+        # compute="compute_relationships",
+        # inverse="_set_parent_relationships",
+        related='partner_id.parent_relationship_ids',
         readonly=False,
         )
 
     sibling_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Siblings",
-        compute="compute_relationships",
-        inverse="_set_sibling_relationships",
+        # compute="compute_relationships",
+        # inverse="_set_sibling_relationships",
+        related='partner_id.sibling_relationship_ids',
         readonly=False,
         store=False
         )
@@ -241,15 +243,16 @@ class Application(models.Model):
     other_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Others",
-        compute="compute_relationships",
-        inverse="_set_other_relationships",
+        # compute="compute_relationships",
+        # inverse="_set_other_relationships",
+        related='partner_id.other_relationship_ids',
         readonly=False,
         store=False
         )
 
     custodial_relationship_ids = fields.Many2many(
         'school_base.relationship', string="Custody contacts",
-        compute="compute_relationships", store=False)
+        related='partner_id.custodial_relationship_ids', store=False)
     # Documentation
     letter_of_motivation_id = fields.Many2one(
         "ir.attachment", string="Letter of motivation")
@@ -461,31 +464,31 @@ class Application(models.Model):
                 application_id.finish_timeline = 0
 
     # @api.depends('relationship_ids', 'relationship_ids.custody')
-    def compute_relationships(self):
-        for application_id in self:
-
-            parent_types = ['parent', 'father', 'mother']
-            sibling_types = ['brother', 'sister', 'sibling']
-
-            parent_ids = application_id.student_relationship_ids\
-                .filtered_domain([
-                    ('relationship_type_id.type', 'in', parent_types)
-                    ])
-            sibling_ids = application_id.student_relationship_ids\
-                .filtered_domain([
-                    ('relationship_type_id.type', 'in', sibling_types)
-                    ])
-            other_ids = application_id.student_relationship_ids\
-                .filtered_domain([
-                    ('relationship_type_id.type', 'not in', parent_types + sibling_types)
-                    ])
-
-            custody_ids = application_id.student_relationship_ids.filtered('custody')
-
-            application_id.parent_relationship_ids = parent_ids
-            application_id.sibling_relationship_ids = sibling_ids
-            application_id.other_relationship_ids = other_ids
-            application_id.custodial_relationship_ids = custody_ids
+    # def compute_relationships(self):
+    #     for application_id in self:
+    #
+    #         parent_types = ['parent', 'father', 'mother']
+    #         sibling_types = ['brother', 'sister', 'sibling']
+    #
+    #         parent_ids = application_id.student_relationship_ids\
+    #             .filtered_domain([
+    #                 ('relationship_type_id.type', 'in', parent_types)
+    #                 ])
+    #         sibling_ids = application_id.student_relationship_ids\
+    #             .filtered_domain([
+    #                 ('relationship_type_id.type', 'in', sibling_types)
+    #                 ])
+    #         other_ids = application_id.student_relationship_ids\
+    #             .filtered_domain([
+    #                 ('relationship_type_id.type', 'not in', parent_types + sibling_types)
+    #                 ])
+    #
+    #         custody_ids = application_id.student_relationship_ids.filtered('custody')
+    #
+    #         application_id.parent_relationship_ids = parent_ids
+    #         application_id.sibling_relationship_ids = sibling_ids
+    #         application_id.other_relationship_ids = other_ids
+    #         application_id.custodial_relationship_ids = custody_ids
 
     @api.model
     def _create_relation_if_not_exists(self, relationships):

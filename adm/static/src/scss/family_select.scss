@@ -49,3 +49,21 @@ $selection_item_width: 120px;
         }
     }
 }
+
+#parent_relationship_card_list {
+    .o_adm_hide_if_parent {
+        display: none;
+    }
+}
+
+#sibling_relationship_card_list {
+    .o_adm_hide_if_sibling {
+        display: none;
+    }
+}
+
+#other_relationship_card_list {
+    .o_adm_hide_if_other {
+        display: none;
+    }
+}
