@@ -551,6 +551,8 @@ class Contact(models.Model):
                             'partner_relation_id': member.id,
                             }))
             if relationship_values:
+                no_duplicated = set(map(lambda rel: (rel[0], rel[1], tuple(rel[2].items())), relationship_values))
+                relationship_values = list(map(lambda rel: (rel[0], rel[1], dict(rel[2])), no_duplicated))
                 family_id.write({'member_relationship_ids': relationship_values})
 
     @api.model
