@@ -131,7 +131,7 @@
                         </group>
                         <hr colspan="2"/>
                         <group>
-                            <field name="responsible_user_kanban_ids" mode="kanban">
+                            <field name="responsible_user_ids" mode="kanban">
                                 <form>
                                     <sheet>
                                         <field name="id" invisible="1"/>

@@ -55,36 +55,6 @@ class SchoolFinance(models.Model):
         for partner in self:
             partner.sc_invoice_ids = partner.invoice_ids.filtered(lambda inv: inv.type in ('out_invoice', 'out_refund', 'out_receipt'))
 
-    def _check_category_sum(self):
-        for record in self:
-            # categories = [{
-            #                   category.category_id.id: category.percent
-            #                   } for category in record.family_res_finance_ids]
-            categories_ids = {category.category_id for category in record.family_res_finance_ids}
-
-            for category_id in categories_ids:
-                percent_sum = sum([category.percent for category in record.family_res_finance_ids if category.category_id == category_id])
-                if percent_sum != 100:
-                    raise UserError(_("Partner[%s]: %s Category: %s doesn't sum 100!") % (record.id, record.name, category_id.complete_name))
-
-    @api.model
-    def create(self, vals):
-        """ We check family responsability """
-        partners = super().create(vals)
-
-        if "family_res_finance_ids" in vals:
-            partners._check_category_sum()
-        return partners
-
-    def write(self, vals):
-        """ We check family responsability """
-        possitive = super().write(vals)
-
-        if "family_res_finance_ids" in vals:
-            self._check_category_sum()
-
-        return possitive
-
     def _compute_family_invoice_ids(self):
         """
             Calculamos todos los invoices de la familia dependiento de sus miembros
@@ -124,6 +94,29 @@ class FinacialResponsabilityPercent(models.Model):
     family_id = fields.Many2one("res.partner", required=True, string="Family")
     category_id = fields.Many2one("product.category", required=True, string="Category", domain=[("parent_id", "=", False)])
     percent = fields.Integer("Percent")
+
+    def _check_category_sum(self):
+        if self._context.get('check_percent', False):
+            for record in self.mapped('family_id'):
+                categories_ids = {category.category_id for category in record.family_res_finance_ids}
+
+                for category_id in categories_ids:
+                    percent_sum = sum([category.percent for category in record.family_res_finance_ids if category.category_id == category_id])
+                    if percent_sum != 100:
+                        raise UserError(_("Partner[%s]: %s Category: %s doesn't sum 100!") % (record.id, record.name, category_id.complete_name))
+
+    @api.model
+    def create(self, vals):
+        """ We check family responsability """
+        record = super().create(vals)
+        record._check_category_sum()
+        return record
+
+    def write(self, vals):
+        """ We check family responsability """
+        res = super().write(vals)
+        self._check_category_sum()
+        return res
 
     @api.onchange('family_id')
     def _get_family_domain(self):

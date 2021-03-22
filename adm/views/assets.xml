@@ -69,4 +69,12 @@
         <script type="text/javascript" src="/adm/static/src/js/application/documents.js"></script>
     </template>
 
+    <template id="assets_application_family_information">
+        <script type="text/javascript" src="/adm/static/src/js/application/family/information.js"></script>
+    </template>
+
+    <template id="assets_application_family_finance">
+        <script type="text/javascript" src="/adm/static/src/js/application/family/finance.js"></script>
+    </template>
+
 </odoo>

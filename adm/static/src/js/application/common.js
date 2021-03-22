@@ -187,6 +187,39 @@ odoo.define('adm.form.common', require => {
         return value;
     }
 
+    function refreshStates(event) {
+        const countrySelectEl = event.currentTarget;
+        const cssQueryStateSelect = countrySelectEl.dataset.filterState;
+        const countryId = countrySelectEl.value;
+        if (cssQueryStateSelect) {
+            const stateInputElList = document.querySelectorAll(cssQueryStateSelect);
+            for (let stateInputEl of stateInputElList) {
+                for (let i = 1; i < stateInputEl.options.length; i++) {
+                    const optionEl = stateInputEl.options[i];
+                    if (optionEl.dataset.countryId === countryId) {
+                        optionEl.style.display = '';
+                        optionEl.disabled = false;
+                    } else {
+                        optionEl.style.display = 'none';
+                        optionEl.disabled = true;
+                    }
+
+                    if (optionEl.selected && optionEl.disabled) {
+                        stateInputEl.options[0].selected = true;
+                    }
+
+                }
+                // const $stateInput = $(stateInputEl);
+                // $stateInput.children("option:gt(0)").hide().prop('disabled', true);
+                // $stateInput.children("option[data-country-id='" + countryId + "']").show().prop('disabled', false);
+                //
+                // if ($stateInput.children("option:selected").is(":disabled")) {
+                //     $stateInput.children("option:nth(0)").prop("selected", true);
+                // }
+            }
+        }
+    }
+
     $(document).ready(() => {
         $('.js_show_when_input').each((i, el) => {
             const cssQueryTarget = el.dataset.target;
@@ -210,6 +243,9 @@ odoo.define('adm.form.common', require => {
             });
         });
         $('.js_submit_json').on('click', sendJson);
+
+        $('.js_country_select').on('change', refreshStates).trigger('change');
+
     });
 
     return {

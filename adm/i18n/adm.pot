@@ -3164,7 +3164,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:adm.field_adm_application__activity_user_id
 #: model:ir.model.fields,field_description:adm.field_adm_application__responsible_user_id
 #: model:ir.model.fields,field_description:adm.field_adm_application__responsible_user_ids
-#: model:ir.model.fields,field_description:adm.field_adm_application__responsible_user_kanban_ids
+#: model:ir.model.fields,field_description:adm.field_adm_application__responsible_user_ids
 #: model:ir.model.fields,field_description:adm.field_adm_inquiry__activity_user_id
 msgid "Responsible User"
 msgstr ""

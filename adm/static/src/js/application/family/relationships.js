@@ -57,8 +57,15 @@ odoo.define('adm.family.relationships', require => {
         const $buttonToggleCollapse = $clonedNewRelationshipTemplate.find('[data-toggle="collapse"]')
         $buttonToggleCollapse[0].dataset.target = $buttonToggleCollapse[0].dataset.target + counter.toString();
 
-        const $divCollapse = $clonedNewRelationshipTemplate.find('.collapse');
-        $divCollapse[0].id = $divCollapse[0].id + counter.toString();
+        $clonedNewRelationshipTemplate.find('[id]').each((i, el) => {
+            el.id = el.id + counter.toString();
+        })
+        $clonedNewRelationshipTemplate.find('[for]').each((i, el) => {
+            el.setAttribute('for', el.getAttribute('for') + counter.toString())
+        })
+        $clonedNewRelationshipTemplate.find('[name]').each((i, el) => {
+            el.setAttribute('name', el.getAttribute('name') + counter.toString())
+        })
 
         $clonedNewRelationshipTemplate.find('input[type="radio"]').each((i, elIputRadio) => {
              elIputRadio.name = elIputRadio.name + counter.toString();

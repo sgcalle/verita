@@ -50,4 +50,10 @@
         <field name="view_template_id" ref="adm.template_application_documents_upload"/>
     </record>
 
+    <record id="application_page_tuition_plan" model="adm.application.page">
+        <field name="name">Tuition plan</field>
+        <field name="url">tuition-plan</field>
+        <field name="view_template_id" ref="adm.template_application_menu_tuition_plan"/>
+    </record>
+
 </odoo>

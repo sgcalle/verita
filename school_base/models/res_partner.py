@@ -619,26 +619,29 @@ class Contact(models.Model):
                 for m2m_action in values["family_ids"]:
                     if m2m_action[ACTION_TYPE] == TYPE_REPLACE:
                         family_ids = self.browse(m2m_action[2])
-                        removed_family_ids = self.browse(
-                            set(partner_id.family_ids.ids) - set(m2m_action[2]))
+                        removed_family_ids = partner_id.family_ids - family_ids
+                        new_family_ids = family_ids - partner_id.family_ids
+
                         # Adding myself as a family's member
 
-                        new_relationship_values = []
-                        for member in family_ids.member_ids:
-                            new_relationship_values.append((TYPE_CREATE, 0, {
-                                'partner_individual_id': member.id,
-                                'partner_relation_id': partner_id.id,
-                                }))
-                            new_relationship_values.append((TYPE_CREATE, 0, {
-                                'partner_individual_id': partner_id.id,
-                                'partner_relation_id': member.id,
-                                }))
+                        for family_id in new_family_ids:
+                            new_relationship_values = []
+                            for member in family_id.member_ids:
+                                if not family_id.member_relationship_ids.filtered(lambda r: r.partner_individual_id == member and r.partner_relation_id == partner_id):
+                                    new_relationship_values.append((TYPE_CREATE, 0, {
+                                        'partner_individual_id': member.id,
+                                        'partner_relation_id': partner_id.id,
+                                        }))
+                                if not family_id.member_relationship_ids.filtered(lambda r: r.partner_individual_id == partner_id and r.partner_relation_id == member):
+                                    new_relationship_values.append((TYPE_CREATE, 0, {
+                                        'partner_individual_id': partner_id.id,
+                                        'partner_relation_id': member.id,
+                                        }))
 
-                        family_ids.write({
-                            'member_ids': [
-                                [TYPE_ADD_EXISTING, partner_id.id, False]],
-                            'member_relationship_ids': new_relationship_values,
-                            })
+                            family_id.write({
+                                'member_ids': [[TYPE_ADD_EXISTING, partner_id.id, False]],
+                                'member_relationship_ids': new_relationship_values,
+                                })
 
                         # Removing myself as a family's member
                         relations_to_remove = \
@@ -702,6 +705,7 @@ class Contact(models.Model):
                         values['member_relationship_ids'] = relationship_values
 
         res = super().write(values)
+        # self.generate_missing_relationships
         self.check_school_fields_integrity()
         return res
 
@@ -713,14 +717,15 @@ class Contact(models.Model):
                     or partner.family_ids):
                 # Email check
                 if partner.email:
-                    email_partner = self.search(['&',
-                                               ('email', '=', partner.email),
-                                               '|', '|', '|',
-                                               ('is_family', '=', True),
-                                               ('person_type', '!=', False),
-                                               ('member_ids', '!=', False),
-                                               ('family_ids', '!=', False),
-                                               ])
+                    email_partner = self.search([
+                        '&',
+                        ('email', '=', partner.email),
+                        '|', '|', '|',
+                        ('is_family', '=', True),
+                        ('person_type', '!=', False),
+                        ('member_ids', '!=', False),
+                        ('family_ids', '!=', False),
+                        ])
                     if email_partner and (len(email_partner) > 1 or email_partner != partner):
                         raise UserError(_(
                             "There is other existing family with the same email "

@@ -19,7 +19,15 @@
     'version': '0.10',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'school_base', 'mail', 'website', 'contacts'],
+    'depends': [
+        'base',
+        'school_base',
+        'mail',
+        'website',
+        'contacts',
+        'school_finance',
+        'tuition_plan',
+        ],
 
     # always loaded
     'data': [
@@ -31,6 +39,7 @@
         # Backend views
         'views/adm_application_status_views.xml',
         'views/adm_application_views.xml',
+        'views/product_category_views.xml',
         'views/adm_application_page.xml',
         'views/adm_application_questions_views.xml',
         'views/adm_contact_time_views.xml',
@@ -52,6 +61,7 @@
         'views/web/application/menu/template_application_additional_questions.xml',
         'views/web/application/menu/template_application_health.xml',
         'views/web/application/menu/template_application_menu.xml',
+        'views/web/application/menu/template_application_tuition_plan.xml',
         'views/web/application/menu/template_application_menu_instructions.xml',
         'views/web/application/menu/template_application_documents_upload.xml',
         'views/web/application/menu/template_application_page_commons.xml',

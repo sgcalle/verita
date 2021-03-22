@@ -142,12 +142,7 @@ class Application(models.Model):
     finish_timeline = fields.Float(compute='_compute_finish_date', store=True)
 
     responsible_user_id = fields.Many2one('res.users', required=True)
-    responsible_user_ids = fields.Many2many(
-        'res.users', relation='responsible_user_in_applications',
-        string="Responsible User")
-    responsible_user_kanban_ids = fields.Many2many(
-        'res.users', compute="compute_responsible_user_kanban",
-        string="Responsible User")
+    responsible_user_ids = fields.Many2many('res.users', compute="_compute_responsible_users", string="Responsible User")
     user_access_ids = fields.One2many('adm.application.user.access', 'application_id')
     current_user_access_id = fields.Many2one(
         'adm.application.user.access', compute='compute_current_user_access')
@@ -191,6 +186,9 @@ class Application(models.Model):
         string="GradeLevel", related="inquiry_id.grade_level_id")
     school_year = fields.Many2one(
         "school_base.school_year", string="School Year")
+    available_tuition_plan_ids = fields.Many2many(
+        'tuition.plan', compute='_compute_available_tuition_plan_ids')
+    tuition_plan_id = fields.Many2one('tuition.plan')
 
     previous_school = fields.Char(string="Previous School")
     previous_school_address = fields.Char(string="Previous School Address")
@@ -422,10 +420,9 @@ class Application(models.Model):
         for application_id in self:
             application_id.implicated_family_ids = False
 
-    def compute_responsible_user_kanban(self):
+    def _compute_responsible_users(self):
         for application_id in self:
-            application_id.responsible_user_kanban_ids = \
-                application_id.responsible_user_id
+            application_id.responsible_user_ids = application_id.mapped('user_access_ids.user_id')
 
     def _compute_defaults_school_year(self):
         for application_id in self:
@@ -547,6 +544,8 @@ class Application(models.Model):
             else:
                 application_id.total_fields_completed = 0
 
+
+
     @api.depends('status_id', 'state_tasks', 'task_ids')
     def compute_all_task_complete(self):
         for application_id in self:
@@ -586,6 +585,17 @@ class Application(models.Model):
             operator = '!='
 
         return [('school_year', operator, enrollment_school_year.id)]
+
+    def _compute_available_tuition_plan_ids(self):
+        for application_id in self:
+            school_year_id = application_id.school_year
+            tuition_plan_ids = \
+                self.env['tuition.plan'].search([
+                    ('period_date_from', '>=', school_year_id.date_start),
+                    ('period_date_from', '<=', school_year_id.date_end),
+                    ('grade_level_ids', '=', application_id.grade_level.id)
+                    ])
+            application_id.available_tuition_plan_ids = tuition_plan_ids
 
     ############################
     # Constrains and onchanges #
