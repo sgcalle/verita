@@ -68,7 +68,6 @@
             </div>
             <form class="mb-4 justify-content-center align-items-center"
                   data-adm-model-fields="1">
-                <t t-esc="application_id.available_tuition_plan_ids"/>
                 <div class="container-fluid" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
                     <input type="hidden" data-adm-field="id" data-adm-field-type="INTEGER"
                            t-att-value="application_id.partner_id.id"/>
