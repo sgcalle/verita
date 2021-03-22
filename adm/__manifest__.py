@@ -16,7 +16,7 @@
     # /ir_module_category_data.xml
     # for the full list
     'category': 'Admission',
-    'version': '0.10',
+    'version': '0.11.1',
 
     # any module necessary for this one to work correctly
     'depends': [
