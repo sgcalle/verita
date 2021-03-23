@@ -540,7 +540,11 @@ class Contact(models.Model):
     @api.constrains('member_relationship_ids')
     def _constrains_member_relationship_ids(self):
         for partner in self:
-            rel_ids_pairs = partner.member_relationship_ids.mapped(lambda rel: (rel.partner_individual_id.id, rel.partner_relation_id.id))
+            rel_ids_pairs = (
+                partner.member_relationship_ids
+                .filtered(lambda r: r.partner_relation_id.active and r.partner_individual_id.active)
+                .mapped(lambda rel: (rel.partner_individual_id.id, rel.partner_relation_id.id))
+                )
             for rel_pair in rel_ids_pairs:
                 if rel_ids_pairs.count(rel_pair) > 1:
                     raise UserError(_("Duplicated member relationships is not supported"))
