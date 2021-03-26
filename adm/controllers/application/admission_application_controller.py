@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import werkzeug
+
 from odoo import http, api, SUPERUSER_ID, exceptions, _
 from odoo.http import request, Response
 from odoo.tools import safe_eval
@@ -244,6 +246,8 @@ class ApplicationController(AdmissionController):
     def generic_page_controller(self, application_id, page_path, **params):
         page = request.env['adm.application.page'].search([('url', '=', page_path)])
         page_params = self.compute_view_render_params(application_id)
+        if not page.view_template_id:
+            raise werkzeug.exceptions.NotFound()
         page_params.update({
             'page_id': page
             })

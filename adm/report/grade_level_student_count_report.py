@@ -110,7 +110,7 @@ class GradeLevelStudentCountReport(models.Model):
         ),
         applications AS (
             SELECT  app.id AS res_id,
-                    app.grade_level AS next_grade_level_id,
+                    app.grade_level_id AS next_grade_level_id,
                     COUNT(app.id) AS student_count,
                     '%(applications)s' AS student_count_type,
                     10 AS student_order_type,
@@ -120,7 +120,7 @@ class GradeLevelStudentCountReport(models.Model):
                         ON status.id = app.status_id
             WHERE   app.partner_id NOT IN (SELECT res_id FROM enrolled_students)
                     AND status.type_id IN ('started', 'return','stage',  'submitted')
-            GROUP   BY app.grade_level, app.id
+            GROUP   BY app.grade_level_id, app.id
         ),
         grade_capacity AS (
             SELECT  grade.id as res_id,
@@ -242,7 +242,7 @@ class GradeLevelStudentCountReport(models.Model):
                     10 as student_order_type
                     FROM school_base_grade_level grade
                     LEFT JOIN adm_application application
-                        ON application.grade_level = grade.id
+                        ON application.grade_level_id = grade.id
                     LEFT JOIN adm_application_status status
                         ON status.id = application.status_id
                     WHERE status.type_id in ('started', 'return','stage',  'submitted')

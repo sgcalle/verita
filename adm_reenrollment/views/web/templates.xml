@@ -1,5 +1,55 @@
 <odoo>
 
+    <template id="template_reenrollment_menu_item" name="Reenrollment web menu">
+        <t t-if="reenrollment_page_id.child_ids">
+            <li class="nav-item nav-item-menu dropdown">
+                <a class="nav-link dropdown-toggle" role="button"
+                   href="#" data-toggle="dropdown">
+                    <t t-esc="reenrollment_page_id.name"/>
+                </a>
+                <div class="dropdown-menu">
+                    <t t-foreach="reenrollment_page_id.child_ids" t-as="page_child_id">
+                        <a t-attf-href="/my/reenrollment/#{reenrollment_id.id}/#{page_child_id.url}"
+                           t-attf-class="dropdown-item {{reenrollment_page_id == page_id and 'active'}}">
+                            <t t-esc="page_child_id.name"/>
+                        </a>
+                    </t>
+                </div>
+            </li>
+        </t>
+        <t t-elif="not reenrollment_page_id.parent_id">
+            <li class="nav-item nav-item-menu">
+                <a t-attf-href="/my/reenrollment/#{reenrollment_id.id}/#{reenrollment_page_id.url}"
+                   t-attf-class="nav-link {{reenrollment_page_id == page_id and 'active'}}">
+                    <t t-esc="reenrollment_page_id.name"/>
+                </a>
+            </li>
+        </t>
+    </template>
+
+    <template id="template_admission_reenrollment_menu" name="Reenrollment web menu">
+        <nav class="navbar navbar-expand-lg bg-white mt-4">
+            <t t-set="reenrollment_page_ids" t-value="SUPER_ENV['adm.reenrollment.page'].search([], order='sequence')"/>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#reenrollment_nav_bar"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-center" id="reenrollment_nav_bar">
+                <ul class="nav nav-tabs w-100 ">
+                    <li class="nav-item">
+                        <a t-attf-href="/my/reenrollment/#{reenrollment_id.id}/"
+                           t-attf-class="nav-link {{not page_id and 'active'}}">
+                            General info
+                        </a>
+                    </li>
+                    <t t-foreach="reenrollment_page_ids" t-as="reenrollment_page_id">
+                        <t t-call="adm_reenrollment.template_reenrollment_menu_item"/>
+                    </t>
+                </ul>
+            </div>
+        </nav>
+    </template>
+
     <template id="template_admission_reenrollment_list" name="Reenrollment List">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -30,6 +80,896 @@
         </t>
     </template>
 
+    <template id="template_admission_reenrollment_form_common">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_page_common">
+            <div class="container-fluid">
+                <t t-if="reenrollment_id.stage_id.type not in ['start', 'stage']">
+                    <div class="alert alert-warning mt-4" role="alert" colspan="2">
+                        The reenrollment package was already submitted
+                    </div>
+                </t>
+                <div t-else="" class="row">
+                    <div class="col">
+                        <div class="container mt-4">
+                            <t t-raw="0"/>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <section class="card card-sticky-save mb-3 mt-3">
+                            <div class="card-body text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <p> Fields with (*) are mandatory </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <span class="text-muted mb-2">Please, make sure you save the changes</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <button class="btn btn-outline-primary js_submit_json"
+                                                type="button"
+                                                data-submit-url="/my/reenrollment">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col">
+                                        <button class="btn btn-primary js_submit_json"
+                                                type="button"
+                                                data-html-method="POST"
+                                                data-submit-url="/my/reenrollment">
+                                            Save &amp; submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="template_admission_reenrollment_page_common">
+        <!-- This is just used to be called by others templates for applications pages
+             The reason is this will have common data-->
+        <t t-call="portal.portal_layout">
+            <t t-set="head_reenrollment_common">
+                <meta name="_adm_res_id" t-att-value="reenrollment_id.id"/>
+                <t t-call-assets="adm.assets_application_common" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="head_reenrollment_common + (head or '')"/>
+
+            <!--            <t t-if="not skip_sent_message and reenrollment_id.status_id.type_id not in ['return', 'started']">-->
+
+            <!--                <div class="oe_struture"/>-->
+            <!--                <div class="oe_struture">-->
+            <!--                    <div class="alert alert-warning mt-3" role="alert">-->
+            <!--                        The request has already been sent.-->
+            <!--                        <t t-esc="reenrollment_id.status_id.type_id "/>  -->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </t>-->
+            <!--            <t t-else="">-->
+            <div class="oe_struture">
+                <t t-call="adm_reenrollment.template_admission_reenrollment_menu"/>
+                <t t-raw="0"/>
+            </div>
+            <div id="adm_loader" style="display: none;">
+                <span role="img" aria-label="Loading..." title="Loading..." style="font-size: 10vw;"
+                      class="fa fa-spinner fa-spin fa-2x m-auto"></span>
+            </div>
+            <style>
+                #adm_loader {
+                position: fixed;
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                background: white;
+                opacity: 0.7;
+                z-index: 2000;
+                display: flex;
+                justify-content: center;
+                align-content: center;
+                }
+            </style>
+        </t>
+        <!--        </t>-->
+    </template>
+
+    <!-- Reenrollment Forms -->
+    <template id="template_reenrollment_general_info">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_page_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+            <div class="container bg-white p-4">
+                <div class="row h1">
+                    <div class="col-12">
+                        The text below is just for testing purposes.
+                        <br/>Please, change it as your needs
+                    </div>
+                </div>
+                <div class="row h2">
+                    <div class="col-12">
+                        <b>Occaecat</b>
+                    </div>
+                </div>
+                <div class="row h3">
+                    <div class="col-12">
+                        <b>Unde dolores doloremque dolorem</b>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <p>
+                            Cat ipsum dolor sit amet, laborum, aliquip. Nostrud doloremque, or vel or
+                            quia cillum, rem magnam. Quam unde, so quisquam. Anim aliquam deserunt but
+                            beatae. Laboriosam. Beatae illum, officia autem. Anim. Molestiae. Cupidatat
+                            laborum, incidunt, explicabo. Consequatur aspernatur. Illum adipisci sunt ex
+                            but consequat laudantium but ea. Nequeporro laboris for laboriosam quasi yet
+                            eius aute or fugit. Do consectetur, totam amet. Eum incidunt so aliquip
+                            incidunt. Mollit magni yet aut and amet. Reprehenderit. Eu laudantium for
+                            consequatur sequi yet laudantium for numquam. Nostrud aspernatur excepteur
+                            inventore and dolorem, modi for esse. Excepteur omnis and reprehenderit
+                            aliquam aliqua yet iure but nostrud. Sed esse, natus qui. Dolores lorem.
+                            Pariatur. Beatae dolores but incidunt, yet non so minima nesciunt or
+                            inventore. Voluptate excepteur.
+                        </p>
+                        <p>
+                            Sint incididunt. Ut illo. Quis iure proident yet accusantium and veritatis,
+                            but doloremque. Natus ullam laboriosam, sequi or cillum natus ullamco.
+                            Excepteur quasi laboriosam nulla exercitation. Eum ab but velitesse.
+                            Laudantium adipisicing voluptatem iste yet omnis. Explicabo dolore yet
+                            officia. Incidunt magni nostrud, but consequuntur. Lorem non quisquam.
+                            Ipsam. Voluptate consequat, or minim, so ab for unde so tempora. Dolorem in
+                            but fugit. Nesciunt inventore non. Officia ab irure magnam yet commodo.
+                            Tempora. Minim elit. Vel quia for amet. Incididunt do yet exercitationem yet
+                            esse. Esse quis dicta or nisi yet consequuntur do vel. Dicta ipsa and ut
+                            omnis occaecat beatae for ratione. Inventore lorem consequuntur, magni.
+                            Tempor iste laboris illum or eu nostrud but quis.
+                        </p>
+                        <p>
+                            Do eiusmod yet dolor ipsam nesciunt aute. Eu eum, so illo enim accusantium,
+                            dolores veritatis. Nostrum quis mollit ab vitae, iste so voluptas. Sit velit
+                            but magni eu but vitae, and autem. Reprehenderit quam. Velit nemo yet
+                            excepteur and esse ex. Eos rem dolorem ipsum omnis or minima illum. Modi
+                            dolor so sit. Eos ipsum for modi vitae or pariatur dolore. Sit accusantium
+                            for nemo natus so do.
+                        </p>
+                        <p>
+                            Ut nequeporro. Sequi omnis laudantium so illum, suscipit for si. Ipsum
+                            tempor, or natus dicta. Aperiam laboriosam so veritatis yet nostrum
+                            laudantium and perspiciatis. Explicabo aute architecto so elit eu. Ab
+                            adipisci. Eos ipsam eius lorem. Magna eiusmod yet fugiat, corporis or unde
+                            voluptate but et. Ipsam adipisicing but dolor but perspiciatis but
+                            architecto so fugit dicta. Cillum. Modi sit or excepteur yet numquam rem
+                            culpa. Corporis. Irure. Pariatur. Velitesse quasi. Veniam aute but
+                            consectetur. Inventore exercitation suscipit. Do beatae accusantium for
+                            velitesse quisquam. Dolores corporis eu or aspernatur. Doloremque
+                            adipisicing and incididunt but aliquam, sint sequi cupidatat. Consequatur
+                            iure. Quisquam rem or quae so anim or eos nulla, ratione. Do tempora in and
+                            vel or qui and voluptate amet. Laboris cillum suscipit.
+                        </p>
+                        <p>
+                            Laboris sint and incidunt or enim for vel magnam for eiusmod. Proident omnis
+                            mollit dicta, or adipisicing ipsa but dolore. Velit. Dolor mollit but et ex.
+                            Ea aliqua for laudantium, aliqua or ex for ut est. Ipsam enim. Quis.
+                            Velitesse nostrum. Autem lorem or dicta commodi for aliquip. Dolore eu, but
+                            nihil consequatur ex aliquid lorem. Molestiae aut. Adipisci error.
+                            Incididunt laboris, for quasi, aspernatur accusantium so quae. Quaerat sed.
+                            Nostrud. Ab. Est modi enim iure. Ipsum ad eum and lorem omnis, dolorem.
+                            Voluptate pariatur commodo quam. Voluptas adipisci nostrum so reprehenderit
+                            yet nostrud, iste nequeporro. Numquam adipisicing.
+                        </p>
+                        <p>
+                            Ipsa est non voluptas and aut. Ipsum velit laboris yet vitae deserunt.
+                            Proident aspernatur or consequatur sit, or laboris for consequat. Ipsum esse
+                            anim. Eiusmod error. Est ut. Est aliquip dolores for duis. Sint totam so
+                            velit so adipisicing. Numquam elit and enim quisquam suscipit. Natus ipsam
+                            iste or occaecat suscipit, for do, sequi. Minima tempor eiusmod so duis.
+                            Officia commodo, so numquam. Iste quasi iste yet velit officia.
+                            Exercitationem quisquam so unde illo nostrud voluptas. Ullam voluptate.
+                            Laborum ea for nesciunt unde. Dolorem culpa and consequat. Vel consequuntur
+                            and consectetur vitae.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="template_reenrollment_student_info">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+                <link rel="stylesheet" href="/adm/static/src/css/form_application.css"/>
+                <link rel="stylesheet" href="/adm/static/src/css/check_animation.css"/>
+                <t t-call-assets="adm.assets_application_student_info" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Student Information</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4 pb-4"><div class="row">
+                            <div class="col-8 offset-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4"
+                                 data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+
+                                <input type="hidden" id="partner_avatar_base64" t-attf-value="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"/>
+
+<!--                                <div class="position-relative m-auto d-flex justify-content-center align-items-center"-->
+<!--                                     style="width: 175px;border-radius: 100px !important;height: 175px;overflow: hidden;">-->
+<!--                                    <t t-if="reenrollment_id.partner_id">-->
+<!--                                        <input type="hidden" data-adm-field="id"-->
+<!--                                               data-adm-field-type="INTEGER"-->
+<!--                                               t-att-value="reenrollment_id.partner_id.id"/>-->
+<!--                                    </t>-->
+<!--&lt;!&ndash;                                    <img t-attf-src="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         widget="image"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         id="avatar_photo"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         onerror="this.src = '/adm/static/img/contact_photo_placeholder.png';"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         class="avatar h-100" alt="avatar"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    <div class="spinner-grow text-light position-absolute w-50 h-50"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         style="display: none;" id="student_avatar_loading"&ndash;&gt;-->
+<!--&lt;!&ndash;                                         role="status">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <span class="sr-only">Loading...</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+<!--                                </div>-->
+                                <input type="file"
+                                       t-att-required="is_required('immunization_records_attachment_ids')"
+                                       class="filepond"
+                                       id="student_avatar"
+                                       data-adm-field="image_1920"
+                                       data-adm-field-type="BINARY"
+                                       data-max-file-size="20MB"/>
+
+<!--                                <input type="file"-->
+<!--                                       class="filepond" name="filepond" accept="image/png, image/jpeg, image/gif"/>-->
+<!--                                <h6 class="mt-2">Upload a different photo...</h6>-->
+<!--                                <input type="file" id="avatar_photo_file" name="image_1920"-->
+<!--                                       data-adm-field="image_1920"-->
+<!--                                       class="form-control" accept="image/*"/>-->
+<!--                                <div class='alert alert-info pt-0 pb-0 mt-1'-->
+<!--                                     role='alert'>Upload a student photo.</div>-->
+                                <svg class="" id="upload_image_success" style="display: none;"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 52 52">
+                                    <circle class="checkmark__circle" cx="26" cy="26" r="25"
+                                            fill="none"/>
+                                    <path class="checkmark__check" fill="none"
+                                          d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                                </svg>
+                            </div>
+                        </div>
+                            <div class="row mt-2">
+                                <div class="form-group col-12 col-md-8 offset-md-2">
+                                    <label>Student Name (as it appears on passport)</label>
+                                    <input type="text"
+                                           class="form-control text-center font-weight-bold"
+                                           t-att-value="reenrollment_id.partner_id.name"
+                                           disabled="disabled"/>
+                                </div>
+                            </div>
+                            <div class="row mb-3 justify-content-center">
+                                ( <button id="toggleStudentName" type="button"
+                                          class="btn btn-link p-0">Change</button> )
+                            </div>
+
+                            <div id="change_name_div"
+                                 style="display:none; padding:10px; margin-top:5px;" class="row">
+                                <div class="container">
+                                    <div class="row pt-2 rounded"
+                                         style="background-color: #e9ecef;"
+                                         data-adm-field="partner_id"
+                                         data-adm-field-type="MANY2ONE">
+                                        <section class="col-12 col-md form-group">
+                                            <label> First Name
+                                                <span class="text-danger"
+                                                      t-if="is_required('partner_id.first_name')">*</span>
+                                            </label>
+                                            <input type="text" name="first_name"
+                                                   class="form-control"
+                                                   t-att-required="is_required('partner_id.first_name')"
+                                                   t-att-value="reenrollment_id.partner_id.first_name"
+                                                   data-adm-field="first_name"
+                                            />
+
+                                        </section>
+                                        <section class="col-12 col-md form-group">
+                                            <label> Middle Name
+                                                <span class="text-danger"
+                                                      t-if="is_required('partner_id.middle_name')">*</span>
+                                            </label>
+                                            <input type="text" name="middle_name"
+                                                   class="form-control"
+                                                   t-att-value="reenrollment_id.partner_id.middle_name"
+                                                   t-att-required="is_required('partner_id.middle_name')"
+                                                   data-adm-field="middle_name"
+                                            />
+                                        </section>
+                                        <section class="col-12 col-md form-group">
+                                            <label> Last Name
+                                                <span class="text-danger"
+                                                      t-if="is_required('partner_id.last_name')">*</span>
+                                            </label>
+                                            <input type="text" name="last_name" class="form-control"
+                                                   data-adm-field="last_name"
+                                                   t-att-required="is_required('partner_id.middle_name')"
+                                                   t-att-value="reenrollment_id.partner_id.last_name"/>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                            <section class="row">
+                                <fieldset class="col-12 border" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                    <div data-adm-field="home_address_id" data-adm-field-type="MANY2ONE">
+                                        <t t-set="home_address_id"
+                                           t-value="reenrollment_id.partner_id.home_address_id"/>
+                                        <input t-if="home_address_id" type="hidden"
+                                               t-att-value="home_address_id.id"
+                                               data-adm-field-type="INTEGER"
+                                               data-adm-field="id"/>
+                                        <input type="hidden"
+                                               t-att-value="(home_address_id.family_id or user_family_id).id"
+                                               data-adm-field="family_id"/>
+                                        <legend class="w-auto">Address</legend>
+                                        <section class="row">
+                                            <div class="col-12 col-md-4 form-group">
+                                                <label>
+                                                    City:
+                                                    <span class="text-danger" t-if="is_required('city')">*</span>
+                                                </label>
+                                                <input type="text"
+                                                       name="city" class="form-control"
+                                                       data-adm-field="city"
+                                                       t-att-required="is_required('city')"
+                                                       t-att-value="home_address_id.city"/>
+                                            </div>
+                                            <div class="col-12 col-md-4 form-group">
+                                                <label for="country_id">
+                                                    Country <span class="text-danger"
+                                                                  t-if="is_required('country_id')">*</span>
+                                                </label>
+                                                <select type="text"
+                                                        id="country_id" name="country_id" placeholder="Country"
+                                                        data-adm-field="country_id" data-adm-field-type="INTEGER"
+                                                        t-att-required="is_required('country_id')"
+                                                        class="form-control">
+                                                    <option value="-1" selected="selected" disabled="disabled">
+                                                        -Select a country-
+                                                    </option>
+                                                    <t t-foreach="country_ids" t-as="country">
+                                                        <option t-att-selected="home_address_id.country_id.id == country.id"
+                                                                t-att-value="country.id">
+                                                            <t t-esc="country.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-4 form-group">
+                                                <label for="state_id"> State <span class="text-danger"
+                                                                                   t-if="is_required('state_id')">
+                                                    *</span></label>
+                                                <select type="text"
+                                                        id="state_id" name="state_id" placeholder="State"
+                                                        data-adm-field="state_id" data-adm-field-type="INTEGER"
+                                                        t-att-required="is_required('city')"
+                                                        class="form-control">
+                                                    <option value="-1" selected="selected" disabled="disabled">
+                                                        -Select a state-
+                                                    </option>
+                                                    <t t-foreach="state_ids" t-as="state">
+                                                        <option t-att-selected="home_address_id.state_id.id == state.id"
+                                                                t-att-data-country="state.country_id.id"
+                                                                t-att-value="state.id" style="display: none;">
+                                                            <t t-esc="state.name"/>
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                            <div class="col-12 col-md-6 form-group">
+                                                <label> Street Address: <span class="text-danger"
+                                                                              t-if="is_required('street')">
+                                                    *</span></label>
+                                                <input type="text"
+                                                       name="street" class="form-control"
+                                                       data-adm-field="street"
+                                                       t-att-required="is_required('street')"
+                                                       t-att-value="home_address_id.street"/>
+                                            </div>
+                                            <div class="col-12 col-md-6 form-group">
+                                                <label>Zip:
+                                                    <span class="text-danger"
+                                                          t-if="is_required('zip')">*</span>
+                                                </label>
+                                                <input type="text"
+                                                       name="zip" class="form-control"
+                                                       data-adm-field="zip"
+                                                       t-att-required="is_required('zip')"
+                                                       t-att-value="home_address_id.zip"/>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                    <legend class="w-auto">Demographics</legend>
+                                    <section class="row">
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label>
+                                                Date of Birth:
+                                                <span class="text-danger" t-if="is_required('date_of_birth')">*</span>
+                                            </label>
+                                            <!-- Three inputs with Day, Month and Year -->
+                                            <input type="date" name="date_of_birth"
+                                                   data-adm-field="date_of_birth"
+                                                   t-att-required="is_required('date_of_birth')"
+                                                   class="form-control"
+                                                   t-att-value="reenrollment_id.partner_id.date_of_birth"/>
+                                        </div>
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label>
+                                                Gender:
+                                                <span class="text-danger" t-if="is_required('gender')">*</span>
+                                            </label>
+                                            <select class="form-control" name="gender"
+                                                    t-att-required="is_required('gender')"
+                                                    data-adm-field="gender" data-adm-field-type="INTEGER">
+                                                <t t-foreach="gender_ids" t-as="gender_id">
+                                                    <option t-att-selected="reenrollment_id.partner_id.gender == gender_id"
+                                                            t-att-value="gender_id.id">
+                                                        <t t-esc="gender_id.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </section>
+                                    <section class="row">
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label>
+                                                Nationality:
+                                                <span class="text-danger"
+                                                      t-if="is_required('citizenship')">*</span>
+                                            </label>
+                                            <select name="citizenship" class="form-control"
+                                                    t-att-required="is_required('citizenship')"
+                                                    data-adm-field="citizenship" data-adm-field-type="INTEGER">
+                                                <option value="-1" selected="selected" disabled="disabled">
+                                                    -Select a country-
+                                                </option>
+                                                <t t-foreach="country_ids" t-as="country">
+                                                    <option t-att-selected="reenrollment_id.partner_id.citizenship.id == country.id"
+                                                            t-att-value="country.id">
+                                                        <t t-esc="country.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label>
+                                                Email address:
+                                                <span class="text-danger"
+                                                      t-if="is_required('email')">*</span>
+                                            </label>
+                                            <input type="email"
+                                                   name="email" class="form-control"
+                                                   data-adm-field="email"
+                                                   placeholder="mail@example.com"
+                                                   t-att-required="is_required('email')"
+                                                   t-att-value="reenrollment_id.email"/>
+                                        </div>
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label>
+                                                Cell Phone:
+                                                <span class="text-danger"
+                                                      t-if="is_required('partner_id.mobile')">*</span>
+                                            </label>
+                                            <input type="tel"
+                                                   name="mobile" class="form-control"
+                                                   data-adm-field="mobile"
+                                                   t-att-required="is_required('partner_id.mobile')"
+                                                   t-att-value="reenrollment_id.partner_id.mobile"/>
+                                        </div>
+                                    </section>
+                                </fieldset>
+                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                    <legend class="w-auto">Legality</legend>
+                                    <section class="row">
+                                        <div class="col-12 col-md-6" >
+                                            <label>
+                                                ID number:
+                                                <span class="text-danger"
+                                                      t-if="is_required('partner_id.identification')">*</span>
+                                            </label>
+                                            <input type="text" name="identification" class="form-control"
+                                                   data-adm-field="identification"
+                                                   t-att-value="reenrollment_id.partner_id.identification"
+                                                   t-att-required="is_required('partner_id.identification')"/>
+                                        </div>
+                                    </section>
+                                    <section class="row mt-3" >
+                                        <hr class="w-100"/>
+                                        <div class="col-12 text-center h2 text-secondary">Passport</div>
+
+                                        <div class="col-12 col-md-6">
+                                            <label for="partner_passport_id">Passport ID<span class="text-danger"
+                                                                                              t-if="is_required('partner_id.passport_id')">
+                                                *</span>: </label>
+                                            <input type="text" name="partner_passport_id" class="form-control"
+                                                   data-adm-field="passport_id"
+                                                   t-att-required="is_required('partner_id.passport_id')"
+                                                   t-att-value="reenrollment_id.partner_id.passport_id"/>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="passport_expiration_date">Passport Expiration Date <span
+                                                    class="text-danger"
+                                                    t-if="is_required('partner_id.passport_expiration_date')">
+                                                *</span></label>
+                                            <input type="date" name="passport_expiration_date"
+                                                   data-adm-field="passport_expiration_date"
+                                                   t-att-required="is_required('partner_id.passport_expiration_date')"
+                                                   t-att-value="reenrollment_id.partner_id.passport_expiration_date"
+                                                   class="form-control"/>
+                                        </div>
+                                    </section>
+
+                                    <section class="row">
+                                        <hr class="w-100"/>
+                                        <div class="col-12 text-center h2 text-secondary">Documentation</div>
+
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label for="passport_id_file" class="label">
+                                                Upload passport <span t-if="is_required('partner_id.passport_id_file')"
+                                                                      class="text-danger">
+                                                *</span>
+                                            </label>
+                                            <div class="form-upload">
+                                                <label class="label-upload" for="passport_id_file">
+                                                    <i class="fa fa-upload"></i>
+                                                </label>
+                                                <input type="file" id="passport_id_file"
+                                                       data-adm-field="passport_id_file"/>
+                                                <input type="hidden" class="js_input_file_name"
+                                                       data-adm-field="passport_id_file_name"
+                                                       t-att-required="is_required('partner_id.passport_id_file_name')"
+                                                       t-att-value="reenrollment_id.partner_id.passport_id_file_name"/>
+                                                <span class="js_input_file_label">
+                                                    <t t-if="reenrollment_id.partner_id.passport_id_file">
+                                                        <t t-esc="reenrollment_id.partner_id.passport_id_file_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No file uploaded
+                                                    </t>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-md-6 form-group">
+                                            <label for="residency_permit_id_file" class="label">
+                                                Residency Permit <span
+                                                    t-if="is_required('partner_id.residency_permit_id_file')"
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <div class="form-upload">
+                                                <label class="label-upload" for="residency_permit_id_file">
+                                                    <i class="fa fa-upload"></i>
+                                                </label>
+                                                <input type="file" id="residency_permit_id_file"
+                                                       data-adm-field="residency_permit_id_file"/>
+                                                <input type="hidden" class="js_input_file_name"
+                                                       data-adm-field="residency_permit_id_file_name"
+                                                       t-att-required="is_required('partner_id.residency_permit_id_file_name')"
+                                                       t-att-value="reenrollment_id.partner_id.residency_permit_id_file_name"/>
+                                                <span class="js_input_file_label">
+                                                    <t t-if="reenrollment_id.partner_id.residency_permit_id_file">
+                                                        <t t-esc="reenrollment_id.partner_id.residency_permit_id_file_name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        No file uploaded
+                                                    </t>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </fieldset>
+                            </section>
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
+    <template id="template_reenrollment_family_info">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Family information</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+                            <form class="mb-4 justify-content-center align-items-center"
+                                  data-adm-model-fields="1">
+                                <div data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                    <input type="hidden" data-adm-field="id" data-adm-field-type="INTEGER"
+                                           t-att-value="reenrollment_id.partner_id.id"/>
+                                    <div data-adm-field="family_ids" data-adm-field-type="MANY2MANY">
+                                        <div class="container-fluid">
+                                            <t t-foreach="reenrollment_id.partner_id.family_ids" t-as="family_id">
+                                                <div data-adm-rel="rel" class="row">
+                                                    <div class="col-12">
+                                                        <input type="hidden" data-adm-field="id"
+                                                               data-adm-field-type="INTEGER"
+                                                               t-att-value="family_id.id"/>
+                                                        <t t-if="user_family_id == family_id">
+                                                            <div class="row">
+                                                                <section class="col-12 col-md">
+                                                                    <label>
+                                                                        Family name
+                                                                        <span class="text-danger"
+                                                                              t-if="is_required('family_ids.name')">
+                                                                            *</span>
+                                                                    </label>
+                                                                    <input class="form-control" type="text"
+                                                                           data-adm-field="name"
+                                                                           t-att-required="is_required('family_ids.name')"
+                                                                           t-att-value="family_id.name"
+                                                                           name="name"/>
+                                                                </section>
+                                                            </div>
+                                                            <div class="row position-relative">
+                                                                <hr class="col-12"/>
+                                                                <div class="col-8 h3">
+                                                                    Family home addresses
+                                                                </div>
+                                                                <div class="col-4 mb-2">
+                                                                    <button type="button"
+                                                                            class="js_add_address top btn btn-secondary d-block ml-auto">
+                                                                        &#10010; Add Home Address</button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col" data-adm-field="home_address_ids"
+                                                                     data-adm-field-type="MANY2MANY"
+                                                                     id="home_address_list">
+                                                                    <t t-foreach="family_id.home_address_ids"
+                                                                       t-as="home_address">
+                                                                        <div data-adm-rel="rel">
+                                                                            <t t-call="adm.template_application_family_home_address_card"/>
+                                                                        </div>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
+    <template id="template_reenrollment_family_relationships">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Family relationships</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
+    <template id="template_reenrollment_family_finance">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Family Finance</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
+    <template id="template_reenrollment_menu_medical_info">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+                <t t-call-assets="adm.assets_application_school_health" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <div id="template_condition" style="display: none;">
+                <t t-call="adm.template_application_medical_condition"/>
+            </div>
+            <div id="template_medication" style="display: none;">
+                <t t-call="adm.template_application_medical_Medication"/>
+            </div>
+            <div id="template_allergy" style="display: none;">
+                <t t-call="adm.template_application_medical_allergies"/>
+            </div>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Medical Information</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+                            <div class="row">
+                                <section class="col-12 col-md-4">
+                                    <label>
+                                        Doctor Name <span class="text-danger" t-if="is_required('doctor_name')">*</span>
+                                    </label>
+                                    <input required="required" class="form-control"
+                                           type="text"
+                                           name="doctor_name"
+                                           data-adm-field="doctor_name"
+                                           t-att-required="is_required('doctor_name')"
+                                           t-att-value="reenrollment_id.doctor_name"/>
+                                </section>
+
+                                <section class="col-12 col-md-4">
+                                    <label> Hospital <span class="text-danger" t-if="is_required('hospital')">
+                                        *</span></label>
+                                    <input required="required" class="form-control"
+                                           type="text"
+                                           name="hospital"
+                                           t-att-required="is_required('doctor_name')"
+                                           data-adm-field="hospital"
+                                           t-att-value="reenrollment_id.hospital"/>
+                                </section>
+                                <section class="col-12 col-md-4">
+                                    <label>
+                                        Doctor phone
+                                        <span class="text-danger" t-if="is_required('hospital')">*</span>
+                                    </label>
+                                    <input required="required" class="form-control"
+                                           type="text"
+                                           name="doctor_phone"
+                                           data-adm-field="doctor_phone"
+                                           t-att-required="is_required('doctor_phone')"
+                                           t-att-value="reenrollment_id.doctor_phone"/>
+                                </section>
+                                <section class="col-6">
+                                    <label>
+                                        Student Blood Type
+                                        <span class="text-danger" t-if="is_required('blood_type')">*</span>
+                                    </label>
+                                    <input required="required" class="form-control"
+                                           type="text"
+                                           name="blood_type"
+                                           data-adm-field="blood_type"
+                                           t-att-required="is_required('blood_type')"
+                                           t-att-value="reenrollment_id.blood_type"/>
+                                </section>
+                                <section class="col-6 d-flex justify-content-center align-items-center">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" data-adm-field="permission_to_treat"
+                                               t-att-value="reenrollment_id.permission_to_treat"
+                                               t-attf-name="permission_to_treat"
+                                               t-attf-id="permission_to_treat_checkbox"
+                                               t-att-checked="reenrollment_id.permission_to_treat"
+                                               data-adm-field-type="BOOLEAN"
+                                               class="custom-control-input"/>
+                                        <label class="custom-control-label"
+                                               t-attf-for="permission_to_treat_checkbox">
+                                            Permision to treat?
+                                            <span class="text-danger" t-if="is_required('permission_to_treat')">*</span>
+                                        </label>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="card mt-2">
+                                <section class="card-header p-0">
+                                    <h3>Medical Conditions</h3>
+                                </section>
+                                <section id="condition_list"
+                                         class="container-fluid card-body p-0"
+                                         data-adm-field-type="ONE2MANY"
+                                         data-adm-field="medical_conditions_ids">
+                                    <t t-foreach="reenrollment_id.medical_conditions_ids"
+                                       t-as="condition">
+                                        <div data-adm-rel="rel">
+                                            <t t-call="adm.template_application_medical_condition"/>
+                                        </div>
+                                    </t>
+                                </section>
+                                <button type="button"
+                                        class="add-medical_condition btn btn-secondary d-block ml-auto mr-1 mt-3 mb-3 btn-add">
+                                    &#10010;</button>
+                            </div>
+
+                            <div class="card mt-2">
+                                <section class="card-header p-0">
+                                    <h3>Medical allergies</h3>
+                                </section>
+                                <section id="allergy_list"
+                                         class="container-fluid card-body p-0"
+                                         data-adm-field-type="ONE2MANY"
+                                         data-adm-field="medical_allergies_ids">
+                                    <t t-foreach="reenrollment_id.medical_allergies_ids"
+                                       t-as="allergy">
+                                        <div data-adm-rel="rel">
+                                            <t t-call="adm.template_application_medical_allergies"/>
+                                        </div>
+                                    </t>
+                                </section>
+                                <button type="button"
+                                        class="add-medical_allergy btn btn-secondary d-block ml-auto mr-1 mt-3 mb-3 btn-add">
+                                    &#10010;</button>
+                            </div>
+
+                            <div class="card mt-2">
+                                <section class="card-header p-0">
+                                    <h3>Medication</h3>
+                                </section>
+                                <section id="medication_list" class="container-fluid"
+                                         data-adm-field-type="ONE2MANY"
+                                         data-adm-field="medical_medications_ids">
+                                    <t t-foreach="reenrollment_id.medical_medications_ids"
+                                       t-as="medication">
+                                        <div data-adm-rel="rel">
+                                            <t t-call="adm.template_application_medical_Medication"/>
+                                        </div>
+                                    </t>
+                                </section>
+                                <button type="button"
+                                        class="add-medical_medication btn btn-secondary d-block ml-auto mr-1 mt-3 mb-3 btn-add">
+                                    &#10010;</button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
     <template id="template_admission_reenrollment_form">
         <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
             <t t-set="reenrollment_form_assets">
@@ -51,7 +991,8 @@
                                        t-att-value="reenrollment_id.partner_id.id"/>
                             </div>
 
-                            <t t-set="required_fields_name_list" t-value="reenrollment_id.get_required_fields().get_as_list_of_names()"/>
+                            <t t-set="required_fields_name_list"
+                               t-value="reenrollment_id.get_required_fields().get_as_list_of_names()"/>
 
                             <div class="row">
                                 <h1><t t-esc="reenrollment_id.name"/></h1>
@@ -205,7 +1146,7 @@
                                 <div class="col-12 col-md-4 form-group">
                                     <label for="parent1_last_name">
                                         Last name <span t-if="is_required('partner_guardian1.last_name')"
-                                                          class="text-danger">*</span>
+                                                        class="text-danger">*</span>
                                     </label>
                                     <input id="parent1_last_name"
                                            t-att-value="reenrollment_id.partner_guardian1.last_name"
@@ -218,7 +1159,7 @@
                                 <div class="col-12 col-md-6 form-group">
                                     <label for="parent1_email">
                                         Email <span t-if="is_required('partner_guardian1.email')"
-                                                          class="text-danger">*</span>
+                                                    class="text-danger">*</span>
                                     </label>
                                     <input id="parent1_email"
                                            t-att-value="reenrollment_id.partner_guardian1.email"
@@ -230,7 +1171,7 @@
                                 <div class="col-12 col-md-6 form-group">
                                     <label for="parent1_phone">
                                         Mobile number <span t-if="is_required('partner_guardian1.phone')"
-                                                          class="text-danger">*</span>
+                                                            class="text-danger">*</span>
                                     </label>
                                     <input id="parent1_phone"
                                            t-att-value="reenrollment_id.partner_guardian1.phone"
@@ -243,7 +1184,7 @@
                             <section class="row">
                                 <div class="col-12 col-md-6 form-group">
                                     <label for="guardian1_id_documentation_file" class="label">
-                                        Copy of the Guardian's Iqama
+                                        Copy of the Guardian's ID
                                         <span class="text-danger"
                                               t-if="is_required('partner_guardian1.id_documentation_file')">*</span>
                                     </label>
@@ -312,7 +1253,8 @@
                                 <div class="col-12 col-md-4 form-group">
                                     <label for="parent2_first_name">
                                         First name <span class="text-danger"
-                                                         t-if="is_required('partner_guardian2.id_documentation_file')">*</span>
+                                                         t-if="is_required('partner_guardian2.id_documentation_file')">
+                                        *</span>
                                     </label>
                                     <input id="parent2_first_name"
                                            t-att-value="reenrollment_id.partner_guardian2.first_name"
@@ -349,7 +1291,7 @@
                                 <div class="col-12 col-md-6 form-group">
                                     <label for="parent2_email">
                                         Email <span t-if="is_required('partner_guardian2.email')"
-                                                        class="text-danger">*</span>
+                                                    class="text-danger">*</span>
                                     </label>
                                     <input id="parent2_email"
                                            t-att-value="reenrollment_id.partner_guardian2.email"
@@ -359,8 +1301,9 @@
                                            data-adm-field="email"/>
                                 </div>
                                 <div class="col-12 col-md-6 form-group">
-                                    <label for="parent2_phone">Mobile number<span t-if="is_required('partner_guardian2.phone')"
-                                                        class="text-danger">*</span></label>
+                                    <label for="parent2_phone">Mobile number<span
+                                            t-if="is_required('partner_guardian2.phone')"
+                                            class="text-danger">*</span></label>
                                     <input id="parent2_phone"
                                            t-att-value="reenrollment_id.partner_guardian2.phone"
                                            t-att-required="is_required('partner_guardian2.phone')"
@@ -372,8 +1315,9 @@
                             <section class="row">
                                 <div class="col-12 col-md-6 form-group">
                                     <label for="guardian2_id_documentation_file" class="label">
-                                        Copy of the Guardian's Iqama <span t-if="is_required('partner_guardian2.id_documentation_file')"
-                                                        class="text-danger">*</span>
+                                        Copy of the Guardian's ID <span
+                                            t-if="is_required('partner_guardian2.id_documentation_file')"
+                                            class="text-danger">*</span>
                                     </label>
                                     <div class="form-upload">
                                         <label class="label-upload" for="partner2_id_documentation_file">
@@ -403,106 +1347,106 @@
         </t>
     </template>
 
-    <template id="template_admission_reenrollment_form_common">
-        <t t-call="adm_reenrollment.template_admission_reenrollment_page_common">
-            <div class="oe_struture"/>
-            <div class="oe_struture">
-                <div class="container-fluid">
-                    <t t-if="reenrollment_id.stage_id.type not in ['start', 'stage']">
-                        <div class="alert alert-warning mt-4" role="alert" colspan="2">
-                            The reenrollment package was already submitted
-                        </div>
-                    </t>
-                    <div t-else="" class="row">
-                        <div class="col">
-                            <div class="container mt-4">
-                                <t t-raw="0"/>
+    <template id="template_reenrollment_misc_info">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Miscellaneous Information</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+                            <div data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                <input type="hidden" data-adm-field="id"
+                                       data-adm-field-type="INTEGER"
+                                       t-att-value="reenrollment_id.partner_id.id"/>
                             </div>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <section class="card card-sticky-save mb-3 mt-3">
-                                <div class="card-body text-center">
-                                    <div class="row">
-                                        <div class="col">
-                                            <p> Fields with (*) are mandatory </p>
-                                        </div>
+
+                            <t t-set="required_fields_name_list"
+                               t-value="reenrollment_id.get_required_fields().get_as_list_of_names()"/>
+
+                            <div class="row">
+                                <h1><t t-esc="reenrollment_id.name"/></h1>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 col-md-6 form-group">
+                                    <label>Are you returning?
+                                        <span class="text-danger" t-if="is_required('is_returning')">*</span>
+                                    </label>
+                                    <div class="form-check row">
+                                        <input class="form-check-input" type="radio"
+                                               data-adm-field="is_returning"
+                                               value="yes"
+                                               t-att-checked="reenrollment_id.is_returning"
+                                               t-att-required="is_required('is_returning')"
+                                               id="is_returning_yes"
+                                               name="is_returning"/>
+                                        <label class="for-check-label" for="is_returning_yes">Yes</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <span class="text-muted mb-2">Please, make sure you save the changes</span>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col">
-                                            <button class="btn btn-outline-primary js_submit_json"
-                                                    type="button"
-                                                    data-submit-url="/my/reenrollment">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col">
-                                            <button class="btn btn-primary js_submit_json"
-                                                    type="button"
-                                                    data-html-method="POST"
-                                                    data-submit-url="/my/reenrollment">
-                                                Save &amp; submit
-                                            </button>
-                                        </div>
+
+                                    <div class="form-check row">
+                                        <input class="form-check-input" type="radio"
+                                               data-adm-field="is_returning"
+                                               value=""
+                                               t-att-checked="not reenrollment_id.is_returning"
+                                               t-att-required="is_required('is_returning')"
+                                               id="is_returning_no"
+                                               name="is_returning"/>
+                                        <label class="for-check-label" for="is_returning_no">No</label>
                                     </div>
                                 </div>
-                            </section>
+
+                                <div class="col-12 col-md-6 form-group">
+                                    <label for="next_grade_level_id">Grade Level for 21-22 School Year
+                                        <span class="text-danger" t-if="is_required('next_grade_level_id')">*</span>
+                                    </label>
+                                    <select disabled="disabled" readonly="readonly"
+                                            id="next_grade_level_id" class="form-control"
+                                            t-att-required="is_required('next_grade_level_id')"
+                                            data-adm-field="next_grade_level_id" data-adm-field-type="INTEGER">
+                                        <t t-set="grade_level_ids"
+                                           t-value="SUPER_ENV['school_base.grade_level'].search([])"/>
+                                        <t t-foreach="grade_level_ids" t-as="grade_level">
+                                            <option t-att-selected="reenrollment_id.next_grade_level_id == grade_level"
+                                                    t-att-value="grade_level.id">
+                                                <t t-esc="grade_level.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </section>
+                </section>
+            </form>
         </t>
     </template>
+    <!--    <template id="template_reenrollment_family_finance">-->
+    <!--        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">-->
+    <!--            <t t-set="reenrollment_form_assets">-->
+    <!--                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>-->
+    <!--            </t>-->
+    <!--            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>-->
 
-    <template id="template_admission_reenrollment_page_common">
-        <!-- This is just used to be called by others templates for applications pages
-             The reason is this will have common data-->
-        <t t-call="portal.portal_layout">
-            <t t-set="head_reenrollment_common">
-                <meta name="_adm_res_id" t-att-value="reenrollment_id.id"/>
-                <t t-call-assets="adm.assets_application_common" defer_load="True"/>
-            </t>
-            <t t-set="head" t-value="head_reenrollment_common + (head or '')"/>
+    <!--            <form data-adm-model-fields="1">-->
+    <!--                <section class="card mt-4">-->
+    <!--                    <section class="card-header bg-primary">-->
+    <!--                        <h1>Family Finance</h1>-->
+    <!--                    </section>-->
+    <!--                    <section class="card-body pb-2">-->
+    <!--                        <div class="container pl-4 pr-4">-->
 
-            <!--            <t t-if="not skip_sent_message and application_id.status_id.type_id not in ['return', 'started']">-->
+    <!--                        </div>-->
+    <!--                    </section>-->
+    <!--                </section>-->
+    <!--            </form>-->
+    <!--        </t>-->
+    <!--    </template>-->
 
-            <!--                <div class="oe_struture"/>-->
-            <!--                <div class="oe_struture">-->
-            <!--                    <t t-call="adm.template_application_menu"/>-->
-            <!--                    <div class="alert alert-warning mt-3" role="alert">-->
-            <!--                        The request has already been sent.-->
-            <!--                        <t t-esc="application_id.status_id.type_id "/>  -->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </t>-->
-            <!--            <t t-else="">-->
-            <t t-raw="0"/>
-            <div id="adm_loader" style="display: none;">
-                <span role="img" aria-label="Loading..." title="Loading..." style="font-size: 10vw;"
-                      class="fa fa-spinner fa-spin fa-2x m-auto"></span>
-            </div>
-            <style>
-                #adm_loader {
-                position: fixed;
-                width: 100vw;
-                height: 100vh;
-                top: 0;
-                left: 0;
-                background: white;
-                opacity: 0.7;
-                z-index: 2000;
-                display: flex;
-                justify-content: center;
-                align-content: center;
-                }
-            </style>
-        </t>
-        <!--        </t>-->
-    </template>
 </odoo>

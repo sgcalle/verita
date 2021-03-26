@@ -51,8 +51,7 @@
                 </div>
                 <div class="row mt-2">
                     <div class="form-group col-12 col-md-8 offset-md-2">
-                        <label>Student Name (as it appears on
-                            passport)</label>
+                        <label>Student Name (as it appears on passport)</label>
                         <input type="text"
                                class="form-control text-center font-weight-bold"
                                t-att-value="application_id.partner_id.name"

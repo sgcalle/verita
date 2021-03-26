@@ -177,14 +177,14 @@ class Application(models.Model):
     current_school = fields.Char(string="Current School")
     current_school_address = fields.Char(string="Current School Address")
 
-    grade_level = fields.Many2one(
+    grade_level_id = fields.Many2one(
         "school_base.grade_level", string="Grade Level",
         domain=[('active_admissions', '=', True)])
     grade_level_type = fields.Selection(
-        related="grade_level.user_type_id.type")
+        related="grade_level_id.user_type_id.type")
     grade_level_inquiry = fields.Many2one(
         string="GradeLevel", related="inquiry_id.grade_level_id")
-    school_year = fields.Many2one(
+    school_year_id = fields.Many2one(
         "school_base.school_year", string="School Year")
     available_tuition_plan_ids = fields.Many2many(
         'tuition.plan', compute='_compute_available_tuition_plan_ids')
@@ -308,13 +308,24 @@ class Application(models.Model):
     personal_reference_name_2 = fields.Char("Personal Reference #2 Name")
 
     # Medical information
-    doctor_name = fields.Char("Doctor name")
-    doctor_phone = fields.Char("Doctor phone")
-    doctor_address = fields.Char("Doctor Direction")
-    hospital = fields.Char("Hospital")
-    hospital_address = fields.Char("Hospital Address")
-    permission_to_treat = fields.Boolean("Permission To Treat")
-    blood_type = fields.Char("Blood Type")
+    doctor_name = fields.Char(
+        "Doctor name", related='partner_id.doctor_name', readonly=False)
+    doctor_phone = fields.Char(
+        "Doctor phone", related='partner_id.doctor_phone', readonly=False)
+    doctor_address = fields.Char(
+        "Doctor Direction", related='partner_id.doctor_address',
+        readonly=False)
+    hospital = fields.Char(
+        "Hospital", related='partner_id.hospital', readonly=False)
+    hospital_address = fields.Char(
+        "Hospital Address", related='partner_id.hospital_address',
+        readonly=False)
+    permission_to_treat = fields.Boolean(
+        "Permission To Treat", related='partner_id.permission_to_treat',
+        readonly=False)
+    blood_type = fields.Char(
+        "Blood Type", related='partner_id.blood_type', readonly=False)
+
     medical_allergies_ids = fields.One2many(
         string="Allergies", related="partner_id.medical_allergies_ids",
         readonly=False)
@@ -430,13 +441,13 @@ class Application(models.Model):
             enrollment_school_year = self.env.company.enrollment_school_year_id
 
             application_id.is_current_school_year = (
-                    application_id.school_year
+                    application_id.school_year_id
                     or current_school_year
-                    or application_id.school_year == current_school_year)
+                    or application_id.school_year_id == current_school_year)
             application_id.is_enrollment_school_year = (
-                    application_id.school_year
+                    application_id.school_year_id
                     or current_school_year
-                    or application_id.school_year == enrollment_school_year)
+                    or application_id.school_year_id == enrollment_school_year)
 
     def compute_current_user_access(self):
         for application in self:
@@ -459,33 +470,6 @@ class Application(models.Model):
                 now = datetime.datetime.now()
                 application_id.finish_datetime = now
                 application_id.finish_timeline = 0
-
-    # @api.depends('relationship_ids', 'relationship_ids.custody')
-    # def compute_relationships(self):
-    #     for application_id in self:
-    #
-    #         parent_types = ['parent', 'father', 'mother']
-    #         sibling_types = ['brother', 'sister', 'sibling']
-    #
-    #         parent_ids = application_id.student_relationship_ids\
-    #             .filtered_domain([
-    #                 ('relationship_type_id.type', 'in', parent_types)
-    #                 ])
-    #         sibling_ids = application_id.student_relationship_ids\
-    #             .filtered_domain([
-    #                 ('relationship_type_id.type', 'in', sibling_types)
-    #                 ])
-    #         other_ids = application_id.student_relationship_ids\
-    #             .filtered_domain([
-    #                 ('relationship_type_id.type', 'not in', parent_types + sibling_types)
-    #                 ])
-    #
-    #         custody_ids = application_id.student_relationship_ids.filtered('custody')
-    #
-    #         application_id.parent_relationship_ids = parent_ids
-    #         application_id.sibling_relationship_ids = sibling_ids
-    #         application_id.other_relationship_ids = other_ids
-    #         application_id.custodial_relationship_ids = custody_ids
 
     @api.model
     def _create_relation_if_not_exists(self, relationships):
@@ -544,8 +528,6 @@ class Application(models.Model):
             else:
                 application_id.total_fields_completed = 0
 
-
-
     @api.depends('status_id', 'state_tasks', 'task_ids')
     def compute_all_task_complete(self):
         for application_id in self:
@@ -574,7 +556,7 @@ class Application(models.Model):
         else:
             operator = '!='
 
-        return [('school_year', operator, current_school_year.id)]
+        return [('school_year_id', operator, current_school_year.id)]
 
     def _search_enrollment_school_year(self, operator, value):
         enrollment_school_year = self.env.company.enrollment_school_year_id
@@ -584,16 +566,16 @@ class Application(models.Model):
         else:
             operator = '!='
 
-        return [('school_year', operator, enrollment_school_year.id)]
+        return [('school_year_id', operator, enrollment_school_year.id)]
 
     def _compute_available_tuition_plan_ids(self):
         for application_id in self:
-            school_year_id = application_id.school_year
+            school_year_id = application_id.school_year_id
             tuition_plan_ids = \
                 self.env['tuition.plan'].search([
                     ('period_date_from', '>=', school_year_id.date_start),
                     ('period_date_from', '<=', school_year_id.date_end),
-                    ('grade_level_ids', '=', application_id.grade_level.id)
+                    ('grade_level_ids', '=', application_id.grade_level_id.id)
                     ])
             application_id.available_tuition_plan_ids = tuition_plan_ids
 
@@ -959,10 +941,32 @@ class Application(models.Model):
 
         return res
 
-
     ####################
     # Private methods #
     ####################
+    def _message_get_default_recipients(self):
+        res = {}
+        for application in self:
+            recipient_ids, email_to, email_cc = [], False, False
+            partner_follower_ids = application.mapped('message_follower_ids.partner_id')
+            recipient_ids.extend(partner_follower_ids.ids)
+            # email_to =
+            # if 'partner_id' in record and record.partner_id:
+            #     recipient_ids.append(record.partner_id.id)
+            # elif 'email_normalized' in record and record.email_normalized:
+            #     email_to = record.email_normalized
+            # elif 'email_from' in record and record.email_from:
+            #     email_to = record.email_from
+            # elif 'partner_email' in record and record.partner_email:
+            #     email_to = record.partner_email
+            # elif 'email' in record and record.email:
+            #     email_to = record.email
+            res[application.id] = {
+                'partner_ids': recipient_ids,
+                'email_to': email_to,
+                'email_cc': email_cc
+                }
+        return res
 
 
 class AdmApplicationInvitation(models.Model):

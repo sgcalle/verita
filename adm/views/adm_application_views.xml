@@ -60,7 +60,7 @@
                                                    widget="percentpie"/>
                                         </div>
                                     </li>
-                                    <li><strong>Grade level</strong>: <field name="grade_level"/></li>
+                                    <li><strong>Grade level</strong>: <field name="grade_level_id"/></li>
                                     <li><strong>Started at</strong>: <field name="create_date"/></li>
                                 </ul>
 
@@ -189,10 +189,10 @@
                         <page name="academic" string="Academic">
                             <group col="2">
                                 <group name="academic_left_group">
-                                    <field name="grade_level"/>
+                                    <field name="grade_level_id"/>
                                 </group>
                                 <group name="academic_right_group">
-                                    <field name="school_year"/>
+                                    <field name="school_year_id"/>
                                 </group>
                                 <group colspan="2" col="12">
                                     <label for="previous_school_ids" colspan="12" class="text-center w-100 h3"/>
@@ -394,8 +394,8 @@
                 <filter name="group_status_id" string="Status" context="{'group_by':'status_id'}"/>
                 <field name="name"/>
                 <field name="email"/>
-                <field name="grade_level"/>
-                <field name="school_year"/>
+                <field name="grade_level_id"/>
+                <field name="school_year_id"/>
                 <field name="family_id"/>
                 <field name="create_date" string="Started at"/>
 
@@ -420,8 +420,8 @@
 
                 <searchpanel>
                     <field name="status_id" icon="fa-columns"/>
-                    <field name="grade_level" icon="fa-list-ol"/>
-                    <field name="school_year" icon="fa-calendar"/>
+                    <field name="grade_level_id" icon="fa-list-ol"/>
+                    <field name="school_year_id" icon="fa-calendar"/>
                 </searchpanel>
             </search>
         </field>
@@ -434,10 +434,7 @@
                 view_mode="form"
                 target="new"
                 id="action_application_mass_mail"
-                context="{
-                    'default_composition_mode': 'mass_mail',
-                    'default_partner_to': '${object.id or \'\'}',
-                }"/>
+                context="{'default_composition_mode': 'mass_mail','default_notify': True}"/>
 
     <record id="adm_application_question_how_hear_about_us_view_tree" model="ir.ui.view">
         <field name="name">adm.application.option.how.hear.about.us.view.tree</field>

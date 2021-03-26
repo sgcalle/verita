@@ -17,24 +17,16 @@ class AdmissionController(http.Controller):
             'value': value
             } for value, name in field_selection_type.selection]
 
-    def compute_view_render_params(self, application_id: Application):
+    @staticmethod
+    def compute_view_render_params(application_id: Application):
         application_id = application_id.sudo()
         SUPER_ENV = api.Environment(request.env.cr, SUPERUSER_ID, {})
-
-        # relationship_types = (AdmissionController
-        #                       ._get_values_for_selection_fields(
-        #                             'adm.relationship', 'relationship_type'))
 
         relationship_types = request.env['school_base.relationship_type'].sudo().search([])
 
         marital_status_types = (AdmissionController
                                 ._get_values_for_selection_fields(
                                         'res.partner', 'marital_status'))
-
-        # custody_types = (AdmissionController
-        #                           ._get_values_for_selection_fields(
-        #                             'adm.relationship', 'custody'))
-
         applying_semester_values = (AdmissionController
                                     ._get_values_for_selection_fields(
                                             'adm.application', 'applying_semester'))
@@ -87,7 +79,6 @@ class AdmissionController(http.Controller):
             'USER_ENV': http.request.env,
             'is_required': is_required,
             'application_page_ids': application_page_ids,
-            # 'custody_types': custody_types,
             }
 
     @staticmethod

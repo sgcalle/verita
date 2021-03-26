@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from odoo import http
+from odoo import http, exceptions, _
+import werkzeug
 from datetime import datetime
 import base64
 import itertools
@@ -41,22 +42,8 @@ class ReenrollmentController(http.Controller):
         # obtenemos todos los registros de reenrollment en las cuales el
         # estudiante asociado este relacionado mediante la familia con el
         # user que esta accediendo dede el portal.
-        SUPER_ENV = api.Environment(request.env.cr, SUPERUSER_ID, {})
-        reenrollment_id = reenrollment_id.sudo()
-        
-        guardian_options = reenrollment_id.partner_id.family_ids.mapped('member_ids').filtered(lambda m: m.person_type != 'student')
-
-        def is_required(fieldname):
-            required_fields_name_list = reenrollment_id.get_required_fields().get_as_list_of_names()
-            return fieldname in required_fields_name_list
-
-        response = http.request.render('adm_reenrollment.template_admission_reenrollment_form', {
-            'reenrollment_id': reenrollment_id,
-            'guardian_options': guardian_options,
-            'SUPER_ENV': SUPER_ENV,
-            'USER_ENV': http.request.env,
-            'is_required': is_required,
-            })
+        page_params = self.compute_view_render_params(reenrollment_id)
+        response = http.request.render('adm_reenrollment.template_reenrollment_general_info', page_params)
         return response
 
     @http.route("/my/reenrollment/<model(adm.reenrollment):reenrollment_id>", auth="public", methods=["POST"], csrf=True, type='json')
@@ -78,11 +65,72 @@ class ReenrollmentController(http.Controller):
         the reenrollment with it, that's all
         """
 
+        httprequest = request.httprequest
         json_request = request.jsonrequest
 
-        if not json_request.get('family_id', False) or reenrollment_id.family_id:
-            json_request["family_id"] = reenrollment_id.sudo().custody_user_ids.partner_id.family_ids[0].id
+        # if not json_request.get('family_id', False) or reenrollment_id.family_id:
+        #     json_request["family_id"] = reenrollment_id.sudo().custody_user_ids.partner_id.family_ids[0].id
 
-        reenrollment_id = reenrollment_id.with_context({'default_family_id': json_request["family_id"]}).sudo()
+        reenrollment_id = reenrollment_id.sudo()
         write_vals = AdmissionController._parse_json_to_odoo_fields(reenrollment_id, json_request)
         reenrollment_id.sudo().write(write_vals)
+
+        user_agent = httprequest.user_agent
+        user_agent_vals = {
+            'browser': user_agent.browser,
+            'language': user_agent.language,
+            'platform': user_agent.platform,
+            'string': user_agent.string,
+            'version': user_agent.version,
+            }
+        request.env['adm.reenrollment.log'].sudo().create({
+            'name': _("Saving changes in reenrollment"),
+            'timestamp': datetime.now(),
+            'user_id': request.env.user.id,
+            'json_values': json.dumps(json_request, indent=4, sort_keys=True),
+            'user_agent': json.dumps(user_agent_vals, indent=4, sort_keys=True),
+            'ip_address': httprequest.remote_addr,
+            'reenrollment_id': reenrollment_id.id,
+            })
+
+    @http.route('/my/reenrollment/<model(adm.reenrollment):reenrollment_id>/<path:page_path>',
+                methods=["GET"], website=True, strict_slashes=False)
+    def generic_page_controller(self, reenrollment_id, page_path, **params):
+        page = request.env['adm.reenrollment.page'].search([('url', '=', page_path)])
+        page_params = self.compute_view_render_params(reenrollment_id)
+        if not page.view_template_id:
+            raise werkzeug.exceptions.NotFound()
+        page_params.update({
+            'page_id': page
+            })
+        return page.view_template_id.render(page_params)
+
+    @staticmethod
+    def compute_view_render_params(reenrollment_id):
+
+        country_ids = request.env['res.country'].search([])
+        state_ids = request.env['res.country.state'].search([])
+
+        SUPER_ENV = api.Environment(request.env.cr, SUPERUSER_ID, {})
+        reenrollment_id = reenrollment_id.sudo()
+
+        guardian_options = \
+            reenrollment_id.partner_id.family_ids\
+            .mapped('member_ids')\
+            .filtered(lambda m: m.person_type != 'student')
+
+        def is_required(fieldname):
+            required_fields_name_list =\
+                reenrollment_id.get_required_fields().get_as_list_of_names()
+            return fieldname in required_fields_name_list
+
+        return {
+            "country_ids": country_ids,
+            "state_ids": state_ids,
+            'reenrollment_id': reenrollment_id,
+            'guardian_options': guardian_options,
+            'SUPER_ENV': SUPER_ENV,
+            'USER_ENV': http.request.env,
+            'is_required': is_required,
+            'user_family_id': reenrollment_id.current_user_access_id.family_id,
+            }

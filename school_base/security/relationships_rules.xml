@@ -5,6 +5,10 @@
         <field name="name">filter.rule.by.individual.active</field>
         <field name="model_id" ref="model_school_base_relationship"/>
         <field name="global" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
         <field name="domain_force">[('partner_individual_id.active','=',True)]</field>
     </record>
 
@@ -12,6 +16,10 @@
         <field name="name">filter.rule.by.individual.relation</field>
         <field name="model_id" ref="model_school_base_relationship"/>
         <field name="global" eval="True"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
         <field name="domain_force">[('partner_relation_id.active','=',True)]</field>
     </record>
 

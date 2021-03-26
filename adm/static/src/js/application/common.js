@@ -13,21 +13,25 @@ odoo.define('adm.form.common', require => {
         async function getValueDependingOnType($el) {
             if (Object.hasOwnProperty.call(fileList, $el.data('admField'))) {
                 const filesObjectList = fileList[$el.data('admField')];
-                const files = [];
-                _.each(filesObjectList, fileObject => {
-                    if (fileObject.getMetadata('id')) {
-                        files.push({
-                            'id': fileObject.getMetadata('id')
-                        })
-                    } else {
-                        files.push({
-                            'content_type': fileObject.fileType,
-                            'name': fileObject.filename,
-                            'base64_encoded_file': fileObject.getFileEncodeBase64String(),
-                        });
-                    }
-                });
-                return files;
+                if ($el.data('admFieldType') === 'BINARY') {
+                    return filesObjectList[0].getFileEncodeBase64String();
+                } else {
+                    const files = [];
+                    _.each(filesObjectList, fileObject => {
+                        if (fileObject.getMetadata('id')) {
+                            files.push({
+                                'id': fileObject.getMetadata('id')
+                            })
+                        } else {
+                            files.push({
+                                'content_type': fileObject.fileType,
+                                'name': fileObject.filename,
+                                'base64_encoded_file': fileObject.getFileEncodeBase64String(),
+                            });
+                        }
+                    });
+                    return files;
+                }
             } else {
 
                 if ($el.is(':file')) {
@@ -243,12 +247,11 @@ odoo.define('adm.form.common', require => {
             });
         });
         $('.js_submit_json').on('click', sendJson);
-
         $('.js_country_select').on('change', refreshStates).trigger('change');
-
     });
 
     return {
-        fileList
+        fileList,
+
     }
 });

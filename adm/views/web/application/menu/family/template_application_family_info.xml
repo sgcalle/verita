@@ -30,7 +30,7 @@
                         <t t-esc="home_address.name"/>
                     </t>
                     <t t-else="">
-                        New home_address
+                        New home address
                     </t>
                 </button>
 

@@ -33,12 +33,26 @@ SELECT_REENROLLMENT_STATUS = [
 ]
 
 
-class Contact(models.Model):
+class ResPartner(models.Model):
     """ We inherit to enable School features for contacts """
 
+    ######################
+    # Private Attributes #
+    ######################
     _inherit = "res.partner"
 
-    # Overwritten fields
+    ###################
+    # Default methods #
+    ###################
+
+    ######################
+    # Fields declaration #
+    ######################
+
+    # - Demographics
+    name = fields.Char(
+        index=True, compute="_compute_name", store=True, readonly=False)
+
     # Name should be readonly
     allow_edit_student_name = fields.Boolean(
         compute="_retrieve_allow_name_edit_from_config")
@@ -50,6 +64,238 @@ class Contact(models.Model):
     is_name_edit_allowed = fields.Boolean(
         compute="_compute_allow_name_edition")
 
+    first_name = fields.Char("First Name")
+    middle_name = fields.Char("Middle Name")
+    last_name = fields.Char("Last Name")
+    date_of_birth = fields.Date(string='Date of birth')
+    suffix = fields.Char("Suffix")
+    facts_nickname = fields.Char("Facts Nickname")
+    ethnicity = fields.Char("Ethnicity")
+    facts_citizenship = fields.Char("Facts Citizenship")
+    primary_language = fields.Char("Primary Language")
+    birth_city = fields.Char("Birth City")
+    birth_state = fields.Char("Birth State")
+    race = fields.Char("Race")
+    gender = fields.Many2one("school_base.gender", string="Gender")
+
+    id_documentation_file = fields.Binary(attachment=True)
+    id_documentation_file_name = fields.Char()
+
+    passport_id = fields.Char('Passport ID')
+    passport_expiration_date = fields.Date('Passport expiration date')
+
+    passport_id_file = fields.Binary(attachment=True)
+    passport_id_file_name = fields.Char()
+
+    residency_permit_id_file = fields.Binary(attachment=True)
+    residency_permit_id_file_name = fields.Char()
+
+    citizenship = fields.Many2one("res.country", string="Citizenship")
+    identification = fields.Char("ID number")
+    salutation = fields.Char("Salutation")
+
+    marital_status_id = fields.Many2one(
+        'school_base.marital_status', string='Marital status')
+
+    occupation = fields.Char("Occupation")
+    title = fields.Char("Title")
+
+    # It is known that Odoo has parent_id.
+    # But sometime the school just doesn't really care about it and
+    # parent_id changes the partner behaviour. So this is more a metadata
+    employer = fields.Char("Employer")
+
+    # - Medical
+    medical_allergies_ids = fields.One2many(
+        "school_base.medical_allergy", "partner_id",
+        string="Medical Allergies")
+    medical_conditions_ids = fields.One2many(
+        "school_base.medical_condition", "partner_id",
+        string="Medical conditions")
+    medical_medications_ids = fields.One2many(
+        "school_base.medical_medication", "partner_id",
+        string="Medical Medication")
+
+    allergy_ids = fields.One2many(
+        "school_base.allergy", "partner_id", string="Allergies")
+    condition_ids = fields.One2many(
+        "school_base.condition", "partner_id", string="Conditions")
+
+    doctor_name = fields.Char("Doctor name")
+    doctor_phone = fields.Char("Doctor phone")
+    doctor_address = fields.Char("Doctor Direction")
+    hospital = fields.Char("Hospital")
+    hospital_address = fields.Char("Hospital Address")
+    permission_to_treat = fields.Boolean("Permission To Treat")
+    blood_type = fields.Char("Blood Type")
+
+    # - Conctact
+    # This fields are mainly used for the onchange method below
+    home_address_name = fields.Char(realated='home_address_id.name')
+    home_address_country_id = fields.Many2one(
+        realated='home_address_id.country_id')
+    home_address_state_id = fields.Many2one(
+        realated='home_address_id.state_id')
+
+    home_address_city = fields.Char(realated='home_address_id.city')
+    home_address_zip = fields.Char(realated='home_address_id.zip')
+    home_address_street = fields.Char(realated='home_address_id.street')
+    home_address_street2 = fields.Char(realated='home_address_id.street2')
+    home_address_phone = fields.Char(realated='home_address_id.phone')
+
+    # - Academic
+    # Fields for current student status, grade leve, status, etc...
+    school_code_id = fields.Many2one(
+        'school_base.school_code', string='Current school code')
+    grade_level_id = fields.Many2one(
+        "school_base.grade_level", string="Grade Level")
+
+    school_year_id = fields.Many2one(
+        'school_base.school_year', string="School year",
+        help="The school year where the student is enrolled")
+
+    student_status = fields.Char(
+        "Student status (Deprecated)", help="(This field is deprecated)")
+
+    student_status_id = fields.Many2one(
+        "school_base.enrollment.status", string="Student status")
+
+    # Fields for next student status, grade leve, status, etc...
+    next_school_code_id = fields.Many2one(
+        'school_base.school_code', string='Next school code')
+    next_grade_level_id = fields.Many2one(
+        "school_base.grade_level", string="Next grade level")
+    student_next_status_id = fields.Many2one(
+        "school_base.enrollment.status", string="Student next status")
+
+    home_address_ids = fields.One2many(
+        "school_base.home_address", 'family_id', string="Home Addresses", )
+    family_home_address_ids = fields.One2many(
+        related='family_ids.home_address_ids',
+        string="Family Home Addresses", )
+    home_address_id = fields.Many2one(
+        "school_base.home_address", string="Home Address")
+
+    # - Family Structure
+    family_ids = fields.Many2many(
+        "res.partner", string="Families",
+        relation="partner_families",
+        column1="partner_id",
+        column2="partner_family_id")
+    member_ids = fields.Many2many(
+        "res.partner", string="Members",
+        relation="partner_members",
+        column1="partner_id",
+        column2="partner_member_id")
+    is_family = fields.Boolean("Is a family?")
+    family_member_ids = fields.Many2many(related='family_ids.member_ids')
+
+    member_relationship_ids = fields.One2many(
+        'school_base.relationship', 'family_id',
+        domain="[('partner_relation_id.active', '=', True), "
+               "('partner_individual_id.active', '=', True)]",
+        string="Relationships Members")
+
+    self_relationship_ids = fields.Many2many(
+        'school_base.relationship', compute='compute_self_relationship_ids')
+
+    parent_relationship_ids = fields.One2many(
+        'school_base.relationship', string="Parents/Guardian",
+        compute="compute_self_relationship_ids",
+        inverse="_set_parent_relationships", readonly=False)
+
+    sibling_relationship_ids = fields.One2many(
+        'school_base.relationship', string="Siblings",
+        compute="compute_self_relationship_ids",
+        inverse="_set_sibling_relationships", readonly=False, store=False)
+
+    other_relationship_ids = fields.One2many(
+        'school_base.relationship', string="Others",
+        compute="compute_self_relationship_ids",
+        inverse="_set_other_relationships", readonly=False, store=False)
+
+    custodial_relationship_ids = fields.Many2many(
+        'school_base.relationship', string="Custody contacts",
+        compute="compute_self_relationship_ids", store=False)
+
+    relationship_ids = fields.One2many(
+        "school_base.relationship", "partner_1", string="Relationships")
+    relationship_members_ids = fields.One2many(
+        "school_base.relationship", "family_id",
+        string="Relationships Members", readonly=True)
+    homeroom = fields.Char("Homeroom")
+    class_year = fields.Char("Class year")
+    student_sub_status_id = fields.Many2one(
+        'school_base.enrollment.sub_status', string="Sub status")
+
+    enrolled_date = fields.Date(string="Enrolled date")
+    graduation_date = fields.Date(string="Graduation date")
+
+    withdraw_date = fields.Date(string="Withdraw date")
+    withdraw_reason_id = fields.Many2one('school_base.withdraw_reason',
+                                         string="Withdraw reason")
+
+    reenrollment_record_ids = fields.One2many(
+        'school_base.reenrollment.record', 'partner_id')
+
+    reenrollment_status_id = fields.Selection(
+        SELECT_REENROLLMENT_STATUS, string="Reenrollment Status", store=True,
+        compute='_compute_reenrollment_status')
+    reenrollment_school_year_id = fields.Many2one(
+        'school_base.school_year', string="Reenollment school year", store=True,
+        compute='_compute_reenrollment_status')
+
+    school_placement_id = fields.Many2one(
+        'school_base.placement', string="Placement")
+    # - Finance
+    financial_res_ids = fields.Many2many(
+        "res.partner",
+        string="Financial responsability",
+        relation="partner_financial_res",
+        column1="partner_id",
+        column2="partner_financial_id")
+
+    # - Others
+    facts_approved = fields.Boolean()
+    company_type = fields.Selection(
+        SELECT_COMPANY_TYPES, string="Company Type")
+    person_type = fields.Selection(SELECT_PERSON_TYPES, string="Person Type")
+    comment_facts = fields.Text("Facts Comment")
+    facts_id_int = fields.Integer("Facts id (Integer)")
+    facts_id = fields.Char("Facts id")
+
+    # Facts UDID
+    facts_udid_int = fields.Integer(
+        "Facts UDID (Integer)", compute="_converts_facts_udid_id_to_int",
+        store=True, readonly=True)
+    facts_udid = fields.Char("Facts UDID")
+
+    # Enrollment history
+    enrollment_history_ids = fields.One2many(
+        'school_base.enrollment.history', 'student_id')
+
+    ##############################
+    # Compute and search methods #
+    ##############################
+
+    ############################
+    # Constrains and onchanges #
+    ############################
+
+    #########################
+    # CRUD method overrides #
+    #########################
+
+    ##################
+    # Action methods #
+    ##################
+
+    ####################
+    # Business methods #
+    ####################
+
+    # Overwritten fields
+    # Name should be readonly
     def _retrieve_allow_name_edit_from_config(self):
         self.allow_edit_student_name = bool(
             self.env["ir.config_parameter"].sudo().get_param("school_base.allow_edit_student_name", False))
@@ -75,182 +321,6 @@ class Contact(models.Model):
     def _onchange_person_type(self):
         self._compute_allow_name_edition()
 
-    name = fields.Char(index=True, compute="_compute_name", store=True,
-                       readonly=False)
-
-    company_type = fields.Selection(SELECT_COMPANY_TYPES,
-                                    string="Company Type")
-    person_type = fields.Selection(SELECT_PERSON_TYPES, string="Person Type")
-
-    comment_facts = fields.Text("Facts Comment")
-    family_ids = fields.Many2many("res.partner", string="Families",
-                                  relation="partner_families",
-                                  column1="partner_id",
-                                  column2="partner_family_id")
-    member_ids = fields.Many2many("res.partner", string="Members",
-                                  relation="partner_members",
-                                  column1="partner_id",
-                                  column2="partner_member_id")
-
-    facts_approved = fields.Boolean()
-
-    is_family = fields.Boolean("Is a family?")
-
-    # For Families
-    financial_res_ids = fields.Many2many("res.partner",
-                                         string="Financial responsability",
-                                         relation="partner_financial_res",
-                                         column1="partner_id",
-                                         column2="partner_financial_id")
-
-    # Demographics fields
-    first_name = fields.Char("First Name")
-    middle_name = fields.Char("Middle Name")
-    last_name = fields.Char("Last Name")
-
-    date_of_birth = fields.Date(string='Date of birth')
-    suffix = fields.Char("Suffix")
-    facts_nickname = fields.Char("Facts Nickname")
-    ethnicity = fields.Char("Ethnicity")
-    facts_citizenship = fields.Char("Facts Citizenship")
-    primary_language = fields.Char("Primary Language")
-    birth_city = fields.Char("Birth City")
-    birth_state = fields.Char("Birth State")
-    race = fields.Char("Race")
-    gender = fields.Many2one("school_base.gender", string="Gender")
-
-    id_documentation_file = fields.Binary(attachment=True)
-    id_documentation_file_name = fields.Char()
-    
-    passport_id = fields.Char('Passport ID')
-    passport_expiration_date = fields.Date('Passport expiration date')
-    
-    passport_id_file = fields.Binary(attachment=True)
-    passport_id_file_name = fields.Char()
-    
-    residency_permit_id_file = fields.Binary(attachment=True)
-    residency_permit_id_file_name = fields.Char()
-
-    medical_allergies_ids = fields.One2many("school_base.medical_allergy", "partner_id", string="Medical Allergies")
-    medical_conditions_ids = fields.One2many("school_base.medical_condition", "partner_id", string="Medical conditions")
-    medical_medications_ids = fields.One2many("school_base.medical_medication", "partner_id",
-                                              string="Medical Medication")
-
-    citizenship = fields.Many2one("res.country", string="Citizenship")
-    identification = fields.Char("ID number")
-    salutation = fields.Char("Salutation")
-
-    marital_status_id = fields.Many2one('school_base.marital_status', string='Marital status')
-    occupation = fields.Char("Occupation")
-    title = fields.Char("Title")
-
-    # It is known that Odoo has parent_id.
-    # But sometime the school just doesn't really care about it and
-    # parent_id changes the partner behaviour. So this is more a metadata
-    employer = fields.Char("Employer")
-
-    family_member_ids = fields.Many2many(related='family_ids.member_ids')
-
-    member_relationship_ids = fields.One2many(
-        'school_base.relationship', 'family_id',
-        domain="[('partner_relation_id.active', '=', True), ('partner_individual_id.active', '=', True)]",
-        string="Relationships Members")
-
-    self_relationship_ids = fields.Many2many(
-        'school_base.relationship', compute='compute_self_relationship_ids')
-
-    parent_relationship_ids = fields.One2many('school_base.relationship',
-        string="Parents/Guardian", compute="compute_self_relationship_ids",
-        inverse="_set_parent_relationships", readonly=False, )
-
-    sibling_relationship_ids = fields.One2many('school_base.relationship',
-        string="Siblings", compute="compute_self_relationship_ids",
-        inverse="_set_sibling_relationships", readonly=False, store=False)
-
-    other_relationship_ids = fields.One2many('school_base.relationship',
-        string="Others", compute="compute_self_relationship_ids",
-        inverse="_set_other_relationships", readonly=False, store=False)
-
-    custodial_relationship_ids = fields.Many2many('school_base.relationship',
-        string="Custody contacts", compute="compute_self_relationship_ids",
-        store=False)
-    
-    relationship_ids = fields.One2many("school_base.relationship", "partner_1",
-                                       string="Relationships")
-    relationship_members_ids = fields.One2many("school_base.relationship", "family_id", string="Relationships Members", readonly=True)
-
-    # Fields for current student status, grade leve, status, etc...
-    school_code_id = fields.Many2one('school_base.school_code', string='Current school code')
-    grade_level_id = fields.Many2one("school_base.grade_level", string="Grade Level")
-
-    school_year_id = fields.Many2one('school_base.school_year', string="School year", help="The school year where the student is enrolled")
-
-    student_status = fields.Char("Student status (Deprecated)", help="(This field is deprecated)")
-
-    student_status_id = fields.Many2one("school_base.enrollment.status", string="Student status")
-
-    # Fields for next student status, grade leve, status, etc...
-    next_school_code_id = fields.Many2one('school_base.school_code', string='Next school code')
-    next_grade_level_id = fields.Many2one("school_base.grade_level", string="Next grade level")
-    student_next_status_id = fields.Many2one("school_base.enrollment.status", string="Student next status")
-
-    # student_next_status_id = fields.Selection(SELECT_STATUS_TYPES, string="Student next status")
-    # student_status_id = fields.Selection(SELECT_STATUS_TYPES, string="Student next status")
-    # student_next_status_id2 = fields.Many2one("school_base.enrollment.status", string="Student next status")
-
-    # School information
-    home_address_ids = fields.One2many("school_base.home_address", 'family_id', string="Home Addresses",)
-    family_home_address_ids = fields.One2many(related='family_ids.home_address_ids', string="Family Home Addresses",)
-    home_address_id = fields.Many2one("school_base.home_address", string="Home Address")
-
-    homeroom = fields.Char("Homeroom")
-    class_year = fields.Char("Class year")
-    student_sub_status_id = fields.Many2one(
-        'school_base.enrollment.sub_status', string=_("Sub status"))
-
-    enrolled_date = fields.Date(string=_("Enrolled date"))
-    graduation_date = fields.Date(string=_("Graduation date"))
-
-    withdraw_date = fields.Date(string=_("Withdraw date"))
-    withdraw_reason_id = fields.Many2one('school_base.withdraw_reason',
-                                         string=_("Withdraw reason"))
-
-    reenrollment_record_ids = fields.One2many('school_base.reenrollment.record', 'partner_id')
-
-    reenrollment_status_id = fields.Selection(SELECT_REENROLLMENT_STATUS, string="Reenrollment Status", store=True, compute='_compute_reenrollment_status')
-    reenrollment_school_year_id = fields.Many2one('school_base.school_year', string=_("Reenollment school year"), store=True, compute='_compute_reenrollment_status')
-
-    placement_id = fields.Many2one('school_base.placement', string=_("Placement"))
-
-    facts_id_int = fields.Integer("Facts id (Integer)")
-
-    facts_id = fields.Char("Facts id")
-
-    # Facts UDID
-    facts_udid_int = fields.Integer("Facts UDID (Integer)", compute="_converts_facts_udid_id_to_int", store=True,
-                                    readonly=True)
-    facts_udid = fields.Char("Facts UDID")
-
-    # Healthcare
-    allergy_ids = fields.One2many("school_base.allergy", "partner_id",
-                                  string="Allergies")
-    condition_ids = fields.One2many("school_base.condition", "partner_id",
-                                    string="Conditions")
-
-    # Enrollment history
-    enrollment_history_ids = fields.One2many('school_base.enrollment.history', 'student_id')
-
-    # This fields are mainly used for the onchange method below
-    home_address_name = fields.Char(realated='home_address_id.name')
-    home_address_country_id = fields.Many2one(realated='home_address_id.country_id')
-    home_address_state_id = fields.Many2one(realated='home_address_id.state_id')
-
-    home_address_city = fields.Char(realated='home_address_id.city')
-    home_address_zip = fields.Char(realated='home_address_id.zip')
-    home_address_street = fields.Char(realated='home_address_id.street')
-    home_address_street2 = fields.Char(realated='home_address_id.street2')
-    home_address_phone = fields.Char(realated='home_address_id.phone')
-    
     @api.onchange('parent_id', 'home_address_id',
                   'home_address_country_id', 
                   'home_address_state_id',
@@ -260,7 +330,7 @@ class Contact(models.Model):
                   'home_address_phone',
                   )
     def onchange_parent_id(self):
-        res = super(Contact, self).onchange_parent_id()
+        res = super(ResPartner, self).onchange_parent_id()
         res = res or {}
         if self.home_address_id:
             address_fields = self._address_fields()
@@ -277,7 +347,7 @@ class Contact(models.Model):
                 partner.phone = partner.home_address_id.phone
 
     def _fields_sync(self, values):
-        super(Contact, self)._fields_sync(values)
+        super(ResPartner, self)._fields_sync(values)
         if values.get('home_address_id'):
             self._phone_sync_from_home_address()
             onchange_vals = self.onchange_parent_id().get('value', {})

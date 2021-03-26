@@ -4,20 +4,21 @@
     <template id="template_application_menu_item">
         <t t-if="application_page_id.child_ids">
             <li class="nav-item nav-item-menu dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" role="button"
+                   href="#" data-toggle="dropdown">
                     <t t-esc="application_page_id.name"/>
                 </a>
                 <div class="dropdown-menu">
                     <t t-foreach="application_page_id.child_ids" t-as="page_child_id">
                         <a t-attf-href="/admission/applications/#{application_id.id}/#{page_child_id.url}"
-                           class="nav-link">
+                           class="dropdown-item">
                             <t t-esc="page_child_id.name"/>
                         </a>
                     </t>
                 </div>
             </li>
         </t>
-        <t t-else="">
+        <t t-elif="not application_page_id.parent_id">
             <li class="nav-item nav-item-menu">
                 <a t-attf-href="/admission/applications/#{application_id.id}/#{application_page_id.url}"
                    class="nav-link">

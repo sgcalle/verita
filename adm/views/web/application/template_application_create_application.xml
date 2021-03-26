@@ -245,14 +245,14 @@
                                                             Grade Level:
                                                         </label>
                                                         <input disabled="disabled" type="text" class="form-control"
-                                                               t-att-value="application_id.grade_level.name"/>
+                                                               t-att-value="application_id.grade_level_id.name"/>
                                                     </div>
                                                     <div class="col-12 col-md-6 form-group">
                                                         <label>
                                                             School Year:
                                                         </label>
                                                         <input disabled="disabled" type="text" class="form-control"
-                                                               t-att-value="application_id.school_year.name"/>
+                                                               t-att-value="application_id.school_year_id.name"/>
                                                     </div>
                                                 </section>
                                                 <section t-else="" class="row">
@@ -262,9 +262,9 @@
                                                             <span class="text-danger"> *</span>
                                                         </label>
                                                         <select required="required" class="form-control"
-                                                                name="grade_level">
+                                                                name="grade_level_id">
                                                             <t t-foreach="grade_levels" t-as="grade_level">
-                                                                <option t-att-selected="application_id.grade_level.id == grade_level.id"
+                                                                <option t-att-selected="application_id.grade_level_id.id == grade_level.id"
                                                                         t-att-value="grade_level.id">
                                                                     <t t-esc="grade_level.name"/>
                                                                 </option>
@@ -277,9 +277,9 @@
                                                             <span class="text-danger"> *</span>
                                                         </label>
                                                         <select required="required" class="form-control"
-                                                                name="school_year">
+                                                                name="school_year_id">
                                                             <t t-foreach="school_years" t-as="school_year">
-                                                                <option t-att-selected="application_id.school_year.id == school_year.id"
+                                                                <option t-att-selected="application_id.school_year_id.id == school_year.id"
                                                                         t-att-value="school_year.id">
                                                                     <t t-esc="school_year.name"/>
                                                                 </option>

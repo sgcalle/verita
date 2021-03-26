@@ -16,22 +16,22 @@ odoo.define('adm.application.documents', require => {
 
         // Select the file input and use create() to turn it into a pond
         $('[data-adm-model-fields="1"] input[type="file"]').each((i, el) => {
-            const admFiled = el.dataset.admField;
+            const admField = el.dataset.admField;
             const f = FilePond.create(el, {
                 onupdatefiles: function(files) {
-                    fileList[admFiled] = files;
+                    fileList[admField] = files;
                     console.log(files);
                 },
                 options: {
-                type: 'local',
+                    type: 'local',
 
-                // mock file information
-                file: {
-                    name: 'my-file.png',
-                    size: 3001025,
-                    type: 'image/png'
+                    // mock file information
+                    file: {
+                        name: 'my-file.png',
+                        size: 3001025,
+                        type: 'image/png'
+                    }
                 }
-            }
             });
             f.element.dataset.admField = el.dataset.admField;
             f.element.dataset.admFileAttIds = el.dataset.admFileAttIds;

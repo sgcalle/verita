@@ -8,13 +8,16 @@ odoo.define('adm.family.information', require => {
     function appendNewAddress(event) {
         counter--;
 
-        const $clonedNewAddressTemplate = $('#template_application_family_home_addresss_card').clone();
+        const $clonedNewAddressTemplate = $('#template_application_family_home_addresss_card').clone(true);
 
         const $buttonToggleCollapse = $clonedNewAddressTemplate.find('[data-toggle="collapse"]')
         $buttonToggleCollapse[0].dataset.target = $buttonToggleCollapse[0].dataset.target + counter.toString();
 
         // const $divCollapse = $clonedNewAddressTemplate.find('.collapse');
 
+        $clonedNewAddressTemplate.find('[data-filter-state]').each((i, el) => {
+            el.dataset.filterState = el.dataset.filterState + counter.toString();
+        })
         $clonedNewAddressTemplate.find('[id]').each((i, el) => {
             el.id = el.id + counter.toString();
         })
@@ -36,7 +39,7 @@ odoo.define('adm.family.information', require => {
         const newMany2manyRev = document.createElement('DIV');
         newMany2manyRev.dataset.admRel = "rel";
         $clonedNewAddressTemplate.appendTo(newMany2manyRev);
-        $clonedNewAddressTemplate.find('.js_remove_address').on('click', removeNewAddress);
+        // $clonedNewAddressTemplate.find('.js_remove_address').on('click', removeNewAddress);
 
         // Just a friky effect to make it cool ;)
         const $shownAddressCollapse = $(addressList).find('.collapse.show');

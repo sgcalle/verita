@@ -90,7 +90,6 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
                             attrs="{'invisible': [('active', '=', True)]}"/>
                     <field name="name" class="h1"/>
@@ -115,11 +114,28 @@
                         </page>
                         <page string="Family" name="family">
                             <group>
-                                <field name="family_id"/>
                                 <field name="family_res_id"/>
                                 <hr colspan="2"/>
                                 <field name="partner_guardian1"/>
                                 <field name="partner_guardian2"/>
+                            </group>
+                        </page>
+                        <page string="Users" name="user_access">
+                            <group>
+                                <field name="user_access_ids">
+                                    <tree>
+                                        <field name="family_id"/>
+                                        <field name="user_id"/>
+                                    </tree>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="user_id"/>
+                                                <field name="family_id"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
                             </group>
                         </page>
                         <page string="Responsibles" name="responsibles">
@@ -148,6 +164,18 @@
                                            filename="guardian2_id_documentation_file_name"/>
                                 </group>
                             </group>
+                        </page>
+                        <page string="Logs" name="logs">
+                            <field name="log_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="timestamp"/>
+                                    <field name="user_id"/>
+                                    <field name="json_values"/>
+                                    <field name="user_agent"/>
+                                    <field name="ip_address"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
