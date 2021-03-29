@@ -177,10 +177,10 @@ class ApplicationController(AdmissionController):
             "responsible_user_id": request.env.user.id,
             "responsible_user_ids": [(4, request.env.user.id, 0)],
             })
-        result["relationship_ids"] = [(0, 0, {
-            "partner_2": parent.id,
-            "family_id": family_id,
-            })]
+        # result["relationship_ids"] = [(0, 0, {
+        #     "partner_relation_id": parent.id,
+        #     "family_id": family_id,
+        #     })]
         application.write(result)
 
         # Send pending family emails

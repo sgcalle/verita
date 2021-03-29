@@ -77,10 +77,6 @@
 
         'views/web/inquiry/template_inquiry_form.xml',
 
-        'views/web/reports/report_application_custom.xml',
-        'views/web/reports/report_application_default.xml',
-        'views/web/reports/report_internal_custom.xml',
-
         'data/sequences_data.xml',
         'data/statics_data.xml',
         'data/email_template_data.xml',

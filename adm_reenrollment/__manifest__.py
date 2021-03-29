@@ -21,6 +21,7 @@
         'views/res_config_settings_views.xml',
 
         'data/email_templates.xml',
+        'report/pdf_preview_reports.xml',
 
         'views/web/portal_templates.xml',
 

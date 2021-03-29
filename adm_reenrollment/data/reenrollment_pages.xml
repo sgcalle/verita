@@ -48,4 +48,11 @@
         <field name="sequence">4</field>
     </record>
 
+    <record id="reenrollment_page_contract" model="adm.reenrollment.page">
+        <field name="name">Contract</field>
+        <field name="url">contract</field>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_contract"/>
+        <field name="sequence">5</field>
+    </record>
+
 </odoo>

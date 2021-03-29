@@ -10,11 +10,6 @@ class SchoolBaseRelationship(models.Model):
     _name = 'school_base.relationship'
     _description = "Relationship"
 
-    partner_1 = fields.Many2one(
-        "res.partner", string="Partner 1", ondelete="cascade")
-    partner_2 = fields.Many2one(
-        "res.partner", string="Partner", ondelete="cascade")
-
     partner_individual_id = fields.Many2one(
         "res.partner", string="Individual", required=True, ondelete="cascade")
     partner_relation_id = fields.Many2one(

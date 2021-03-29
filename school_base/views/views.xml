@@ -101,8 +101,8 @@
         <field name="arch" type="xml">
             <tree editable="bottom">
                 <field name="family_id"/>
-                <field name="partner_1"/>
-                <field name="partner_2"/>
+                <field name="partner_individual_id"/>
+                <field name="partner_relation_id"/>
                 <field name="relationship_type_id"/>
                 <field name="is_emergency_contact"/>
                 <field name="custody"/>

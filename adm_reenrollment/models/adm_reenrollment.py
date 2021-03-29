@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import base64
 
 from odoo import models, fields, api, _
 from odoo.tools import safe_eval
@@ -77,6 +78,8 @@ class AdmReenrollment(models.Model):
                                      string=_("Reenrollment school year"))
 
     user_id = fields.Many2one('res.users')
+
+    tuition_plan_id = fields.Many2one('tuition.plan')
 
     # Demographics
     email = fields.Char(string="Email", related="partner_id.email", index=True)
@@ -165,9 +168,14 @@ class AdmReenrollment(models.Model):
         'school_base.home_address', related='partner_id.home_address_id')
 
     # Relationships
-    partner_relationship_ids = fields.One2many(
-        'school_base.relationship', related='partner_id.relationship_ids')
+    partner_relationship_ids = fields.Many2many('school_base.relationship', related='partner_id.self_relationship_ids')
+
     # Documentation
+    contract_file = fields.Binary(attachment=True)
+
+    # Fee
+    registration_fee_amount = fields.Float()
+    reenrollment_deposit_amount = fields.Float()
 
     ##############################
     # Compute and search methods #
@@ -194,6 +202,15 @@ class AdmReenrollment(models.Model):
     def _read_group_stage_ids(self, stages, domain, order):
         return self.env['adm.reenrollment.stage'].search([])
 
+    @api.model
+    def create(self, vals):
+        reenrollment_id = super(AdmReenrollment, self).create(vals)
+
+        # Contract default file
+        reenrollment_id.regenerate_contract_pdf()
+
+        return reenrollment_id
+
     ##################
     # Action methods #
     ##################
@@ -201,6 +218,12 @@ class AdmReenrollment(models.Model):
     ####################
     # Business methods #
     ####################
+    def regenerate_contract_pdf(self):
+        for reenrollment_id in self:
+            pdf_binary = self.env.ref('adm_reenrollment.report_contract_reenrollment').render_qweb_pdf(reenrollment_id.ids)
+            b64_pdf = base64.b64encode(pdf_binary[0])
+            reenrollment_id.contract_file = b64_pdf
+
     def get_required_fields(self):
         # First we get the all the fields
         config_parameter = self.env['ir.config_parameter'].sudo()

@@ -305,26 +305,27 @@
                             <div class="col-8 offset-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4"
                                  data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
 
-                                <input type="hidden" id="partner_avatar_base64" t-attf-value="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"/>
+                                <input type="hidden" id="partner_avatar_base64"
+                                       t-attf-value="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"/>
 
-<!--                                <div class="position-relative m-auto d-flex justify-content-center align-items-center"-->
-<!--                                     style="width: 175px;border-radius: 100px !important;height: 175px;overflow: hidden;">-->
-<!--                                    <t t-if="reenrollment_id.partner_id">-->
-<!--                                        <input type="hidden" data-adm-field="id"-->
-<!--                                               data-adm-field-type="INTEGER"-->
-<!--                                               t-att-value="reenrollment_id.partner_id.id"/>-->
-<!--                                    </t>-->
-<!--&lt;!&ndash;                                    <img t-attf-src="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         widget="image"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         id="avatar_photo"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         onerror="this.src = '/adm/static/img/contact_photo_placeholder.png';"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         class="avatar h-100" alt="avatar"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    <div class="spinner-grow text-light position-absolute w-50 h-50"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         style="display: none;" id="student_avatar_loading"&ndash;&gt;-->
-<!--&lt;!&ndash;                                         role="status">&ndash;&gt;-->
-<!--&lt;!&ndash;                                        <span class="sr-only">Loading...</span>&ndash;&gt;-->
-<!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                </div>-->
+                                <!--                                <div class="position-relative m-auto d-flex justify-content-center align-items-center"-->
+                                <!--                                     style="width: 175px;border-radius: 100px !important;height: 175px;overflow: hidden;">-->
+                                <!--                                    <t t-if="reenrollment_id.partner_id">-->
+                                <!--                                        <input type="hidden" data-adm-field="id"-->
+                                <!--                                               data-adm-field-type="INTEGER"-->
+                                <!--                                               t-att-value="reenrollment_id.partner_id.id"/>-->
+                                <!--                                    </t>-->
+                                <!--                                &lt;!&ndash;&lt;!&ndash;                                    <img t-attf-src="data:image/*;base64,{{reenrollment_id.partner_id and reenrollment_id.partner_id.image_1920}}"&ndash;&gt;&#45;&#45; />-->
+                                <!--                                         widget="image"-->
+                                <!--                                         id="avatar_photo"-->
+                                <!--&lt;!&ndash;                                         onerror="this.src = '/adm/static/img/contact_photo_placeholder.png';"&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                         class="avatar h-100" alt="avatar"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    <div class="spinner-grow text-light position-absolute w-50 h-50"&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                         style="display: none;" id="student_avatar_loading"&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                         role="status">&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                        <span class="sr-only">Loading...</span>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                    </div>&ndash;&gt;-->
+                                <!--                                </div>-->
                                 <input type="file"
                                        t-att-required="is_required('immunization_records_attachment_ids')"
                                        class="filepond"
@@ -333,14 +334,14 @@
                                        data-adm-field-type="BINARY"
                                        data-max-file-size="20MB"/>
 
-<!--                                <input type="file"-->
-<!--                                       class="filepond" name="filepond" accept="image/png, image/jpeg, image/gif"/>-->
-<!--                                <h6 class="mt-2">Upload a different photo...</h6>-->
-<!--                                <input type="file" id="avatar_photo_file" name="image_1920"-->
-<!--                                       data-adm-field="image_1920"-->
-<!--                                       class="form-control" accept="image/*"/>-->
-<!--                                <div class='alert alert-info pt-0 pb-0 mt-1'-->
-<!--                                     role='alert'>Upload a student photo.</div>-->
+                                <!--                                <input type="file"-->
+                                <!--                                       class="filepond" name="filepond" accept="image/png, image/jpeg, image/gif"/>-->
+                                <!--                                <h6 class="mt-2">Upload a different photo...</h6>-->
+                                <!--                                <input type="file" id="avatar_photo_file" name="image_1920"-->
+                                <!--                                       data-adm-field="image_1920"-->
+                                <!--                                       class="form-control" accept="image/*"/>-->
+                                <!--                                <div class='alert alert-info pt-0 pb-0 mt-1'-->
+                                <!--                                     role='alert'>Upload a student photo.</div>-->
                                 <svg class="" id="upload_image_success" style="display: none;"
                                      xmlns="http://www.w3.org/2000/svg"
                                      viewBox="0 0 52 52">
@@ -411,7 +412,8 @@
                                 </div>
                             </div>
                             <section class="row">
-                                <fieldset class="col-12 border" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                <fieldset class="col-12 border" data-adm-field="partner_id"
+                                          data-adm-field-type="MANY2ONE">
                                     <div data-adm-field="home_address_id" data-adm-field-type="MANY2ONE">
                                         <t t-set="home_address_id"
                                            t-value="reenrollment_id.partner_id.home_address_id"/>
@@ -502,7 +504,8 @@
                                     </div>
                                 </fieldset>
 
-                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id"
+                                          data-adm-field-type="MANY2ONE">
                                     <legend class="w-auto">Demographics</legend>
                                     <section class="row">
                                         <div class="col-12 col-md-6 form-group">
@@ -582,10 +585,11 @@
                                         </div>
                                     </section>
                                 </fieldset>
-                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id" data-adm-field-type="MANY2ONE">
+                                <fieldset class="col-12 border mt-1" data-adm-field="partner_id"
+                                          data-adm-field-type="MANY2ONE">
                                     <legend class="w-auto">Legality</legend>
                                     <section class="row">
-                                        <div class="col-12 col-md-6" >
+                                        <div class="col-12 col-md-6">
                                             <label>
                                                 ID number:
                                                 <span class="text-danger"
@@ -597,7 +601,7 @@
                                                    t-att-required="is_required('partner_id.identification')"/>
                                         </div>
                                     </section>
-                                    <section class="row mt-3" >
+                                    <section class="row mt-3">
                                         <hr class="w-100"/>
                                         <div class="col-12 text-center h2 text-secondary">Passport</div>
 
@@ -1427,6 +1431,110 @@
             </form>
         </t>
     </template>
+    <template id="template_reenrollment_contract">
+        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">
+            <t t-set="reenrollment_form_assets">
+                <t t-call-assets="adm_reenrollment.assets_frontend_form" defer_load="True"/>
+                <t t-call-assets="adm_reenrollment.assets_contract" defer_load="True"/>
+            </t>
+            <t t-set="head" t-value="reenrollment_form_assets + (head or '')"/>
+
+            <form data-adm-model-fields="1">
+                <section class="card mt-4">
+                    <section class="card-header bg-primary">
+                        <h1>Contract</h1>
+                    </section>
+                    <section class="card-body pb-2">
+                        <div class="container pl-4 pr-4">
+                            <div class="row">
+                                <div class="col-12">
+                                    <a t-att-href="field_attachment_ids['contract_file'].website_url"
+                                       target="blank"
+                                       role="button" class="btn btn-link h3 m-auto d-block">Read in other tab <i
+                                            class="fa fa-share-square-o"></i></a>
+                                </div>
+                                <div class="col-12">
+                                    <iframe width="100%" height="700px"
+                                            t-att-src="field_attachment_ids['contract_file'].website_url"
+                                            frameborder="0"/>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </form>
+        </t>
+    </template>
+
+    <template id="pdf_template_reenrollment_gdpr" name="PDF Reenrollment GDPR">
+        <div>
+            <h1>Test GDPR</h1>
+        </div>
+    </template>
+
+    <template id="pdf_template_reenrollment_contract" name="PDF Reenrollment contract">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+
+
+                <t t-foreach="docs" t-as="o">
+                    <div id="contract_document_content">
+                        <h1>Placeholder contract</h1>
+                        <p>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, ipsa, possimus?
+                            Dolorum officia quo saepe. Consectetur consequuntur eaque eligendi esse exercitationem
+                            inventore nam nihil numquam quae reprehenderit, soluta voluptas voluptates!
+                        </p>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <!--                        <cfdocumentitem type="footer" evalatprint="true" pageNumber="4">-->
+    <!--                            <style>-->
+    <!--                                .font11-->
+    <!--                                {-->
+    <!--                                font-size:11pt;-->
+    <!--                                color:##999 !important;-->
+    <!--                                }-->
+    <!--                                table td-->
+    <!--                                {-->
+    <!--                                vertical-align:middle;-->
+    <!--                                text-align:center !important;-->
+    <!--                                }-->
+    <!--                            </style>-->
+    <!--                            <table width="100%" border="0" cellspacing="0" cellpadding="0">-->
+    <!--                                <colgroup>-->
+    <!--                                    <col width="30%"/>-->
+    <!--                                    <col width="40%"/>-->
+    <!--                                    <col width="30%"/>-->
+    <!--                                </colgroup>-->
+    <!--                                <tr>-->
+    <!--                                    <td>-->
+    <!--                                    </td>-->
+    <!--                                    <td class="font11" align="center">-->
+    <!--                                        www.veritaschool.ro-->
+    <!--                                    </td>-->
+    <!--                                    <td align="center">-->
+
+    <!--                                    </td>-->
+    <!--                                </tr>-->
+    <!--                                <tr>-->
+    <!--                                    <td>-->
+    <!--                                    </td>-->
+    <!--                                    <td align="center">-->
+
+    <!--                                    </td>-->
+    <!--                                    <td class="font11" align="center">-->
+    <!--                                        Page | #attributes.pageNumber#-->
+    <!--                                    </td>-->
+    <!--                                </tr>-->
+    <!--                            </table>-->
+    <!--                        </cfdocumentitem>-->
     <!--    <template id="template_reenrollment_family_finance">-->
     <!--        <t t-call="adm_reenrollment.template_admission_reenrollment_form_common">-->
     <!--            <t t-set="reenrollment_form_assets">-->

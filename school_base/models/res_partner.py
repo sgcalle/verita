@@ -75,8 +75,11 @@ class ResPartner(models.Model):
     primary_language = fields.Char("Primary Language")
     birth_city = fields.Char("Birth City")
     birth_state = fields.Char("Birth State")
+    birh_place = fields.Char("Birth place")
     race = fields.Char("Race")
     gender = fields.Many2one("school_base.gender", string="Gender")
+
+    ssn = fields.Char()
 
     id_documentation_file = fields.Binary(attachment=True)
     id_documentation_file_name = fields.Char()
@@ -218,8 +221,6 @@ class ResPartner(models.Model):
         'school_base.relationship', string="Custody contacts",
         compute="compute_self_relationship_ids", store=False)
 
-    relationship_ids = fields.One2many(
-        "school_base.relationship", "partner_1", string="Relationships")
     relationship_members_ids = fields.One2many(
         "school_base.relationship", "family_id",
         string="Relationships Members", readonly=True)

@@ -165,6 +165,15 @@
                                 </group>
                             </group>
                         </page>
+                        <page string="PDFs">
+                            <field name="contract_file" string="Contract"/>
+                        </page>
+                        <page string="Fee" name="fee">
+                            <group>
+                                <field name="registration_fee_amount"/>
+                                <field name="reenrollment_deposit_amount"/>
+                            </group>
+                        </page>
                         <page string="Logs" name="logs">
                             <field name="log_ids">
                                 <tree>

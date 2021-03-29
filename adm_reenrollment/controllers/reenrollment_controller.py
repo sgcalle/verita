@@ -114,6 +114,33 @@ class ReenrollmentController(http.Controller):
         SUPER_ENV = api.Environment(request.env.cr, SUPERUSER_ID, {})
         reenrollment_id = reenrollment_id.sudo()
 
+        # Binary attachments fields
+        # Why not res_field != false ?
+        # Well... There can happens some kind of weird bug where just simply
+        # changes the name or something...
+
+        attachment_ids = SUPER_ENV['ir.attachment'].search([
+            ('res_model', '=', 'adm.reenrollment'),
+            ('res_id', '=', reenrollment_id.id),
+            ('res_field', '!=', False),
+            ])
+
+        field_attachment_ids = {
+            field.name: attachment_ids
+            .filtered(lambda att: att.res_field == field.name)
+            for key, field in reenrollment_id._fields.items()
+            if hasattr(field, 'attachment')
+            }
+
+        # Testing
+        reenrollment_id.regenerate_contract_pdf()
+
+        # field_attachment_ids = SUPER_ENV['ir.attachment'].search([
+        #     ('res_field', 'in', attachment_field_name_list),
+        #     ('res_model', '=', 'adm.reenrollment'),
+        #     ('res_id', '=', reenrollment_id.id)
+        #     ])
+
         guardian_options = \
             reenrollment_id.partner_id.family_ids\
             .mapped('member_ids')\
@@ -133,4 +160,5 @@ class ReenrollmentController(http.Controller):
             'USER_ENV': http.request.env,
             'is_required': is_required,
             'user_family_id': reenrollment_id.current_user_access_id.family_id,
+            'field_attachment_ids': field_attachment_ids,
             }

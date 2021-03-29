@@ -111,9 +111,7 @@ class AdmisionController(http.Controller):
 
             # Sacamos datos de las relationship    
             # Array para las relationships  
-            record["relationship"] = (application_id.relationship_ids
-                                      .read(["partner_2",
-                                             "relationship_type"]))
+            record["relationship"] = (application_id.self_relationship_ids.read(["partner_relation_id", "relationship_type"]))
 
             # Sacamos datos del previous school
             # if record["previous_school_ids"]:
