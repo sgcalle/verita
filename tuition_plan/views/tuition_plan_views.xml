@@ -51,6 +51,7 @@
                                 <field name="first_due_date" placeholder="Date" attrs="{'required': [('payment_term_id','=',False)], 'invisible': [('payment_term_id','!=',False)]}"/>
                             </div>
                             <field name="use_student_payment_term"/>
+                            <field name="surcharge_amount"/>
                         </group>
                         <group>
                             <field name="grade_level_ids" widget="many2many_tags" options="{'no_create_edit': 1, 'no_create':1}"/>

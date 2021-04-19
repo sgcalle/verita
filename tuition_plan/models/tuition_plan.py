@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
+
 class TuitionPlan(models.Model):
     _name = "tuition.plan"
     _description = "Tuition Plan"
@@ -90,6 +91,8 @@ class TuitionPlan(models.Model):
         compute="_compute_default_partner_ids")
     use_student_payment_term = fields.Boolean(string="Use Student Payment Terms",
         help="If checked, the invoice payment terms is taken from the student if any")
+    surcharge_amount = fields.Float()
+    surcharge_percent = fields.Float()
 
     @api.constrains("default", "grade_level_ids", "period_date_from", "period_date_to", "category_id", "active")
     def _check_default(self):
