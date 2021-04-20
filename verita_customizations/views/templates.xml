@@ -3,90 +3,98 @@
     <template id="adm_verita_contract_template_2021_2022">
         <div>
             <!-- Variable declaration -->
-            <t t-set="config" t-value="o.env['ir.config_parameter'].sudo()"/>
-            <t t-set="nowdate" t-value="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+            <t t-set="config"
+               t-value="o.env['ir.config_parameter'].sudo()"/>
+            <t t-set="nowdate"
+               t-value="datetime.datetime.now().strftime('%d-%m-%Y')"/>
             <t t-set="school_year"
                t-value="o.env['school_base.school_year'].sudo().browse(int(config.get_param('adm.adm_current_school_year', False)))"/>
-            <t t-set="css_background" t-value="'#1f497d'"/>
-            <t t-set="tuition_fee" t-value="sum( o.tuition_plan_id.mapped('product_ids.amount') )"/>
-            <t t-set="food_fee" t-value="sum( o.food_plan_id.mapped('product_ids.amount') )"/>
-            <t t-set="shadow_fee" t-value="sum( o.shadow_teacher_plan_id.mapped('product_ids.amount') )"/>
-            <t t-set="tuition_surcharge" t-value="tuition_fee * o.tuition_plan_id.surcharge_percent / 100" />
-            <t t-set="food_surcharge" t-value="food_fee * o.food_plan_id.surcharge_percent / 100" />
+            <t t-set="css_background"
+               t-value="'#1f497d'"/>
+            <t t-set="tuition_fee"
+               t-value="sum( o.tuition_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="food_fee"
+               t-value="sum( o.food_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="shadow_fee"
+               t-value="sum( o.shadow_teacher_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="tuition_surcharge"
+               t-value="tuition_fee * o.tuition_plan_id.surcharge_percent / 100"/>
+            <t t-set="food_surcharge"
+               t-value="food_fee * o.food_plan_id.surcharge_percent / 100"/>
             <style>
 
                 .bg-blue {
-                    background: <t t-esc="css_background"/>;
-                    color: white;
+                background: <t t-esc="css_background"/>;
+                color: white;
                 }
-
 
                 table td {
-                    vertical-align:top;
-                    text-align:justify !important;
-                    /*Force styling*/
-                    background: white !important;
-                    color: black !important;
+                vertical-align:top;
+                text-align:justify !important;
+                /*Force styling*/
+                background: white !important;
+                color: black !important;
                 }
                 .break-after {
-                    page-break-after: always;
+                page-break-after: always;
                 }
                 .break-before {
-                    page-break-before: always;
+                page-break-before: always;
                 }
                 .font10 *{
-                    font-size: 10px !important;
+                font-size: 10px !important;
                 }
 
                 .bordered-table td, .bordered-table th {
-                    border: 2px solid black;
-                    padding: 0.5rem;
-                    padding-bottom: 0.5rem;
-                }
-                .bordered-table th {
-                    color: white;
+                border: 2px solid black;
+                padding: 0.5rem;
+                padding-bottom: 0.5rem;
                 }
                 table.o_verita_table_guardian td, table.o_verita_table_guardian th {
-                    border: 2px solid black;
-                    padding: 0.5rem;
-                    padding-bottom: 0.5rem;
+                border: 2px solid black;
+                padding: 0.5rem;
+                padding-bottom: 0.5rem;
+                }
+
+                table.o_verita_table_guardian th {
+                color: white !important;
                 }
 
                 table.o_verita_table_guardian thead {
-                    background: <t t-esc="css_background"/>;
-                    color: white !important;
-                    padding-bottom: 10px !important;
+                background: <t t-esc="css_background"/>;
+                color: white !important;
+                padding-bottom: 10px !important;
                 }
 
                 div.o_verita_contract_list {
-                    counter-reset: verita_roman;
-                    padding: 0;
-                    margin-top: 1rem;
+                counter-reset: verita_roman;
+                padding: 0;
+                margin-top: 1rem;
                 }
 
                 div.o_verita_contract_list > .o_verita_contract_list__header:before {
-                    font-weight: bold;
-                    content: counter(verita_roman, upper-roman);
-                    counter-increment: verita_roman;
+                font-weight: bold;
+                content: counter(verita_roman, upper-roman);
+                counter-increment: verita_roman;
 
 
-                    /*Styling*/
-                    padding: 5px;
-                    display: inline-block;
-                    background: <t t-esc="css_background"/>;
-                    color: white;
+                /*Styling*/
+                padding: 5px;
+                display: inline-block;
+                background: <t t-esc="css_background"/>;
+                color: white;
                 }
 
                 ol.letter_list {
-                    counter-reset: verita_letter;
-                    padding: 0;
-                    margin-top: 1rem;
+                counter-reset: verita_letter;
+                padding: 0;
+                margin-top: 1rem;
                 }
 
                 ol.letter_list > li:before {
-                    font-weight: bold;
-                    content: counter(verita_letter, lower-latin) ".";
-                    counter-increment: verita_letter;
+                font-weight: bold;
+                content: counter(verita_letter, lower-latin) ".";
+                counter-increment: verita_letter;
                 }
 
                 ol.letter_list > li > ol.letter_list_number {
@@ -516,7 +524,8 @@
                     <div class="row">
                         <div class="col-6">
                             <p>
-                                Taxa de inscriere este in cuantum de <t t-esc="config.get_param('adm.enrollment_fee', 0)"/>
+                                Taxa de inscriere este in cuantum
+                                de <t t-esc="config.get_param('adm.enrollment_fee', 0)"/>
                                 Euro si este un cost nerambursabil.<br/>
                                 <b>Termeni de plata:</b>
                                 <ul>
@@ -534,7 +543,8 @@
                         </div>
                         <div class="col-6">
                             <p>
-                                The Enrolment Fee is of <t t-esc="config.get_param('adm.enrollment_fee', 0)"/> Euro and it
+                                The Enrolment Fee is of <t t-esc="config.get_param('adm.enrollment_fee', 0)"/> Euro and
+                                it
                                 is a non-refundable fee. <br/>
                                 <b>Payment terms:</b>
                                 <ul>
@@ -566,7 +576,8 @@
                     <div class="row">
                         <div class="col-6">
                             <p>
-                                Depozitul de reinscriere este in cuantum de <t t-esc="config.get_param('adm.reenrollment_fee', 0)"/> Euro.
+                                Depozitul de reinscriere este in cuantum
+                                de <t t-esc="config.get_param('adm.reenrollment_fee', 0)"/> Euro.
                                 <br/>
                                 <b>Termeni de plata:</b>
                                 <ul>
@@ -812,8 +823,8 @@
                                     <span>
                                         Valoarea Pachetului Alimentar pentru care a optat
                                         Parintele/Reprezentantul legal este in cuantum de
-                                        <strong><t t-esc="o.food_plan_id.name" /></strong> linked to
-                                         linked to
+                                        <strong><t t-esc="o.food_plan_id.name"/></strong> linked to
+                                        linked to
                                         <t t-esc="food_fee"/> Euro
                                     </span>
                                 </li>
@@ -832,7 +843,7 @@
                                     <span>
                                         The value of the Food Package chosen by the
                                         Parent/Legal Guardian is of
-                                        <strong><t t-esc="o.food_plan_id.name" /></strong> linked to
+                                        <strong><t t-esc="o.food_plan_id.name"/></strong> linked to
                                         <t t-esc="food_fee"/> Euro
                                     </span>
                                 </li>
@@ -865,7 +876,7 @@
                                 <li>
                                     <span>
                                         Costul Profesorului de Sprijin este de
-                                        <t t-esc="shadow_fee" />
+                                        <t t-esc="shadow_fee"/>
                                         pe luna, scadent in ultima zi lucratoare a lunii pentru luna in curs.
                                     </span>
                                 </li>
@@ -883,7 +894,7 @@
                                 <li>
                                     <span>
                                         The cost of the Shadow Teacher is of
-                                        <t t-esc="shadow_fee" />
+                                        <t t-esc="shadow_fee"/>
                                         per month,
                                         payable on the last working day of the month for the
                                         current month.
@@ -1876,7 +1887,7 @@
                                 </tr>
                                 <tr>
                                     <td><u>No. of installments:</u></td>
-                                    <td><t t-esc="len(o.tuition_plan_id.mapped('product_ids.installment_ids'))"/></td>
+                                    <td><t t-esc="len(o.tuition_plan_id.installment_ids)"/></td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -1909,7 +1920,39 @@
                                         <th>Amount/euro</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    <tr t-foreach="o.mapped('tuition_plan_id.installment_ids').sorted('date')"
+                                        t-as="installment">
+                                        <td>
+                                            <span t-field="installment.date"/>
+                                        </td>
+                                        <td>
+                                            <!-- Placeholder  -->
+                                            <t t-esc="len(o.food_plan_id.installment_ids.mapped('date'))"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
+                            <p>
+                                All payments will be made in the following bank account: <b>RO40 EGNA 1010 0000 0081 5144</b>
+
+                                <br/>
+                                - Ron Account, Vista Bank at the BNR exchange date for the date of payment.
+
+                                <br/>
+
+                                * this plan does not include Registration fee
+
+                                <br/>
+                                ** the Re-enrollment Deposit has been deducted from the total amount, which was then
+                                divided
+                                by the number of installments
+                                *** this payment plan does not include fees for extracurricular activities,
+                                transportation,
+                                support teacher or any other modification
+                                which will occur after <t t-esc="o.tuition_plan_id.installment_ids[:1].date"/>
+                            </p>
+
                         </div>
                     </div>
 
@@ -2122,13 +2165,13 @@
                             <table border="1"
                                    class="o_verita_table_guardian">
                                 <tr>
-                                    <th>
+                                    <td>
                                         Sunt de accord ca asistenta medicala a scolii sa imi trateze copilul daca e
                                         nevoie / I allow the school nurse to treat my child if needed:
-                                    </th>
-                                    <th>
+                                    </td>
+                                    <td>
                                         <t t-esc="'yes' if o.permission_to_treat else 'no'"/>
-                                    </th>
+                                    </td>
                                 </tr>
                             </table>
                             <p class="p-4">
@@ -2158,14 +2201,16 @@
                                 </tr>
                                 <tr>
                                     <td>Medicamentul 1 / Medication 1:</td>
-                                    <t t-set="medication" t-value="prescription_drugs[:1]"/>
+                                    <t t-set="medication"
+                                       t-value="prescription_drugs[:1]"/>
                                     <td><t t-esc="medication.name"/></td>
                                     <td><t t-esc="'yes' if medication.self_administer else 'no'"/></td>
                                     <td><t t-esc="medication.dose"/></td>
                                 </tr>
                                 <tr>
                                     <td>Medicamentul 2 / Medication 2:</td>
-                                    <t t-set="medication" t-value="prescription_drugs[1:2]"/>
+                                    <t t-set="medication"
+                                       t-value="prescription_drugs[1:2]"/>
                                     <td><t t-esc="medication.name"/></td>
                                     <td><t t-esc="'yes' if medication.self_administer else 'no'"/></td>
                                     <td><t t-esc="medication.dose"/></td>
@@ -2280,8 +2325,8 @@
 
                             <table class="w-100 mt-4 bordered-table">
                                 <colgroup>
-                                    <col width="75%" />
-                                    <col width="25%" />
+                                    <col width="75%"/>
+                                    <col width="25%"/>
                                 </colgroup>
                                 <tr>
                                     <td>
