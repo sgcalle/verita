@@ -2197,7 +2197,7 @@
                                 </tr>
                                 <tr>
                                     <td>Healtd problems:</td>
-                                    <td><span t-field="o.healtd_problems"/></td>
+                                    <td><span t-field="o.health_problems"/></td>
                                 </tr>
                                 <tr>
                                     <td>Otder physical characteristics:</td>
