@@ -80,7 +80,7 @@
             </t>
             <t t-set="head" t-value="(head or '') + head_application_common"/>
 
-            <t t-if="not skip_sent_message and application_id.status_id.type_id not in ['return', 'started']">
+            <t t-if="not skip_sent_message and application_id.status_id.type_id not in ['return', 'started', 'parents_can_edit']">
 
                 <div class="oe_struture"/>
                 <div class="oe_struture">

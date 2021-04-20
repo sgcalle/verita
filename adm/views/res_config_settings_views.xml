@@ -42,7 +42,8 @@
                     <div id="adm_setting">
                         <h2>Admission</h2>
                         <div class="row mt16 o_settings_container" id="admission_settings_container">
-                            <div class="col-12 col-md-6 o_settings_container">
+
+                            <div class="col-12 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <label for="adm_current_school_year"/>
                                     <div class="content-group">
@@ -52,10 +53,142 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Admission Document Types</span>
+                                    <div class="text-muted">
+                                        The system should know what of your document types is going to be used
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="identification_document_type_id" string="Identification"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="identification_document_type_id" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="residency_permit_document_type_id" string="Residency Permit"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="residency_permit_document_type_id" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="visa_document_type_id" string="Visa"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="visa_document_type_id" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="passport_document_type_id" string="Passport"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="passport_document_type_id" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="residency_permit_document_type_id" string="Residecy permit"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="residency_permit_document_type_id" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Guardian Form Limit</span>
+                                    <div class="text-muted">
+                                        Limit max guardians in the Admission Forms
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="is_limit_max_guardians"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="is_limit_max_guardians" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16"
+                                         attrs="{'invisible': [('is_limit_max_guardians', '=', False)]}">
+                                        <label for="limit_max_guardians"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="limit_max_guardians" class="oe_inline"
+                                            placeholder="Any number greater than 0"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Condition Form Limit</span>
+                                    <div class="text-muted">
+                                        Limit max conditions in the Admission Forms
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="is_limit_max_conditions"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="is_limit_max_conditions" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16"
+                                         attrs="{'invisible': [('is_limit_max_conditions', '=', False)]}">
+                                        <label for="limit_max_conditions"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="limit_max_conditions" class="oe_inline"
+                                            placeholder="Any number greater than 0"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Medication Form Limit</span>
+                                    <div class="text-muted">
+                                        Limit max medications in the Admission Forms
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="is_limit_max_medications"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="is_limit_max_medications" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16"
+                                         attrs="{'invisible': [('is_limit_max_medications', '=', False)]}">
+                                        <label for="limit_max_medications"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="limit_max_medications" class="oe_inline"
+                                            placeholder="Any number greater than 0"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Allergy Form Limit</span>
+                                    <div class="text-muted">
+                                        Limit max allergies in the Admission Forms
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="is_limit_max_allergies"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="is_limit_max_allergies" class="oe_inline"/>
+                                    </div>
+                                    <div class="row mt16"
+                                         attrs="{'invisible': [('is_limit_max_allergies', '=', False)]}">
+                                        <label for="limit_max_allergies"
+                                               class="col-lg-4 o_light_label"/>
+                                        <field name="limit_max_allergies" class="oe_inline"
+                                            placeholder="Any number greater than 0"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <h2>Application</h2>
-                        <div class="row mt16 o_settings_container" id="adm_settins_container">
+                        <div class="row mt16 o_settings_container">
+
+                            <div class="col-12 col-lg-6 o_setting_box" >
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Enrollment Fee</span>
+                                    <div class="text-muted">
+                                        Enrollment fee used for the system
+                                    </div>
+                                    <div class="row mt16">
+                                        <label for="enrollment_fee" class="col-lg-4 o_light_label"/>
+                                        <field name="enrollment_fee" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-12 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <label for="adm_application_required_field_ids"/>

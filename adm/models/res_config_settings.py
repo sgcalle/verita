@@ -16,13 +16,15 @@ class AdmFieldsSettings(models.Model):
     parent_id = fields.Many2one('adm.fields.settings', string="Parent")
     parent_relational_model = fields.Char(related='parent_id.relational_model')
 
-    child_ids = fields.One2many('adm.fields.settings', 'parent_id', string="Childs")
+    child_ids = fields.One2many(
+        'adm.fields.settings', 'parent_id', string="Childs")
     long_name = fields.Char(compute="_compute_long_name", store=True)
 
     domain = fields.Char('Domain filter')
 
     def _generate_long_name(self):
-        return self.name if not self.parent_id else '%s.%s' % (self.parent_id._generate_long_name(), self.name)
+        return self.name if not self.parent_id else \
+            '%s.%s' % (self.parent_id._generate_long_name(), self.name)
 
     @api.depends('name', 'field_id', 'parent_id')
     def _compute_long_name(self):
@@ -48,9 +50,12 @@ class ResConfigSettings(models.TransientModel):
     """  Settings for school base module """
     _inherit = "res.config.settings"
 
-    adm_current_school_year = fields.Many2one('school_base.school_year',
-                                              config_parameter='adm.adm_current_school_year',
-                                              string="Current school year")
+    adm_current_school_year = fields.Many2one(
+        'school_base.school_year',
+        config_parameter='adm.adm_current_school_year',
+        string="Current school year")
+
+    enrollment_fee = fields.Float(config_parameter='adm.enrollment_fee')
 
     adm_application_required_field_ids = fields.Many2many(
         'adm.fields.settings',
@@ -61,9 +66,70 @@ class ResConfigSettings(models.TransientModel):
         relation='adm_app_optional_field_settings',
         string="Application optional fields")
 
-    adm_mail_inviting_partner_to_application_id = fields.Many2one('mail.template',
-                                                                  related='company_id.mail_inviting_partner_to_application_id',
-                                                                  readonly=False)
+    adm_mail_inviting_partner_to_application_id = fields.Many2one(
+        'mail.template',
+        related='company_id.mail_inviting_partner_to_application_id',
+        readonly=False)
+
+    # Document types
+    passport_document_type_id = fields.Many2one(
+        'pld.legal.document.type',
+        config_parameter='adm.passport_document_type_id',
+        string="Passport document type")
+
+    identification_document_type_id = fields.Many2one(
+        'pld.legal.document.type',
+        config_parameter='adm.identification_document_type_id',
+        string="Identification document type")
+
+    visa_document_type_id = fields.Many2one(
+        'pld.legal.document.type',
+        config_parameter='adm.visa_document_type_id',
+        string="Visa document type")
+
+    residency_permit_document_type_id = fields.Many2one(
+        'pld.legal.document.type',
+        config_parameter='adm.residency_permit_document_type_id',
+        string="Residency permit document type")
+
+    report_card_document_type_id = fields.Many2one(
+        'pld.legal.document.type',
+        config_parameter='adm.report_card_document_type_id',
+        string="Report card document type")
+
+    is_limit_max_guardians = fields.Boolean(
+        string="Will limit max guardian?",
+        config_parameter='adm.is_limit_max_guardians')
+    limit_max_guardians = fields.Integer(
+        string="Limit of max guardians",
+        config_parameter='adm.limit_max_guardians')
+    
+    is_limit_max_conditions = fields.Boolean(
+        string="Will limit max conditions?",
+        config_parameter='adm.is_limit_max_conditions')
+    limit_max_conditions = fields.Integer(
+        string="Limit of max conditions",
+        config_parameter='adm.limit_max_conditions')
+    
+    is_limit_max_medications = fields.Boolean(
+        string="Will limit max medications?",
+        config_parameter='adm.is_limit_max_medications')
+    limit_max_medications = fields.Integer(
+        string="Limit of max medications",
+        config_parameter='adm.limit_max_medications')
+    
+    is_limit_max_allergies = fields.Boolean(
+        string="Will limit max allergies?",
+        config_parameter='adm.is_limit_max_allergies')
+    limit_max_allergies = fields.Integer(
+        string="Limit of max allergies",
+        config_parameter='adm.limit_max_allergies')
+
+    _sql_constraints = [(
+        'positive_limit_max_guardians',
+        'CHECKj(limit_max_guardians >= 0)',
+        "Limit of max guardians should be positive!"
+        )]
 
     @api.model
     def get_values(self):

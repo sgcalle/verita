@@ -352,6 +352,10 @@
 
     <template id="template_application_family_parents_form">
         <div class="container p-4">
+            <t t-set="limit_of_max_parents"
+               t-value="int(SUPER_ENV['ir.config_parameter'].get_param('adm.limit_max_guardians', 0))"/>
+            <t t-set="is_limit_of_max_parents"
+               t-value="bool(SUPER_ENV['ir.config_parameter'].get_param('adm.is_limit_max_guardians', 0))"/>
             <div class="row">
                 <div class="col h1">
                     Parents
@@ -365,9 +369,12 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col" id="parent_relationship_card_list">
+                <div class="col" id="parent_relationship_card_list"
+                    t-att-data-relationship-limit="is_limit_of_max_parents and limit_of_max_parents"
+                    t-attf-data-relationship-limit-msm="You cannot add more than {{limit_of_max_parents}} guardians/parents">
+                    <t t-set="_parent_i" t-value="0"/>
                     <t t-foreach="application_id.parent_relationship_ids" t-as="member">
-                        <div data-adm-rel="rel">
+                        <div data-adm-rel="rel" t-if="is_limit_of_max_parents and _parent_i &lt; limit_of_max_parents">
                             <t t-call="adm.template_application_family_members_card"/>
                         </div>
                     </t>

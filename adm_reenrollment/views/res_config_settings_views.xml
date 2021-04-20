@@ -39,13 +39,26 @@
             <div id="adm_setting" position="inside">
                 <h2>Reenrollment</h2>
                 <div class="row mt16 oe_mb16 o_settings_container" id="reenrollment_settings_container">
-                    <div class="col-12 col-md-6 o_settings_container">
+                    <div class="col-12 col-md-6 o_setting_box">
                         <div class="o_setting_right_pane">
                             <label for="reenrollment_announcement_mail_template_id"/>
                             <div class="content-group">
                                 <div class="mt16">
                                     <field name="reenrollment_announcement_mail_template_id"/>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 o_setting_box" >
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Reenrollment Fee</span>
+                            <div class="text-muted">
+                                Reenrollment fee used for the system
+                            </div>
+                            <div class="row mt16">
+                                <label for="reenrollment_fee" class="col-lg-4 o_light_label"/>
+                                <field name="reenrollment_fee"/>
                             </div>
                         </div>
                     </div>
@@ -110,9 +123,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 o_settings_box">
+                    <div class="col-12 col-md-6 o_setting_box">
                         <div class="o_setting_right_pane">
-                            <label for="def_ren_enrollment_status_id"/>
+                            <label for="def_ren_enrollment_status_id" string="Default enrollment status"/>
                             <div class="content-group">
                                 <div class="mt16">
                                     <field name="def_ren_enrollment_status_id" string="Default current enrollmet status"/>
@@ -120,7 +133,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 o_settings_box">
+                    <div class="col-12 col-md-6 o_setting_box">
                         <div class="o_setting_right_pane">
                             <label for="def_ren_next_enrollment_status_id" string="Default next enrollmet status"/>
                             <div class="content-group">

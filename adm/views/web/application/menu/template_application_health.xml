@@ -3,51 +3,66 @@
 
     <template id="adm.template_application_medical_condition">
         <t t-if="condition">
-            <input type="hidden" t-att-value="condition.id" data-adm-field="id"
+            <input type="hidden"
+                   t-att-value="condition.id"
+                   data-adm-field="id"
                    data-adm-field-type="INTEGER"/>
         </t>
         <article class="border rounded p-2 m-1">
             <div class="row">
-                <section class="col-5">
-                    <label>
-                        Name
-                        <span class="text-danger" t-if="is_required('medical_conditions_ids.name')">*</span>
-                    </label>
-                    <t t-if="not condition">
-                        <t t-set="options_medical_conditions"
-                           t-value="SUPER_ENV['adm.application.option.medical.conditions'].search([])"/>
-                        <input type="checkbox" class="js_condition_select"/> Other
-                        <select class="form-control js_select_health"
-                                data-adm-field="name" required="required"
-                                t-att-required="is_required('medical_conditions_ids.name')"
-                                name="medical_condition_name">
-                            <t t-foreach="options_medical_conditions" t-as="options_medical">
-                                <option t-att-value="options_medical.name">
-                                    <t t-esc="options_medical.name"/>
-                                </option>
+
+                <section class="col-10">
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label>
+                                Name
+                                <span class="text-danger"
+                                      t-if="is_required('medical_conditions_ids.name')">*</span>
+                            </label>
+                            <t t-if="not condition">
+                                <t t-set="options_medical_conditions"
+                                   t-value="SUPER_ENV['adm.application.option.medical.conditions'].search([])"/>
+                                <input type="checkbox"
+                                       class="js_condition_select"/> Other
+                                <select class="form-control js_select_health"
+                                        data-adm-field="name"
+                                        required="required"
+                                        t-att-required="is_required('medical_conditions_ids.name')"
+                                        name="medical_condition_name">
+                                    <t t-foreach="options_medical_conditions"
+                                       t-as="options_medical">
+                                        <option t-att-value="options_medical.name">
+                                            <t t-esc="options_medical.name"/>
+                                        </option>
+                                    </t>
+                                </select>
                             </t>
-                        </select>
-                    </t>
-                    <input required="required" class="form-control js_select_health"
-                           type="text" name="medical_condition_name"
-                           data-adm-field="name"
-                           t-att-required="is_required('medical_conditions_ids.name')"
-                           t-att-value="condition and condition.name"/>
-                </section>
-                <section class="col-6">
-                    <label>
-                        Comment
-                        <span class="text-danger" t-if="is_required('comment')">*</span>
-                    </label>
-                    <input required="required" class="form-control"
-                           type="text"
-                           name="medical_condition_comment"
-                           data-adm-field="comment"
-                           t-att-required="is_required('medical_conditions_ids.comment')"
-                           t-att-value="condition and condition.comment"/>
+                            <input required="required"
+                                   class="form-control js_select_health"
+                                   type="text"
+                                   name="medical_condition_name"
+                                   data-adm-field="name"
+                                   t-att-required="is_required('medical_conditions_ids.name')"
+                                   t-att-value="condition and condition.name"/>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label>
+                                Comment
+                                <span class="text-danger"
+                                      t-if="is_required('comment')">*</span>
+                            </label>
+                            <input required="required"
+                                   class="form-control"
+                                   type="text"
+                                   name="medical_condition_comment"
+                                   data-adm-field="comment"
+                                   t-att-required="is_required('medical_conditions_ids.comment')"
+                                   t-att-value="condition and condition.comment"/>
+                        </div>
+                    </div>
                 </section>
                 <section
-                        class="col-1 d-flex justify-content-center p-3">
+                        class="col-2d-flex justify-content-center align-items-center p-3">
                     <button type="button"
                             class="btn btn-danger remove-rel-medical">
                         <i class="fa fa-times"/>
@@ -59,50 +74,67 @@
 
     <template id="adm.template_application_medical_allergies">
         <t t-if="allergy">
-            <input type="hidden" t-att-value="allergy.id" data-adm-field="id"
+            <input type="hidden"
+                   t-att-value="allergy.id"
+                   data-adm-field="id"
                    data-adm-field-type="INTEGER"/>
         </t>
         <article class="border rounded p-2 m-1">
             <div class="row">
-                <section class="col-5">
-                    <label>
-                        Name
-                        <span class="text-danger" t-if="is_required('medical_allergies_ids.name')">*</span>
-                    </label>
+                <section class="col-10">
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label>
+                                Name
+                                <span class="text-danger"
+                                      t-if="is_required('medical_allergies_ids.name')">*</span>
+                            </label>
 
-                    <t t-if="not allergy">
-                        <t t-set="options_medical_allergies"
-                           t-value="SUPER_ENV['adm.application.option.medical.allergies'].search([])"/>
-                        <input type="checkbox" class="js_allergy_toggle"/> Other
-                        <select class="form-control js_allergy_select"
-                                data-adm-field="name" required="required"
-                                t-att-required="is_required('medical_conditions_ids.name')"
-                                name="medical_condition_name">
-                            <t t-foreach="options_medical_allergies" t-as="options_medical">
-                                <option t-att-value="options_medical.name">
-                                    <t t-esc="options_medical.name"/>
-                                </option>
+                            <t t-if="not allergy">
+                                <t t-set="options_medical_allergies"
+                                   t-value="SUPER_ENV['adm.application.option.medical.allergies'].search([])"/>
+                                <input type="checkbox"
+                                       class="js_allergy_toggle"/> Other
+                                <select class="form-control js_select_health"
+                                        data-adm-field="name"
+                                        required="required"
+                                        t-att-required="is_required('medical_conditions_ids.name')"
+                                        name="medical_condition_name">
+                                    <t t-foreach="options_medical_allergies"
+                                       t-as="options_medical">
+                                        <option t-att-value="options_medical.name">
+                                            <t t-esc="options_medical.name"/>
+                                        </option>
+                                    </t>
+                                </select>
                             </t>
-                        </select>
-                    </t>
-                    <input required="required" class="form-control js_allergy_text"
-                           type="text" name="medical_allergy_name"
-                           data-adm-field="name"
-                           t-att-required="is_required('medical_allergies_ids.name')"
-                           t-att-value="allergy and allergy.name"/>
+                            <input required="required"
+                                   class="form-control js_select_health"
+                                   type="text"
+                                   name="medical_allergy_name"
+                                   data-adm-field="name"
+                                   t-att-required="is_required('medical_allergies_ids.name')"
+                                   t-att-value="allergy and allergy.name"/>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label>
+                                Comment
+                                <span class="text-danger"
+                                      t-if="is_required('medical_allergies_ids.comment')">*</span>
+                            </label>
+                            <input required="required"
+                                   class="form-control"
+                                   type="text"
+                                   data-adm-field="comment"
+                                   name="medical_allergy_comment"
+                                   t-att-required="is_required('medical_allergies_ids.comment')"
+                                   t-att-value="allergy and allergy.comment"/>
+                        </div>
+                    </div>
                 </section>
-                <section class="col-6">
-                    <label>
-                        comment
-                        <span class="text-danger" t-if="is_required('medical_allergies_ids.comment')">*</span>
-                    </label>
-                    <input required="required" class="form-control" type="text"
-                           data-adm-field="comment" name="medical_allergy_comment"
-                           t-att-required="is_required('medical_allergies_ids.comment')"
-                           t-att-value="allergy and allergy.comment"/>
-                </section>
-                <section class="col-1 d-flex justify-content-center p-3">
-                    <button type="button" class="btn btn-danger remove-rel-medical">
+                <section class="col-2d-flex justify-content-center align-items-center p-3">
+                    <button type="button"
+                            class="btn btn-danger remove-rel-medical">
                         <i class="fa fa-times"/>
                     </button>
                 </section>
@@ -112,49 +144,112 @@
 
     <template id="adm.template_application_medical_Medication">
         <t t-if="medication">
-            <input type="hidden" t-att-value="medication.id" data-adm-field="id"
+            <input type="hidden"
+                   t-att-value="medication.id"
+                   data-adm-field="id"
                    data-adm-field-type="INTEGER"/>
         </t>
         <article class="border rounded p-2 m-1">
             <div class="row">
-                <section class="col-5">
-                    <label>
-                        Name
-                        <span class="text-danger" t-if="is_required('medical_medications_ids.name')">*</span>
-                    </label>
-                    <t t-if="not medication">
-                        <t t-set="options_medical_medication"
-                           t-value="SUPER_ENV['adm.application.option.medical.medications'].search([])"/>
-                        <input type="checkbox" class="js_medication_toggle"/> Other
-                        <select class="form-control js_medication_select"
-                                data-adm-field="name" required="required"
-                                t-att-required="is_required('medical_conditions_ids.name')"
-                                name="medical_condition_name">
-                            <t t-foreach="options_medical_medication" t-as="options_medical">
-                                <option t-att-value="options_medical.name">
-                                    <t t-esc="options_medical.name"/>
-                                </option>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label>
+                                Name
+                                <span class="text-danger"
+                                      t-if="is_required('medical_medications_ids.name')">*</span>
+                            </label>
+                            <t t-if="not medication">
+                                <t t-set="options_medical_medication"
+                                   t-value="SUPER_ENV['adm.application.option.medical.medications'].search([])"/>
+                                <input type="checkbox"
+                                       class="js_medication_toggle"/> Other
+                                <select class="form-control js_select_health"
+                                        data-adm-field="name"
+                                        required="required"
+                                        t-att-required="is_required('medical_conditions_ids.name')"
+                                        name="medical_condition_name">
+                                    <t t-foreach="options_medical_medication"
+                                       t-as="options_medical">
+                                        <option t-att-value="options_medical.name">
+                                            <t t-esc="options_medical.name"/>
+                                        </option>
+                                    </t>
+                                </select>
                             </t>
-                        </select>
-                    </t>
-                    <input required="required" class="form-control js_medication_text" type="text"
-                           name="medical_medication_name"
-                           data-adm-field="name"
-                           t-att-required="is_required('medical_medications_ids.name')"
-                           t-att-value="medication and medication.name"/>
-                </section>
-                <section class="col-6">
-                    <label>
-                        Comment
-                        <span class="text-danger" t-if="is_required('medical_medications_ids.comment')">*</span>
-                    </label>
-                    <input required="required" class="form-control" type="text" name="medical_medication_comment"
-                           data-adm-field="comment"
-                           t-att-required="is_required('medical_medications_ids.comment')"
-                           t-att-value="medication and medication.comment"/>
-                </section>
-                <section class="col-1 d-flex justify-content-center p-3">
-                    <button type="button" class="btn btn-danger remove-rel-medical">
+                            <input required="required"
+                                   class="form-control js_select_health"
+                                   type="text"
+                                   name="medical_medication_name"
+                                   data-adm-field="name"
+                                   t-att-required="is_required('medical_medications_ids.name')"
+                                   t-att-value="medication and medication.name"/>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label>
+                                Comment
+                                <span class="text-danger"
+                                      t-if="is_required('medical_medications_ids.comment')">*</span>
+                            </label>
+                            <input required="required"
+                                   class="form-control"
+                                   type="text"
+                                   name="medical_medication_comment"
+                                   data-adm-field="comment"
+                                   t-att-required="is_required('medical_medications_ids.comment')"
+                                   t-att-value="medication and medication.comment"/>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label>
+                                Type
+                            </label>
+                            <select class="form-control"
+                                    data-adm-field="type">
+                                <option value="otc"
+                                        t-att-selected="medication and medication.type == 'otc'">OTC</option>
+                                <option value="prescription_drug"
+                                        t-att-selected="medication and medication.type == 'prescription_drug'">
+                                    Prescription drug</option>
+                            </select>
+                        </div>
+                        <div class="col-6 d-flex justify-content-center align-items-center">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox"
+                                       data-adm-field="self_administer"
+                                       t-att-value="medication and medication.self_administer"
+                                       t-attf-name="medical-self-administer-#{medication and medication.id}"
+                                       t-attf-id="medical-self-administer-#{medication and medication.id}"
+                                       t-att-checked="medication and medication.self_administer"
+                                       data-adm-field-type="BOOLEAN"
+                                       class="custom-control-input"/>
+                                <label class="custom-control-label"
+                                       t-attf-for="medical-self-administer-#{medication and medication.id}">
+                                    Self administer
+                                    <span class="text-danger"
+                                          t-if="is_required('medical_medications_ids.self_administer')">*</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-6 form-group">
+                            <label>
+                                Dose
+                                <span class="text-danger"
+                                      t-if="is_required('medical_medications_ids.dose')">*</span>
+                            </label>
+                            <input required="required"
+                                   class="form-control"
+                                   type="text"
+                                   name="medical_medication_dose"
+                                   data-adm-field="dose"
+                                   t-att-required="is_required('medical_medications_ids.dose')"
+                                   t-att-value="medication and medication.dose"/>
+                        </div>
+                    </div>
+                </div>
+                <section class="col-2 d-flex justify-content-center align-items-center p-3">
+                    <button type="button"
+                            class="btn btn-danger remove-rel-medical">
                         <i class="fa fa-times"/>
                     </button>
                 </section>
@@ -164,21 +259,27 @@
 
     <template id="adm.template_application_menu_medical_info">
         <t t-call="adm.template_application_form_commons">
-            <div id="template_condition" style="display: none;">
+            <div id="template_condition"
+                 style="display: none;">
                 <t t-call="adm.template_application_medical_condition"/>
             </div>
-            <div id="template_medication" style="display: none;">
+            <div id="template_medication"
+                 style="display: none;">
                 <t t-call="adm.template_application_medical_Medication"/>
             </div>
-            <div id="template_allergy" style="display: none;">
+            <div id="template_allergy"
+                 style="display: none;">
                 <t t-call="adm.template_application_medical_allergies"/>
             </div>
             <t t-set="title">Health</t>
             <t t-set="head">
-                <t t-call-assets="adm.assets_application_school_health" defer_load="True"/>
+                <t t-call-assets="adm.assets_application_school_health"
+                   defer_load="True"/>
             </t>
-            <t t-set="url_prev" t-value="'/admission/applications/%s/additional-questions' % application_id.id"/>
-            <t t-set="url_next" t-value="'/admission/applications/%s/document-comun' % application_id.id"/>
+            <t t-set="url_prev"
+               t-value="'/admission/applications/%s/additional-questions' % application_id.id"/>
+            <t t-set="url_next"
+               t-value="'/admission/applications/%s/document-comun' % application_id.id"/>
 
             <section class="container-fluid mt-3">
                 <form class="row mb-4 justify-content-center align-items-center"
@@ -187,9 +288,11 @@
                         <div class="row">
                             <section class="col-12 col-md-4">
                                 <label>
-                                    Doctor Name <span class="text-danger" t-if="is_required('doctor_name')">*</span>
+                                    Doctor Name <span class="text-danger"
+                                                      t-if="is_required('doctor_name')">*</span>
                                 </label>
-                                <input required="required" class="form-control"
+                                <input required="required"
+                                       class="form-control"
                                        type="text"
                                        name="doctor_name"
                                        data-adm-field="doctor_name"
@@ -198,9 +301,11 @@
                             </section>
 
                             <section class="col-12 col-md-4">
-                                <label> Hospital <span class="text-danger" t-if="is_required('hospital')">
+                                <label> Hospital <span class="text-danger"
+                                                       t-if="is_required('hospital')">
                                     *</span></label>
-                                <input required="required" class="form-control"
+                                <input required="required"
+                                       class="form-control"
                                        type="text"
                                        name="hospital"
                                        t-att-required="is_required('doctor_name')"
@@ -210,9 +315,11 @@
                             <section class="col-12 col-md-4">
                                 <label>
                                     Doctor phone
-                                    <span class="text-danger" t-if="is_required('hospital')">*</span>
+                                    <span class="text-danger"
+                                          t-if="is_required('hospital')">*</span>
                                 </label>
-                                <input required="required" class="form-control"
+                                <input required="required"
+                                       class="form-control"
                                        type="text"
                                        name="doctor_phone"
                                        data-adm-field="doctor_phone"
@@ -222,9 +329,11 @@
                             <section class="col-6">
                                 <label>
                                     Student Blood Type
-                                    <span class="text-danger" t-if="is_required('blood_type')">*</span>
+                                    <span class="text-danger"
+                                          t-if="is_required('blood_type')">*</span>
                                 </label>
-                                <input required="required" class="form-control"
+                                <input required="required"
+                                       class="form-control"
                                        type="text"
                                        name="blood_type"
                                        data-adm-field="blood_type"
@@ -233,7 +342,8 @@
                             </section>
                             <section class="col-6 d-flex justify-content-center align-items-center">
                                 <div class="custom-control custom-switch">
-                                    <input type="checkbox" data-adm-field="permission_to_treat"
+                                    <input type="checkbox"
+                                           data-adm-field="permission_to_treat"
                                            t-att-value="application_id.permission_to_treat"
                                            t-attf-name="permission_to_treat"
                                            t-attf-id="permission_to_treat_checkbox"
@@ -243,14 +353,15 @@
                                     <label class="custom-control-label"
                                            t-attf-for="permission_to_treat_checkbox">
                                         Permision to treat?
-                                        <span class="text-danger" t-if="is_required('permission_to_treat')">*</span>
+                                        <span class="text-danger"
+                                              t-if="is_required('permission_to_treat')">*</span>
                                     </label>
                                 </div>
                             </section>
                         </div>
 
-                        <div class="card mt-2">
-                            <section class="card-header p-0">
+                        <div class="card mt-4">
+                            <section class="card-header">
                                 <h3>Medical Conditions</h3>
                             </section>
                             <section id="condition_list"
@@ -269,8 +380,8 @@
                                 &#10010;</button>
                         </div>
 
-                        <div class="card mt-2">
-                            <section class="card-header p-0">
+                        <div class="card mt-4">
+                            <section class="card-header">
                                 <h3>Medical allergies</h3>
                             </section>
                             <section id="allergy_list"
@@ -289,11 +400,12 @@
                                 &#10010;</button>
                         </div>
 
-                        <div class="card mt-2">
-                            <section class="card-header p-0">
+                        <div class="card mt-4">
+                            <section class="card-header">
                                 <h3>Medication</h3>
                             </section>
-                            <section id="medication_list" class="container-fluid"
+                            <section id="medication_list"
+                                     class="container-fluid"
                                      data-adm-field-type="ONE2MANY"
                                      data-adm-field="medical_medications_ids">
                                 <t t-foreach="application_id.medical_medications_ids"

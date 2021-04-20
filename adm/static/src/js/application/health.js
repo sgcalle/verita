@@ -4,7 +4,7 @@ odoo.define('adm.application.condition', require => {
 
     let counter = 0;
 
-    function toggleCoditionSelect(event) {
+    function toggleHealthElementSelect(event) {
 			const $otherToggleCheckbox = $(event.currentTarget);
 			const $selectHealth = $otherToggleCheckbox.closest('div.row').find('select.js_select_health');
 			const $inputHealth = $otherToggleCheckbox.closest('div.row').find('input.js_select_health');
@@ -18,105 +18,47 @@ odoo.define('adm.application.condition', require => {
 			$inputHealth.prop('disabled', !isChecked);
 	}
 
-    function toggleAllergySelect(event) {
-			const $otherToggleCheckbox = $(event.currentTarget);
-			const $selectHealth = $otherToggleCheckbox.closest('div.row').find('select.js_allergy_select');
-			const $inputHealth = $otherToggleCheckbox.closest('div.row').find('input.js_allergy_text');
-
-			const isChecked = $otherToggleCheckbox.is(':checked');
-
-			$selectHealth.toggle(!isChecked);
-			$selectHealth.prop('disabled', isChecked);
-
-			$inputHealth.toggle(isChecked);
-			$inputHealth.prop('disabled', !isChecked);
-        console.log("DSSADSADSDSAd")
-	}
-
-    function toggleMedicationSelect(event) {
-			const $otherToggleCheckbox = $(event.currentTarget);
-			const $selectHealth = $otherToggleCheckbox.closest('div.row').find('select.js_medication_select');
-			const $inputHealth = $otherToggleCheckbox.closest('div.row').find('input.js_medication_text');
-
-			const isChecked = $otherToggleCheckbox.is(':checked');
-
-			$selectHealth.toggle(!isChecked);
-			$selectHealth.prop('disabled', isChecked);
-
-			$inputHealth.toggle(isChecked);
-			$inputHealth.prop('disabled', !isChecked);
-	}
-
-
-
-    function removeNewCondition(event) {
+    function removeHealthElement(event) {
         $(event.currentTarget).closest('[data-adm-rel]').remove();
     }
 
-    
-    function appendNewAllergy(event) {
+    function appendNewHealthElement(type){
         counter--;
-        const $clonedNewConditionTemplate = $(document.getElementById('template_allergy')).clone();
+        const $clonedNewConditionTemplate = $(document.getElementById('template_' + type)).clone();
         // We remove the style display none
         $clonedNewConditionTemplate.removeAttr( 'style');
-        $clonedNewConditionTemplate.find('.js_allergy_toggle').on('change', toggleAllergySelect);
-        $clonedNewConditionTemplate.find('input.js_allergy_text').hide().prop('disabled', true);
 
-        const conditionList = document.getElementById('allergy_list');
-        const newMany2manyRev = document.createElement('DIV');
-        newMany2manyRev.dataset.admRel = "rel";
-        $clonedNewConditionTemplate.appendTo(newMany2manyRev);
-        $clonedNewConditionTemplate.find('.remove-rel-medical').on('click', removeNewCondition);
-        // newMany2manyRev.appendChild(clonedNewConditionTemplate)
-        conditionList.appendChild(newMany2manyRev);
-    }
-    
-    function appendNewMedication(event) {
-        counter--;
-        const $clonedNewConditionTemplate = $(document.getElementById('template_medication')).clone();
-        // We remove the style display none
-        $clonedNewConditionTemplate.removeAttr('style');
+        // Change id and fors
+        $clonedNewConditionTemplate.find('[id]').each((i, el) => {
+            el.setAttribute('id', el.getAttribute('id') + counter);
+        })
+        $clonedNewConditionTemplate.find('[for]').each((i, el) => {
+            el.setAttribute('for', el.getAttribute('for') + counter);
+        });
 
-        $clonedNewConditionTemplate.find('.js_medication_toggle').on('change', toggleMedicationSelect);
-        $clonedNewConditionTemplate.find('input.js_medication_text').hide().prop('disabled', true);
-
-        const conditionList = document.getElementById('medication_list');
-        const newMany2manyRev = document.createElement('DIV');
-        newMany2manyRev.dataset.admRel = "rel";
-        $clonedNewConditionTemplate.appendTo(newMany2manyRev);
-        $clonedNewConditionTemplate.find('.remove-rel-medical').on('click', removeNewCondition);
-        // newMany2manyRev.appendChild(clonedNewConditionTemplate)
-        conditionList.appendChild(newMany2manyRev);
-    }
-    
-    function appendNewCondition(event) {
-        counter--;
-        const $clonedNewConditionTemplate = $(document.getElementById('template_condition')).clone();
-        // We remove the style display none
-        $clonedNewConditionTemplate.removeAttr('style');
-
-        $clonedNewConditionTemplate.find('.js_condition_select').on('change', toggleCoditionSelect);
+        $clonedNewConditionTemplate.find('.js_' + type + '_toggle').on('change', toggleHealthElementSelect);
         $clonedNewConditionTemplate.find('input.js_select_health').hide().prop('disabled', true);
-        const conditionList = document.getElementById('condition_list');
+
+        const conditionList = document.getElementById(type + '_list');
         const newMany2manyRev = document.createElement('DIV');
         newMany2manyRev.dataset.admRel = "rel";
         $clonedNewConditionTemplate.appendTo(newMany2manyRev);
-        $clonedNewConditionTemplate.find('.remove-rel-medical').on('click', removeNewCondition);
+        $clonedNewConditionTemplate.find('.remove-rel-medical').on('click', removeHealthElement);
         // newMany2manyRev.appendChild(clonedNewConditionTemplate)
         conditionList.appendChild(newMany2manyRev);
     }
 
     $(document).ready(event => {
-        $('.add-condition').on('click', appendNewCondition);
-        $('.remove-rel-medical').on('click', removeNewCondition);
+        $('.add-condition').on('click', () => appendNewHealthElement('condition'));
+        $('.remove-rel-medical').on('click', removeHealthElement);
 
-        $('.js_condition_select').on('change', toggleCoditionSelect);
-        $('.js_allergy_toggle').on('change', toggleAllergySelect);
-        $('.js_medication_toggle').on('change', toggleMedicationSelect);
+        $('.js_condition_select').on('change', toggleHealthElementSelect);
+        $('.js_allergy_toggle').on('change', toggleHealthElementSelect);
+        $('.js_medication_toggle').on('change', toggleHealthElementSelect);
 
-        $('button.add-medical_condition').on('click', appendNewCondition);
-        $('button.add-medical_allergy').on('click', appendNewAllergy);
-        $('button.add-medical_medication').on('click', appendNewMedication);
+        $('button.add-medical_condition').on('click', () => appendNewHealthElement('condition'));
+        $('button.add-medical_allergy').on('click', () => appendNewHealthElement('allergy'));
+        $('button.add-medical_medication').on('click', () => appendNewHealthElement('medication'));
     });
 
 });

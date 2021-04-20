@@ -3,6 +3,7 @@
 
     <template id="template_application_family_finance_res_item">
         <tr data-adm-rel="rel"
+            t-att-style="family_res_finance and not family_res_finance.category_id.active_admission and 'display: none;'"
             t-att-id="family_res_finance or 'template_application_family_finance_res_item'">
             <td>
                 <t t-if="family_res_finance">
@@ -23,9 +24,10 @@
                         class="form-control">
                     <option selected="selected" disabled="disabled">-Select a
                         category-</option>
-                    <t t-foreach="SUPER_ENV['product.category'].search([('active_admission', '=', True)])"
+                    <t t-foreach="SUPER_ENV['product.category'].search([])"
                        t-as="category">
                         <option
+                                t-att-style="not category.active_admission and 'display: none;'"
                                 t-att-selected="family_res_finance and family_res_finance.category_id.id == category.id"
                                 t-att-value="category.id">
                             <t t-esc="category.name"/>
@@ -101,9 +103,9 @@
                                         </div>
                                         <section class="col-12 col-md form-group">
                                             <label>
-                                                Invoice Address <span class="text-danger"
-                                                                      t-if="is_required('family_ids.invoice_address_id')">
-                                                *</span>
+                                                Invoice Address
+                                                <span class="text-danger"
+                                                       t-if="is_required('family_ids.invoice_address_id')">*</span>
                                             </label>
                                             <select class="form-control"
                                                     data-adm-field="invoice_address_id"
@@ -127,12 +129,6 @@
                         </t>
                     </div>
 
-                    <!--                    <div class="row">-->
-                    <!--                        <hr class="col-12"/>-->
-                    <!--                        <div class="col-12 h3">-->
-                    <!--                            Finance-->
-                    <!--                        </div>-->
-                    <!--                    </div>-->
                     <div class="row mt-4">
                         <table class="table"
                                data-adm-field="family_res_finance_ids"
@@ -170,6 +166,8 @@
                     re utilizar el controlador  y ademas filtrar por el usuario que esta ahora mismo en cuestion
 
                     :P Nos vemos el lunes Luis del mañana. Me cuentas si llego a nevar :'v
+
+                    Termino yendo bien Luis del pasado
 
                     -->
                     <!--                            </div>-->

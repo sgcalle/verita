@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.tools import safe_eval
 
+
 class AdmReenrollmentSettingsField(models.Model):
     _name = 'adm_reenrollment.fields.settings'
     _description = "Reenrollment field"
@@ -52,6 +53,7 @@ class ResConfigSettings(models.TransientModel):
         'mail.template',
         config_parameter='adm_reenrollment.reenrollment_announcement_mail_template_id',
         string="Reenrollment annoucement email template")
+    reenrollment_fee = fields.Float(config_parameter='adm.reenrollment_fee')
 
     adm_reenrollment_required_field_ids = fields.Many2many(
         'adm_reenrollment.fields.settings',

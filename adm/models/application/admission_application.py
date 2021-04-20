@@ -37,13 +37,14 @@ class ApplicationStatus(models.Model):
 
     fold = fields.Boolean(string="Fold")
     type_id = fields.Selection([
-        ("stage", "Stage"),
-        ("done", "Done"),
-        ("return", "Return To Parents"),
-        ("started", "Application Started"),
-        ("submitted", "Submitted"),
-        ("import_completed", "Import Completed"),
-        ("cancelled", "Cancelled")
+        ('stage', "Stage"),
+        ('done', "Done"),
+        ('parents_can_edit', "Parents can edit"),
+        ('return', "Return To Parents"),
+        ('started', "Application Started"),
+        ('submitted', "Submitted"),
+        ('import_completed', "Import Completed"),
+        ('cancelled', "Cancelled")
         ], string="Type", default='stage')
     web_visible = fields.Boolean(string="Visible on web")
     web_alternative_name = fields.Char("Alternative name for web")
@@ -70,6 +71,7 @@ class ApplicationStatus(models.Model):
         "school_base.enrollment.status", string="Next status to FACTS")
 
     import_to_facts = fields.Boolean()
+
 
     @api.model
     def create(self, values):
@@ -189,6 +191,8 @@ class Application(models.Model):
     available_tuition_plan_ids = fields.Many2many(
         'tuition.plan', compute='_compute_available_tuition_plan_ids')
     tuition_plan_id = fields.Many2one('tuition.plan')
+    food_plan_id = fields.Many2one('tuition.plan')
+    shadow_teacher_plan_id = fields.Many2one('tuition.plan')
 
     previous_school = fields.Char(string="Previous School")
     previous_school_address = fields.Char(string="Previous School Address")
@@ -222,8 +226,6 @@ class Application(models.Model):
     parent_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Parents/Guardian",
-        # compute="compute_relationships",
-        # inverse="_set_parent_relationships",
         related='partner_id.parent_relationship_ids',
         readonly=False,
         )
@@ -231,8 +233,6 @@ class Application(models.Model):
     sibling_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Siblings",
-        # compute="compute_relationships",
-        # inverse="_set_sibling_relationships",
         related='partner_id.sibling_relationship_ids',
         readonly=False,
         store=False
@@ -241,8 +241,6 @@ class Application(models.Model):
     other_relationship_ids = fields.One2many(
         'school_base.relationship',
         string="Others",
-        # compute="compute_relationships",
-        # inverse="_set_other_relationships",
         related='partner_id.other_relationship_ids',
         readonly=False,
         store=False
@@ -636,7 +634,7 @@ class Application(models.Model):
             application_id.message_post_with_template(
                 template_id=status_id.mail_template_id.id,
                 res_id=application_id.id)
-
+        application_id._sync_tution_plans_to_student()
         return application_id
 
     def write(self, values):
@@ -708,8 +706,12 @@ class Application(models.Model):
             application_id.message_subscribe(
                 partner_ids=member_ids.filtered(
                     lambda m: m.person_type == 'parent').ids)
+        res = super(Application, self).write(values)
 
-        return super(Application, self).write(values)
+        for application_id in self:
+            application_id._sync_tution_plans_to_student()
+
+        return res
 
     ##################
     # Action methods #
@@ -944,6 +946,13 @@ class Application(models.Model):
     ####################
     # Private methods #
     ####################
+    def _sync_tution_plans_to_student(self):
+        for application in self:
+            tuition_plan_ids = (application.tuition_plan_id + application.shadow_teacher_plan_id + application.food_plan_id).ids
+            application.partner_id.write({
+                'tuition_plan_ids': [(6, 0, tuition_plan_ids)]
+                })
+
     def _message_get_default_recipients(self):
         res = {}
         for application in self:
@@ -1077,6 +1086,9 @@ class AdmApplicationPage(models.Model):
     view_template_id = fields.Many2one('ir.ui.view')
     parent_id = fields.Many2one('adm.application.page')
     child_ids = fields.One2many('adm.application.page', 'parent_id')
+
+    hidden_for_status_ids = fields.Many2many(
+        'adm.application.status', string="Hidden for stages")
 
     _sql_constraints = [
         ('adm_page_internal_reference',

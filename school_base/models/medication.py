@@ -12,5 +12,13 @@ class SchoolBaseMedicalMedication(models.Model):
 
     name = fields.Char("Name")
     comment = fields.Char("Comment")
-    
-    partner_id = fields.Many2one("res.partner", string="Partner")
+    prescription = fields.Char()
+    self_administer = fields.Boolean()
+    dose = fields.Char()
+    type = fields.Selection(
+        [('otc', "OTC"),
+         ('prescription_drug', "Prescription drug")],
+        required=True, default='otc')
+
+    partner_id = fields.Many2one(
+        "res.partner", string="Partner", required=True)

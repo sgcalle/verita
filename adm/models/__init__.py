@@ -8,9 +8,6 @@ from . import attachment
 from . import contact_time
 from . import degree_program
 from . import languages
-from . import medical_allergy
-from . import medical_condition
-from . import medication
 from . import previous_school
 from . import product_category
 from . import res_company

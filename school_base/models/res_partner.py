@@ -547,8 +547,6 @@ class ResPartner(models.Model):
                     ('type', 'in', sibling_types)
                     ])[:1]
 
-            family_ids = partner_id.mapped('sibling_relationship_ids.family_id')
-
             def filter_sibling(relationship):
                 return relationship.filtered_domain([
                     ('relationship_type_id.type', 'in', sibling_types),
@@ -606,7 +604,6 @@ class ResPartner(models.Model):
                     # Add as family member if it's new
                     if other.partner_relation_id not in family_id.member_ids:
                         family_id.member_ids += other.partner_relation_id
-                rel_to_remove.mapped('partner_relation_id').active = False
 
     @api.constrains('member_relationship_ids')
     def _constrains_member_relationship_ids(self):

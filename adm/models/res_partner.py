@@ -21,10 +21,6 @@ class ResPartnerExtended(models.Model):
     school_grade = fields.Char("School grade")
     school = fields.Char("Current school")
 
-    medical_allergies_ids = fields.One2many("adm.medical_allergy", "partner_id", string="Medical Allergies")
-    medical_conditions_ids = fields.One2many("adm.medical_condition", "partner_id", string="Medical conditions")
-    medical_medications_ids = fields.One2many("adm.medical_medication", "partner_id", string="Medical Medication")
-
     citizenship = fields.Many2one("res.country", string="Citizenship")
     identification = fields.Char("Identification")
     marital_status = fields.Selection(

@@ -47,14 +47,15 @@
                         </a>
                     </li>
                     <t t-foreach="application_page_ids" t-as="application_page_id">
-                        <t t-if="application_page_id.id in page_access_list"
+                        <t
+                                t-if="application_page_id.id in page_access_list and (not application_page_id.hidden_for_status_ids or application_id.status_id not in application_page_id.hidden_for_status_ids)"
                            t-call="adm.template_application_menu_item"/>
                     </t>
                 </ul>
             </div>
         </nav>
 
-        <t t-if="application_id.status_id.type_id =='return' or application_id.status_id.type_id == 'started'">
+        <t t-if="application_id.status_id.type_id in ['return', 'started', 'parents_can_edit']">
             <t t-if="application_id.total_required_fields_completed == 100">
                 <form t-att-action="'/admission/applications/{}/check'.format(application_id.id)" method="post"
                       enctype="multipart/form-data" id="info-form">

@@ -80,6 +80,8 @@ class AdmReenrollment(models.Model):
     user_id = fields.Many2one('res.users')
 
     tuition_plan_id = fields.Many2one('tuition.plan')
+    food_plan_id = fields.Many2one('tuition.plan')
+    shadow_teacher_plan_id = fields.Many2one('tuition.plan')
 
     # Demographics
     email = fields.Char(string="Email", related="partner_id.email", index=True)
@@ -176,6 +178,34 @@ class AdmReenrollment(models.Model):
     # Fee
     registration_fee_amount = fields.Float()
     reenrollment_deposit_amount = fields.Float()
+
+    # Relationships
+    student_relationship_ids = fields.Many2many(
+        'school_base.relationship', string="Relationship",
+        related="partner_id.self_relationship_ids", readonly=False)
+
+    parent_relationship_ids = fields.One2many(
+        'school_base.relationship',
+        string="Parents/Guardian",
+        related='partner_id.parent_relationship_ids',
+        readonly=False,
+        )
+
+    sibling_relationship_ids = fields.One2many(
+        'school_base.relationship',
+        string="Siblings",
+        related='partner_id.sibling_relationship_ids',
+        readonly=False,
+        store=False
+        )
+
+    other_relationship_ids = fields.One2many(
+        'school_base.relationship',
+        string="Others",
+        related='partner_id.other_relationship_ids',
+        readonly=False,
+        store=False
+        )
 
     ##############################
     # Compute and search methods #

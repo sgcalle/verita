@@ -103,7 +103,9 @@ class AdmissionController(http.Controller):
                 if value:
                     rel_model_env = request.env[
                         model_env._fields[field].comodel_name].sudo()
-                    parsed_vals = [(5, 0, 0)]
+
+                    new_ids = []
+                    new_records_vals = [(6, 0, new_ids)]
                     for val_array in value:
                         if 'id' not in val_array or not val_array['id']:
                             model_name = model_env._fields[field].comodel_name
@@ -118,15 +120,16 @@ class AdmissionController(http.Controller):
                                         'type': 'binary',
                                         })
                                 rel_id = attachment_id.id
-                                parsed_vals.append((4, rel_id, False))
+                                new_ids.append(rel_id)
                             else:
-                                parsed_vals.append((0, 0,
-                                                    AdmissionController
-                                                    ._parse_json_to_odoo_fields(
-                                                        rel_model_env, val_array)))
+                                new_records_vals.append(
+                                    (0, 0,
+                                     AdmissionController
+                                     ._parse_json_to_odoo_fields(
+                                         rel_model_env, val_array)))
                         else:
                             rel_id = val_array.pop('id')
-                            parsed_vals.append((4, rel_id, False))
+                            new_ids.append(rel_id)
                             if len(val_array.keys()):
                                 write_values =\
                                     AdmissionController\
@@ -135,7 +138,7 @@ class AdmissionController(http.Controller):
                                 rel_model_env.browse(rel_id).write(
                                     write_values)
 
-                    value_to_json = parsed_vals
+                    value_to_json = new_records_vals
             elif isinstance(value, dict):
                 model_name = model_env._fields[field].comodel_name
                 rel_model_env = request.env[model_name].sudo()

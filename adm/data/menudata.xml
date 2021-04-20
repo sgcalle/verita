@@ -59,6 +59,14 @@
         <field name="view_mode">tree,form</field>
     </record>
 
+    <record id="action_adm_config" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'adm', 'bin_size': False}</field>
+        </record>
 
     <!-- Principal -->
 	<menuitem id="adm_menu" name="Admissions" web_icon="adm,static/description/icon.png"/>
@@ -78,34 +86,51 @@
 		name="Application" parent="adm_menu" sequence="2"/>
 
     <!--Configuration -->
-    <menuitem id="adm_menu_configurations" sequence="4"
-        parent="adm_menu" name="Configurations" />
+    <menuitem id="adm_menu_configurations" sequence="400"
+        parent="adm_menu" name="Configuration" />
 
-    <menuitem id="adm_menu_question_parameters" sequence="5"
-        parent="adm_menu" name="Question parameters" />
+    <menuitem id="adm_menu_configuration_settings" sequence="1"
+              action="action_adm_config"
+            parent="adm_menu_configurations" name="Settings" />
+
+    <menuitem id="adm_menu_common_conf" sequence="10"
+        parent="adm_menu_configurations" name="Common" />
+
+    <menuitem id="adm_menu_question_parameters" sequence="60"
+        parent="adm_menu_common_conf" name="Question parameters" />
+
+    <menuitem id="adm_menu_language_conf" parent="adm_menu_common_conf" name="Language" />
+    <menuitem id="adm_menu_health_conf" parent="adm_menu_common_conf" name="Health" />
+
+    <menuitem id="adm_menu_inquiry_conf" sequence="20"
+        parent="adm_menu_configurations" name="Inquiry" />
+
+    <menuitem id="adm_menu_application_conf" sequence="40"
+        parent="adm_menu_configurations" name="Application" />
 
     <!-- Status -->
     <menuitem id="adm_menu_status"
-        parent="adm_menu_configurations" name="Inquiry Status"
+        parent="adm_menu_inquiry_conf" name="Inquiry Status"
         action="action_status" />
-        
+
     <menuitem id="adm_menu_application_status"
-        parent="adm_menu_configurations" name="Application Status"
+        parent="adm_menu_application_conf" name="Application Status"
         action="action_application_status" />
 
     <menuitem id="adm_menu_language"
-        parent="adm_menu_configurations" name="Languages"
+        parent="adm_menu_language_conf" name="Languages"
         action="action_language" />
         
     <menuitem id="adm_menu_language_level"
-        parent="adm_menu_configurations" name="Language levels"
+        parent="adm_menu_language_conf" name="Language levels"
         action="action_language_level" />
         
     <menuitem id="adm_menu_contact_time"
-        parent="adm_menu_configurations" name="Contact times"
+        parent="adm_menu_common_conf" name="Contact times"
         action="action_contact_time" />
+
     <menuitem id="adm_menu_degree_program"
-        parent="adm_menu_configurations" name="Degree programs"
+        parent="adm_menu_common_conf" name="Degree programs"
         action="action_degree_program" />
     
     <!-- Website Tab -->

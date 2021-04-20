@@ -14,3 +14,4 @@ class ProductTemplate(models.Model):
         super(ProductTemplate, self)._compute_currency_id()
         for template_id in self.filtered('force_currency_id'):
             template_id.currency_id = template_id.force_currency_id
+
