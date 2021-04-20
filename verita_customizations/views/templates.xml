@@ -23,6 +23,9 @@
                 table td {
                     vertical-align:top;
                     text-align:justify !important;
+                    /*Force styling*/
+                    background: white !important;
+                    color: black !important;
                 }
                 .break-after {
                     page-break-after: always;
@@ -31,7 +34,7 @@
                     page-break-before: always;
                 }
                 .font10 *{
-                font-size: 10px !important;
+                    font-size: 10px !important;
                 }
 
                 .bordered-table td, .bordered-table th {
@@ -39,7 +42,9 @@
                     padding: 0.5rem;
                     padding-bottom: 0.5rem;
                 }
-
+                .bordered-table th {
+                    color: white;
+                }
                 table.o_verita_table_guardian td, table.o_verita_table_guardian th {
                     border: 2px solid black;
                     padding: 0.5rem;
