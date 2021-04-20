@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api
 
+
 class TuitionPlanInstallment(models.Model):
     _name = "tuition.plan.installment"
     _description = "Tuition Plan Installment"

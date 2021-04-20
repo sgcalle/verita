@@ -24,8 +24,8 @@
             <style>
 
                 .bg-blue {
-                background: <t t-esc="css_background"/>;
-                color: white;
+                    background: <t t-esc="css_background"/>;
+                    color: white;
                 }
 
                 table td {
@@ -460,7 +460,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -495,7 +495,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -508,7 +508,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -560,7 +560,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -642,7 +642,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -803,7 +803,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -857,7 +857,7 @@
                             </ol>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -910,7 +910,7 @@
                             </ol>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -943,7 +943,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -958,7 +958,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -997,7 +997,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1027,7 +1027,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1062,7 +1062,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1141,7 +1141,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1222,7 +1222,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1289,7 +1289,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1341,7 +1341,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1390,7 +1390,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1493,7 +1493,7 @@
                             </ol>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1537,7 +1537,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1631,7 +1631,7 @@
                             </b></p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1687,7 +1687,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1726,7 +1726,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1777,7 +1777,7 @@
                             </b></p>
                         </div>
                     </div>
-                    <div class="row"
+                    <div class="row bg-blue"
                          style="page-break-inside: avoid;">
                         <div class="col-6 p-0">
                             <div class="o_verita_contract_list__header">
@@ -1933,7 +1933,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <p>
+                            <p class="mt-2">
                                 All payments will be made in the following bank account: <b>RO40 EGNA 1010 0000 0081 5144</b>
 
                                 <br/>
@@ -2336,7 +2336,9 @@
                                         allergic reactions (anaphylaxis) I agree with the administration of EpiPen
                                         by any person as first aid measure
                                     </td>
-                                    <td>{YES and No check boxes}</td>
+                                    <td>
+                                        <input type="checkbox" checked="checked"/>
+                                    </td>
                                 </tr>
                             </table>
                             <table border="1"
