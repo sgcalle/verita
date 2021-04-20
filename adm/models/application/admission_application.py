@@ -95,7 +95,11 @@ class Application(models.Model):
     ######################
     _name = "adm.application"
     _description = "Admission Application"
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = [
+        'portal.mixin',
+        'mail.thread',
+        'mail.activity.mixin',
+        'adm.common.mixin']
 
     ###################
     # Default methods #

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import base64
 
+from lxml import etree
+
 from odoo import models, fields, api, _
 from odoo.tools import safe_eval
 
@@ -13,37 +15,6 @@ SELECT_REENROLLMENT_STATUS = [
     ]
 
 
-class AdmReenrollmentTask(models.Model):
-    _name = 'adm.reenrollment.task'
-    _description = "Reenrollment task"
-
-    name = fields.Char()
-    stage_id = fields.Many2one('adm.reenrollment.stage')
-
-
-class AdmReenrollmentStage(models.Model):
-    _name = 'adm.reenrollment.stage'
-    _order = 'sequence'
-    _description = "Reenrollment stage"
-
-    name = fields.Char("Status Name")
-    description = fields.Text("Description")
-    sequence = fields.Integer(readonly=True, default=-1)
-    fold = fields.Boolean("Fold")
-    type = fields.Selection([
-            ("start", "Start"),
-            ("stage", "Stage"),
-            ("returning", "Returning"),
-            ("not_returning", "Not returning"),
-        ], default='stage')
-
-    task_ids = fields.One2many('adm.reenrollment.task', 'stage_id')
-
-    reenrollment_status_to_facts = fields.Selection(SELECT_REENROLLMENT_STATUS, string="Reenrollment Status to FACTS")
-    sub_status_to_facts = fields.Many2one("school_base.enrollment.sub_status", string="Sub Status to FACTS")
-    import_to_facts = fields.Boolean()
-
-
 class AdmReenrollment(models.Model):
     """ Reenrollment packages """
 
@@ -52,7 +23,11 @@ class AdmReenrollment(models.Model):
     ######################
     _name = 'adm.reenrollment'
     _description = "Reenrollment"
-    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
+    _inherit = [
+        'portal.mixin',
+        'mail.thread',
+        'mail.activity.mixin',
+        'adm.common.mixin']
 
     ###################
     # Default methods #
@@ -103,7 +78,6 @@ class AdmReenrollment(models.Model):
         'res.users',
         help="All the users here will receive "
              "a mail to go to complete the reenrollment")
-    # responsible_email = fields.Char(related='responsible_user_id.email')
 
     # Medical
     doctor_name = fields.Char(
@@ -280,6 +254,38 @@ class AdmReenrollment(models.Model):
                 filtered_optional_field_ids += optional_field_ids
 
         return filtered_optional_field_ids
+
+
+class AdmReenrollmentTask(models.Model):
+    _name = 'adm.reenrollment.task'
+    _description = "Reenrollment task"
+
+    name = fields.Char()
+    stage_id = fields.Many2one('adm.reenrollment.stage')
+
+
+class AdmReenrollmentStage(models.Model):
+    _name = 'adm.reenrollment.stage'
+    _order = 'sequence'
+    _description = "Reenrollment stage"
+
+    name = fields.Char("Status Name")
+    description = fields.Text("Description")
+    sequence = fields.Integer(readonly=True, default=-1)
+    fold = fields.Boolean("Fold")
+    type = fields.Selection([
+            ("start", "Start"),
+            ("stage", "Stage"),
+            ("returning", "Returning"),
+            ("not_returning", "Not returning"),
+        ], default='stage')
+
+    task_ids = fields.One2many('adm.reenrollment.task', 'stage_id')
+
+    reenrollment_status_to_facts = fields.Selection(SELECT_REENROLLMENT_STATUS, string="Reenrollment Status to FACTS")
+    sub_status_to_facts = fields.Many2one("school_base.enrollment.sub_status", string="Sub Status to FACTS")
+    import_to_facts = fields.Boolean()
+
 
 
 class AdmReenrollmentLog(models.Model):
