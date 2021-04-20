@@ -10,7 +10,7 @@
     'website': "http://www.eduwebgroup.com",
 
     'category': 'Admission',
-    'version': '0.2',
+    'version': '0.3',
 
     'depends': ['adm'],
 
