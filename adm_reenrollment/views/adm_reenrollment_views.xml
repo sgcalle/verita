@@ -103,7 +103,7 @@
                             <field name="image" widget="image"/>
                         </group>
                     </group>
-                    <notebook>
+                    <notebook id="reenrollment_notebook">
                         <page string="Demographics" name="demographics">
                             <group>
                                 <field name="email"/>

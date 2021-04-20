@@ -32,6 +32,7 @@
             </notebook>
         </field>
     </record>
+
     <record id="adm_reenrollment_view_form_inherit_custom_verita"
             model="ir.ui.view">
         <field name="name">adm.reenrollment.view.form.inherit.verita</field>
