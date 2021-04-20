@@ -11,6 +11,8 @@
             <t t-set="tuition_fee" t-value="sum( o.tuition_plan_id.mapped('product_ids.amount') )"/>
             <t t-set="food_fee" t-value="sum( o.food_plan_id.mapped('product_ids.amount') )"/>
             <t t-set="shadow_fee" t-value="sum( o.shadow_teacher_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="tuition_surcharge" t-value="tuition_fee * o.tuition_plan_id.surcharge_percent / 100" />
+            <t t-set="food_surcharge" t-value="food_fee * o.food_plan_id.surcharge_percent / 100" />
             <style>
 
                 .bg-blue {
@@ -1868,7 +1870,7 @@
                                 </tr>
                                 <tr>
                                     <td><u>No. of installments:</u></td>
-                                    <td>{no of installments in Odoo}</td>
+                                    <td><t t-esc="len(o.tuition_plan_id.mapped('product_ids.installment_ids'))"/></td>
                                     <td></td>
                                 </tr>
                                 <tr>
@@ -1882,13 +1884,14 @@
                                     <td>eur</td>
                                 </tr>
                                 <tr>
+
                                     <td>Surcharge:</td>
-                                    <td>{Surcharge Fee in Odoo}</td>
+                                    <td><t t-esc="tuition_surcharge + food_surcharge"/></td>
                                     <td>eur</td>
                                 </tr>
                                 <tr>
                                     <td><b><u>Total:</u></b></td>
-                                    <td><t t-esc="tuition_fee + food_fee"/></td>
+                                    <td><t t-esc="tuition_fee + food_fee + tuition_surcharge + food_surcharge"/></td>
                                     <td><b>eur</b></td>
                                 </tr>
                             </table>
@@ -2189,24 +2192,24 @@
                             <table border="1"
                                    class="w-100 mt-4 o_verita_table_guardian">
                                 <tr class="bg-blue">
-                                    <th>Alte probleme medicale si diete / Other medical issues and diets</th>
-                                    <th>Detalii / Details</th>
+                                    <td>Alte probleme medicale si diete / Otder medical issues and diets</td>
+                                    <td>Detalii / Details</td>
                                 </tr>
                                 <tr>
-                                    <th>Health problems:</th>
-                                    <th>{Medical UD/Medical/Health problems}</th>
+                                    <td>Healtd problems:</td>
+                                    <td><span t-field="o.healtd_problems"/></td>
                                 </tr>
                                 <tr>
-                                    <th>Other physical characteristics:</th>
-                                    <th>{Medical UD/Medical/Other physical characteristics}</th>
+                                    <td>Otder physical characteristics:</td>
+                                    <td><span t-field="o.health_problems_characteristics"/></td>
                                 </tr>
                                 <tr>
-                                    <th>Medical diet:</th>
-                                    <th>{Medical UD/Medical/Medical diet restrictions}</th>
+                                    <td>Medical diet:</td>
+                                    <td><span t-field="o.medical_diet_restrictions"/></td>
                                 </tr>
                                 <tr>
-                                    <th>Diet and eating habits:</th>
-                                    <th>{Medical UD/Medical/Diet and eating habits}</th>
+                                    <td>Diet and eating habits:</td>
+                                    <td><span t-field="o.diet_and_eating_habits"/></td>
                                 </tr>
                             </table>
                             <p class="p-4">
@@ -2227,47 +2230,45 @@
                                     <td>
                                         Paracetamol (acetaminophen)
                                     </td>
-                                    <td>{Medical/OTC Medications}</td>
+                                    <td><t t-esc="o.allow_paracetamol"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Ibuprofen:
                                     </td>
-                                    <td>idem</td>
+                                    <td><t t-esc="'yes' if o.allow_ibuprofen else 'no'"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Bomboane pentru calmarea gatului / Throat lozenge:
                                     </td>
-                                    <td>idem</td>
+                                    <td><t t-esc="'yes' if o.allow_throat_lozenge else 'no'"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Antiacid pentru calmarea stomacului / Tummy antacid (calcium carbonate):
                                     </td>
-                                    <td>idem</td>
+                                    <td><t t-esc="'yes' if o.allow_tummy_antacid else 'no'"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Crema si sirop antihistaminic contra reactiei alergice / Antihistamine cream and
                                         syrup for allergic reaction:
                                     </td>
-                                    <td>
-                                        idem
-                                    </td>
+                                    <td><t t-esc="'yes' if o.allow_antihistamine_cream_syrup_allergic_reaction else 'no'"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Crema hidrocortizon (contra scarpinare/muscaturi de insecte) / Hydrocortisone
                                         cream (for itches/bites):
                                     </td>
-                                    <td>idem</td>
+                                    <td><t t-esc="'yes' if o.allow_hydrocortisone_cream else 'no'"/></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         Gel sau spray contra entorselor musclare / Muscle sprain gel or spray:
                                     </td>
-                                    <td>idem</td>
+                                    <td><t t-esc="'yes' if o.allow_muscle_sprain_gel_spray else 'no'"/></td>
                                 </tr>
                             </table>
 

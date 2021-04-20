@@ -7,7 +7,7 @@ from odoo import models, fields, api, _
 # future enrollment model and reenrollment right here
 
 
-class AdmCommonMixin(models.Model):
+class AdmCommonMixin(models.AbstractModel):
     """ Common model used for inquiry, application, enrollment and reenrollment """
 
     ######################

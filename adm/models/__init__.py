@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from . import admission_mixin
+
 from . import application
 from . import question
 
