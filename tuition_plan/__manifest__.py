@@ -27,6 +27,8 @@
         'security/ir.model.access.csv',
         'security/tuition_plan_security.xml',
         'data/base_automation_data.xml',
+
+        'views/res_config_views.xml',
         'views/tuition_plan_views.xml',
         'views/res_partner_views.xml',
     ],

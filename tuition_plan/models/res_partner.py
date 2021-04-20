@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError, MissingError
 
+
 class TuitionPlan(models.Model):
     _inherit = "res.partner"
 
@@ -17,7 +18,7 @@ class TuitionPlan(models.Model):
         comodel_name="tuition.plan",
         compute="_compute_default_tuition_plan_ids",
         help="Tuition plans used if no tuition plan is manually set for a given school year, category, and gradelevel")
-    
+
     def _compute_default_tuition_plan_ids(self):
         for partner in self:
             result = []
