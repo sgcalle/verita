@@ -1,0 +1,2391 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="adm_verita_contract_template_2021_2022">
+        <div>
+            <!-- Variable declaration -->
+            <t t-set="config" t-value="o.env['ir.config_parameter'].sudo()"/>
+            <t t-set="nowdate" t-value="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+            <t t-set="school_year"
+               t-value="o.env['school_base.school_year'].sudo().browse(int(config.get_param('adm.adm_current_school_year', False)))"/>
+            <t t-set="css_background" t-value="'#1f497d'"/>
+            <t t-set="tuition_fee" t-value="sum( o.tuition_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="food_fee" t-value="sum( o.food_plan_id.mapped('product_ids.amount') )"/>
+            <t t-set="shadow_fee" t-value="sum( o.shadow_teacher_plan_id.mapped('product_ids.amount') )"/>
+            <style>
+
+                .bg-blue {
+                    background: <t t-esc="css_background"/>;
+                    color: white;
+                }
+
+                table td {
+                    vertical-align:top;
+                    text-align:justify !important;
+                }
+                .break-after {
+                    page-break-after: always;
+                }
+                .break-before {
+                    page-break-before: always;
+                }
+                .font10 *{
+                font-size: 10px !important;
+                }
+
+                .bordered-table td, .bordered-table th {
+                    border: 2px solid black;
+                    padding: 0.5rem;
+                    padding-bottom: 0.5rem;
+                }
+
+                table.o_verita_table_guardian td, table.o_verita_table_guardian th {
+                    border: 2px solid black;
+                    padding: 0.5rem;
+                    padding-bottom: 0.5rem;
+                }
+
+                table.o_verita_table_guardian thead {
+                    background: <t t-esc="css_background"/>;
+                    color: white !important;
+                    padding-bottom: 10px !important;
+                }
+
+                div.o_verita_contract_list {
+                    counter-reset: verita_roman;
+                    padding: 0;
+                    margin-top: 1rem;
+                }
+
+                div.o_verita_contract_list > .o_verita_contract_list__header:before {
+                    font-weight: bold;
+                    content: counter(verita_roman, upper-roman);
+                    counter-increment: verita_roman;
+
+
+                    /*Styling*/
+                    padding: 5px;
+                    display: inline-block;
+                    background: <t t-esc="css_background"/>;
+                    color: white;
+                }
+
+                ol.letter_list {
+                    counter-reset: verita_letter;
+                    padding: 0;
+                    margin-top: 1rem;
+                }
+
+                ol.letter_list > li:before {
+                    font-weight: bold;
+                    content: counter(verita_letter, lower-latin) ".";
+                    counter-increment: verita_letter;
+                }
+
+                ol.letter_list > li > ol.letter_list_number {
+                list-style: none;
+                counter-reset: verita_letter_number;
+                margin-top: 1rem;
+                }
+
+                ol.letter_list > li {
+                list-style: none;
+                }
+                ol.letter_list > li > ol.letter_list_number > li:before {
+                font-weight: bold;
+                content: counter(verita_letter, lower-latin) counter(verita_letter_number, decimal) ".";
+                counter-increment: verita_letter_number;
+                }
+
+                ol.roman_list {
+                counter-reset: individual_verita_roman;
+                padding: 0;
+                margin-top: 1rem;
+                }
+                ol.roman_list > li {
+                list-style: none;
+                }
+                ol.roman_list > li:before {
+                content: counter(individual_verita_roman, lower-roman) ".";
+                counter-increment: individual_verita_roman;
+                }
+
+                div.o_verita_contract_list.o_type_decimal {
+                counter-reset: verita_decimal;
+                }
+
+                div.o_verita_contract_list.o_type_decimal > div > .o_verita_contract_list__header:before {
+                font-weight: bold;
+                content: counter(verita_roman, upper-roman) "." counter(verita_decimal);
+                counter-increment: verita_decimal;
+                }
+
+                .o_verita_contract_list__header {
+                padding: 5px;
+                padding-left: 0.3rem;
+                background: <t t-esc="css_background"/>;
+                color: white;
+                width: 100%;
+                height: 100%;
+                page-break-inside: avoid !important;
+                }
+
+                .o_adm_no_list_style {
+                list-style: none;
+                }
+
+                .o_adm_no_list_style > li:before {
+                content: '';
+                }
+
+                .o_adm_partner_table tr, .o_adm_partner_table td {
+                border: 2px black solid;
+                }
+            </style>
+            <div class="font11"
+                 style="font-weight: normal!">
+                <span style="font-family:'san-serif'">&amp;nbsp;</span>
+                <div class="container-fluid break-after"
+                     style="font-family:Arial;">
+                    <t t-set="index"
+                       t-value="0"/>
+                    <div class="row">
+                        <section class="col-6">
+                            <div class="text-center">
+                                <strong>
+                                    Sectiunea I<br/>
+                                    CONTRACT EDUCATIONAL<br/>
+                                    -TERMENI SI CONDITII SPECIALE -
+                                </strong>
+                            </div>
+                            <p>
+                                Prezentul Contract a fost semnat astazi, <t t-esc="nowdate"/>,
+                                de catre si intre:
+                            </p>
+                            <p>
+                                <b>Fundatia Verita 4 All</b>, persoana juridica romana, cu sediul social in Str.
+                                Oltetului nr.
+                                15, sector 2, Bucuresti, inregistrata in registrul national al asociatiilor si
+                                fundatiilor sub nr. 53/B/2013, cod unic de inregistrare (CUI) 31611624, reprezentata
+                                legal de catre dl. Richardos Prodromos Ioannidis denumita in cele ce urmeaza „
+                                <strong>Verita</strong> ”
+                                <br/>
+                                <b>si</b>
+                            </p>
+                        </section>
+                        <section class="col-6">
+                            <div class="text-center">
+                                <strong>
+                                    Section I<br/>
+                                    EDUCATIONAL SERVICES CONTRACT<br/>
+                                    - SPECIAL TERMS AND CONDITIONS -
+                                </strong>
+                            </div>
+                            <p>
+                                This Contract was signed today, <t t-esc="nowdate"/>, by and between:
+                            </p>
+                            <p>
+                                Fundatia Verita 4 All, a Romanian legal entity with its registered office at 15
+                                Oltetului Street, district 2, Bucharest, registered in the national ONG register under
+                                no. 53/B/2013, sole registration code (CUI) 31611624), represented by Mr. Richardos
+                                Prodromos Ioannidis hereinafter referred to as the “Verita”
+                                <br/>
+                                <strong>and</strong>
+                            </p>
+                        </section>
+                    </div>
+
+                    <!-- Parents tables -->
+                    <t t-set="parent_relationship_ids"
+                       t-value="o.partner_id.parent_relationship_ids[:2]"/>
+                    <div class="row"
+                         t-foreach="parent_relationship_ids"
+                         t-as="parent_relationship_id">
+                        <t t-set="partner"
+                           t-value="parent_relationship_id.partner_relation_id"/>
+                        <div class="col-12">
+                            <table class="w-100 o_verita_table_guardian">
+                                <colgroup>
+                                    <col width="15%"/>
+                                    <col width="35%"/>
+                                    <col width="50%"/>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="3"
+                                            class="o_text_bold">
+                                            Parinte/Reprezentant legal / <i>Parent/Guardian</i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Nume <i>/ Last name</i></strong>
+                                        </td>
+                                        <td>
+                                            <t t-esc="partner.last_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Nume <i>/ First name</i></strong>
+                                        </td>
+                                        <td>
+                                            <t t-esc="partner.first_name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="passport_type"
+                                       t-value="int(o.env['ir.config_parameter'].sudo().get_param('adm.passport_document_type_id', False))"/>
+                                    <t t-set="passport_document"
+                                       t-value="partner.legal_document_ids.filtered_domain([('type_id', '=', passport_type)])"/>
+                                    <tr>
+                                        <td rowspan="3"
+                                            class="pl-4 pr-4">
+                                            <strong>Act de identitate/ID (CI/Passport)</strong>
+                                        </td>
+                                        <td>
+                                            <strong>Seria/Series</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="passport_document.series"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Nr/No</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="passport_document.number"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Emis de / Issued by</strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="passport_document.issued_by"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong> CNP/PIN </strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="partner.ssn"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong> Adresa/ Address </strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="passport_document.address"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong> Email </strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="partner.email"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong> Telefon/Phone </strong>
+                                        </td>
+                                        <td>
+                                            <span t-field="partner.mobile"/>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="3">
+                                            <strong>
+                                                Mentiuni privind autoritatea parinteasca / References related to the
+                                                parental authority
+                                                Marital Status: <span t-field="partner.marital_status_id"/>;
+                                                Custody: <t t-esc="'yes' if parent_relationship_id.custody else 'no'"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Main contract body -->
+                    <div class="row mt-4"
+                         style="page-break-inside: avoid;">
+                        <div class="col-12">
+                            <table class="w-100 o_verita_table_guardian">
+                                <colgroup>
+                                    <col width="50%"/>
+                                    <col width="50%"/>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th colspan="2"><strong>
+                                            Beneficiar Direct - Copilul / Direct Beneficiary - Child
+                                        </strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>
+                                            Nume/ Last Name
+                                        </strong></td>
+                                        <td>
+                                            <span t-field="o.partner_id.last_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            Prenume/ First Name
+                                        </strong></td>
+                                        <td>
+                                            <span t-field="o.partner_id.first_name"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            Data nasterii/Date of birth
+                                        </strong></td>
+                                        <td>
+                                            <span t-field="o.partner_id.date_of_birth"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            Sex/Gender
+                                        </strong></td>
+                                        <td>
+                                            <span t-field="o.partner_id.gender"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            CNP/PIN
+                                        </strong></td>
+                                        <td>
+                                            <span t-field="o.partner_id.ssn"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            Clasa/Grade
+                                        </strong></td>
+                                        <td>
+                                            <ol>
+                                                <li>
+                                                    For Enrolled students:
+                                                    <span t-field="o.partner_id.grade_level_id"/>
+                                                </li>
+                                                <li>
+                                                    For Pre-Enrolled students:
+                                                    <span t-field="o.partner_id.next_grade_level_id"/>
+                                                </li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>
+                                            Anul Scolar pentru care se incheie Contractul/School Year for which the
+                                            Contract is concluded
+                                        </strong></td>
+                                        <td>
+                                            <ol>
+                                                <li>
+                                                    For Enrolled students:
+                                                    <span t-field="o.partner_id.school_year_id"/>
+                                                </li>
+                                                <li>
+                                                    For Pre-Enrolled students:
+                                                    <!--                                                    <span t-field="o.partner_id.next"/>-->
+                                                </li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                denumite in cele ce urmeaza Partile.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                hereinafter referred to as the Parties.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Partile au convenit ca urmare a negocierilor purtate in acest sens, sa incheie prezentul
+                                contract („Contractul Educational" sau „Contractul”) in termenii si conditiile
+                                urmatoare:
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The Parties have agreed, following the negotiations carried out in this respect, to
+                                conclude this contract (the “Educational Service Contract” or the “Contract”) under the
+                                following terms and conditions:
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                I. Program educational. Orarul Scolar
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                I. The Educational Program. School timetable
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>
+                                Ca regula, programul educational in cadrul Verita se desfasoara de luni pana
+                                vineri intre orele 09:00 – 15:45.
+                            </p>
+                            <p>
+                                Orarul aplicabil Beneficiarului Direct va fi comunicat
+                                Parintilor/Reprezentantului Legal pana la inceperea Anului Scolar prin email.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                As a rule, the educational program in Verita runs from Monday to Friday between
+                                09:00 - 15:45.
+                            </p>
+                            <p>
+                                Timetable applicable to the Direct Beneficiary will be communicated to the
+                                Parents/Legal Guardian by the beginning of the School Year by email.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II. Costurile (Taxele) aferente Pachetului Educational
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II. The Costs (Fees) of the Educational Package
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.1 Taxa de inscriere
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.1 Enrollment Fee
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>
+                                Taxa de inscriere este in cuantum de <t t-esc="config.get_param('adm.enrollment_fee', 0)"/>
+                                Euro si este un cost nerambursabil.<br/>
+                                <b>Termeni de plata:</b>
+                                <ul>
+                                    <li>
+                                        Scadenta in 5 (cinci) zile de la data semnarii Contractului.
+                                    </li>
+                                    <li>
+                                        Este platibila o singura data (la prima inscriere a copilului)
+                                        si prin achitarea acesteia Parintii/Reprezentantul legal
+                                        confirma locul obtinut de catre Beneficiarul Direct in cadrul
+                                        Verita.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The Enrolment Fee is of <t t-esc="config.get_param('adm.enrollment_fee', 0)"/> Euro and it
+                                is a non-refundable fee. <br/>
+                                <b>Payment terms:</b>
+                                <ul>
+                                    <li>
+                                        Due within 5 (five) days as of the signing date of the Contract
+                                    </li>
+                                    <li>
+                                        It is payable only once (when the child is first enrolled) and
+                                        by paying it the Parents/Legal guardian confirm(s) the place
+                                        obtained by the Direct Beneficiary in Verita.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.2 Depozitul de reinscriere
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.2 Re - enrolment Deposit
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>
+                                Depozitul de reinscriere este in cuantum de <t t-esc="config.get_param('adm.reenrollment_fee', 0)"/> Euro.
+                                <br/>
+                                <b>Termeni de plata:</b>
+                                <ul>
+                                    <li>
+                                        <b>Data scadentei:</b> ultima zi lucratoare a lunii Martie [de
+                                        inserat anul]..
+                                    </li>
+                                    <li>
+                                        Este datorat incepand cu al doilea An de Scolarizare si prin
+                                        achitarea acestuia Parintii/Reprezentantul legal confirma locul
+                                        Beneficiarului Direct in cadrul Verita.
+                                    </li>
+                                    <li>
+                                        Ca regula - acesta se va deduce integral din Taxa Anuala de
+                                        Scolarizare, conform Graficului de Plati - Anexa 1 la prezenta
+                                        Sectiune.
+                                    </li>
+                                    <li>
+                                        <b>
+                                            Prin exceptie: in cazul incetarii prezentului Contract in
+                                            intervalul cuprins intre data semnarii si 31 iulie
+                                            (inclusiv) suma mentionata mai sus cu titlu de Depozit de
+                                            reinscriere va fi datorata cu titlu de daune in conformitate
+                                            cu prevederile art.11 - Sectiunea II - Termeni si Conditii
+                                            Generale.
+                                        </b>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The Re-enrolment Deposit is of <t t-esc="config.get_param('adm.reenrollment_fee', 0)"/>
+                                Euro.
+                                <br/>
+                                <b>Payment terms:</b>
+                                <ul>
+                                    <li>
+                                        <b>Payment Date:</b> last working day of March [insert year].
+                                    </li>
+                                    <li>
+                                        It is owed starting with the second School Year and by paying it
+                                        the Parents/Legal guardian confirm(s) the place obtained by the
+                                        Direct Beneficiary in Verita.
+                                    </li>
+                                    <li>
+                                        As a general rule - will be deducted in full from the Annual
+                                        Tuition Fee, as detailed in the Payment Schedule - Annex 1 of
+                                        this Section.
+                                    </li>
+                                    <li>
+                                        <b>
+                                            As an exemption: in case the present Contract shall be
+                                            terminated between the signing date and until July 31st
+                                            (including), the above amount identified as Re - enrolment
+                                            Deposit shall be owed as damages pursuant to the article 11
+                                            -
+                                            Section II - General Terms and Conditions.
+                                        </b>
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.3 Taxa de scolarizare
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.3 Tuition Fee
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>
+                                <ol class="letter_list">
+                                    <li>
+                                        <span>
+                                            <b>
+                                                Taxa de scolarizare aferenta Anului Scolar pentru care
+                                                s-a incheiat prezentul Contract este in cuantum de
+                                                <t t-esc="tuition_fee"/>
+                                                Euro.
+                                            </b>
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span>
+                                            Pentru plata in rate a Taxei de Scolarizare conform
+                                            Graficului de plati, Verita percepe un tarif suplimentar
+                                            (suprataxa) in cuantum de:
+                                        </span>
+                                        <ul>
+                                            <li>
+                                                <span t-field="o.tuition_plan_id.surcharge_percent"/> %
+                                                din Taxa de scolarizare. Suprataxa
+                                                este inclusa in valoarea fiecarei rate.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <span>
+                                            Termenii si conditiile de plata (data scadentei si valoarea
+                                            ratelor - daca e aplicabil) ale Taxei de scolarizare sunt
+                                            listate in Graficului de plati - Anexa 1.
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span>
+                                            Rambursarea sau renuntarea partiala la Taxei de scolarizare
+                                            de catre Verita
+                                        </span>
+                                        <ol class="roman_list pl-4">
+                                            <p>
+                                                Taxa de scolarizare nu poate face obiectul uni cereri de
+                                                rambursare partiala/reducere in urmatoarele cazuri:
+                                            </p>
+                                            <li>
+                                                <span>
+                                                    absente nemotivate sau motivate (zile de absenta ale
+                                                    Elevului din motive medicale sau personale),
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    vacante inter-semestriale sau in cadrul semestrelor,
+                                                    zile declarate sarbatori nationale,
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    zile necesare pentru organizarea activitatilor,
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    alte zile libere impuse de evenimente independente
+                                                    de Scoala Internationala Verita in conformitate cu
+                                                    prevederile art. 15 si 16 din Sectiunea II - Termeni
+                                                    si Conditii Generale.
+                                                </span>
+                                            </li>
+                                        </ol>
+                                        <p>
+                                            Cazurile mentionate mai sus se completeaza cu cele detaliate
+                                            in cuprinsul Sectiunii II - Termeni si Conditii Generale.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                <ol class="letter_list">
+                                    <li>
+                                        <span>
+                                            <b>The Tuition Fee for the School Year for which the present
+                                                Contract is concluded is of
+                                                <t t-esc="tuition_fee"/>
+                                                Euro.</b>
+                                        </span>
+                                    </li>
+                                    <li>
+                                        <span>For payment of the Tuition Fee in installments as
+                                            stipulated
+                                            in the Payment Plan, Verita charges an additional fee
+                                            (surcharge) in amount of:</span>
+                                        <ul>
+                                            <li>
+                                                <span t-field="o.tuition_plan_id.surcharge_percent"/> %
+                                                of the Tuition Fee. The surcharge
+                                                is included in the value of each instalment.
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <span>The payment terms and conditions (due dates and value of
+                                            instalments if applicable) of the Tuition Fee are listed in
+                                            the Payment Plan - Annex 1.</span>
+                                    </li>
+                                    <li>
+                                        <span>
+                                            Partial Refund or Waiver of the Tuition Fee by Verita
+                                        </span>
+                                        <ol class="roman_list pl-4">
+                                            <li>
+                                                <span>unmotivated or motivated absence (days of absence
+                                                    of the Student for medical or personal
+                                                    reasons),</span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    inter-semestrial or intra-semestrial holidays, days
+                                                    declared national holidays,
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    days necessary for the organization of the
+                                                    activities
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span>
+                                                    other holidays imposed by events independent from
+                                                    Verita International School in accordance with the
+                                                    provisions of Section II - General Terms and
+                                                    Conditions.
+                                                </span>
+                                            </li>
+                                        </ol>
+                                        <p>
+                                            The above mentioned list shall be completed by those listed
+                                            in Section II - General Terms and Conditions.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.4 Pachet Alimentar
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.4 Food Package
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    <span>
+                                        Valoarea Pachetului Alimentar pentru care a optat
+                                        Parintele/Reprezentantul legal este in cuantum de
+                                        <strong><t t-esc="o.food_plan_id.name" /></strong> linked to
+                                         linked to
+                                        <t t-esc="food_fee"/> Euro
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        Costul Pachetului Alimentar nu este inclus in Taxa de
+                                        Scolarizare aferenta Anului Scolar. Termenii si conditiile de
+                                        plata sunt listate in Graficului de plati - Anexa 1.
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    <span>
+                                        The value of the Food Package chosen by the
+                                        Parent/Legal Guardian is of
+                                        <strong><t t-esc="o.food_plan_id.name" /></strong> linked to
+                                        <t t-esc="food_fee"/> Euro
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        The cost of the Food Package is not included in the
+                                        Tuition Fees. The payment terms and conditions are
+                                        listed in the Payment Plan - Annex 1.
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.5 Profesor de Sprijin
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.5 Shadow Teacher
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    <span>
+                                        Costul Profesorului de Sprijin este de
+                                        <t t-esc="shadow_fee" />
+                                        pe luna, scadent in ultima zi lucratoare a lunii pentru luna in curs.
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        Costul Profesorului de Sprijin nu este inclus in Taxa
+                                        deScolarizare. Termenii si conditiile de plata sunt listate in
+                                        Graficului de plati - Anexa 1.
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    <span>
+                                        The cost of the Shadow Teacher is of
+                                        <t t-esc="shadow_fee" />
+                                        per month,
+                                        payable on the last working day of the month for the
+                                        current month.
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>
+                                        The cost of the Shadow Teacher is not included in
+                                        the Tuition Fees. The payment terms and conditions
+                                        are listed in the Payment Plan - Annex 1.
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                II.6 Alte costuri/taxe
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+
+                            <div class="o_verita_contract_list__header">
+                                II.6 Other costs/taxes
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>
+                                Orice alte costuri/taxe convenite de parti a fi efectuate de catre
+                                Parinti/Reprezentantul Legal (cu titlu de exemplu dar nelimitativ
+                                activitati extracuriculare, servicii de transport) vor face obiectul
+                                unui acord separat, ce va deveni parte integranta a prezentului
+                                Contract.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                Any other costs/taxes agreed by the parties to be made by the
+                                Parents/Legal Guardian (as an example but not limited to extracurricular
+                                activities, transportation services) will be the subject of a separate
+                                agreement, which will become an integral part of the present Contract.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III. Termeni si conditii de plata ale obligatiilor financiare ale
+                                Parintilor/Reprezentantului legal
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III. Payment terms and conditions of the financial obligations of the Parents/Legal
+                                Guardian
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.1 Moneda
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.1 Currency
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Toate platile consemnate in acest Contract cu titlu de Taxe percepute si
+                                datorate direct catre Verita sunt calculate in Euro si platite in RON la
+                                cursul de schimb valutar al Bancii Nationale a Romaniei valabil la data
+                                platii.
+                            </p>
+                            <p>
+                                Parintii/Reprezentantul legal nerezident va putea efectua plati in Euro.
+                                Detaliile vor fi furnizate la cerere.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                All payments specified in this Contract as Fees charged and due directly
+                                to Verita are calculated in EUR and paid in RON at the National Bank of
+                                Romania currency exchange rate valid on the date of payment.
+                            </p>
+                            <p>
+                                Non-resident Parents/Legal Guardian will be able to make payments in
+                                EUR. Details will be provided by request.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.2 Cont Bancar Verita
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.2 Verita Bank Account
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                RO40 EGNA 1010 0000 0081 5144<br/>
+                                Vista Bank Romania<br/>
+                                Beneficiar: FUNDATIA VERITA 4 ALL
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                RO40 EGNA 1010 0000 0081 5144
+                                Vista Bank Romania
+                                Beneficiary: FUNDATIA VERITA 4 ALL
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.3 Penalitate Generala
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.3 General Penalty
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                În cazul în care Parintii/Reprezentantul legal nu achita orice suma datorată in
+                                baza prezentului Contract la data scadenti, Verita are dreptul la penalitati de
+                                intarziere de 0,2% pe zi de intarziere din suma neachitata, calculate de la data
+                                scadentei pana la data efectiva a platii integrale. Parintii/ Reprezentantul
+                                legal e de drept in intarziere.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                If the Parent/Legal Representative does not pay any amount due under this
+                                Contract,
+                                on the due date, Verita is entitled to late payment penalties of 0.2% per day of
+                                the
+                                outstanding amount, calculated from the due date until the actual date of full
+                                payment. The Parents/Legal Guardian is by law in default.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.4 Intarzieri la plata
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                III.4 Late Payment
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                In cazul intarzierilor la plata, Verita va emite o notificare (reminder).
+                            </p>
+                            <p>
+                                In cazul in care sumele raman neachitate, Parintelui/ Reprezentantului legal i
+                                se va trimite o a doua notificare pentru taxele restante; in acest moment,
+                                Verita poate decide ca accesul Elevului la serviciile / facilitatile scolii sa
+                                fie suspendat (in conformitate cu prevederile Sectiunii II - Termeni si Conditii
+                                General).
+                            </p>
+                            <p>
+                                Transmiterea celor doua notificari nu constituie o obligatie contractuala in
+                                sarcina Verita si nici nu afecteaza dreptul Verita de a solicita penalitati de
+                                intarziere.
+                            </p>
+                            <p>
+                                Rugam Parintii/Reprezentantul legal sa retina ca mijlocul de comunicare pentru
+                                transmiterea notificarilor de plata va fi adresa de e-mail furnizata de acestia,
+                                care ar trebui verificata in mod regulat.
+                            </p>
+                            <p>
+                                Daca sumele datorate nu sunt achitat nici dupa cea de - a doua notificare, sau
+                                daca sumele raman neachitate pe o perioada ce depaseste 20 (douazeci) de zile de
+                                la scadenta - Verita, la exclusiva sa alegere, va putea rezilia prezentul
+                                Contract, fara ca vreo alta punere in intarziere si vreo alta formalitate
+                                prealabila sa fie necesara si fara interventia instantei de judecata, in
+                                conformitate cu prevederile articolului 1553, par. (1) din Codul Civil (pact
+                                comisoriu). Prezentele dispozitii se completeaza cu cele ce reglementeaza
+                                rezilierea din cuprinsul Sectiunii II - Termeni si conditii generale.
+                            </p>
+
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                In case of late payment, Verita shall issue a reminder.
+                            </p>
+                            <p>
+                                If the amounts remain unpaid, a second reminder will be sent to the Parent /
+                                Legal Representative for the outstanding fees; at this time, Verita may decide
+                                that the Student's access to school services / facilities will suspended (in
+                                accordance with the provisions of Section II - General Terms and Conditions).
+                            </p>
+                            <p>
+                                The transmission of the two reminders is not a contractual obligation of Verita
+                                and does not affect Verita's right to request penalties for delay.
+                            </p>
+                            <p>
+                                We are kindly asking the Parents/Legal Guardian to note that the payment
+                                reminders shall be sent to the e-mail address provided by the Parents/Legal
+                                Guardian which should be checked regularly.
+                            </p>
+                            <p>
+                                If the outstanding amounts are still not settled after the second reminder, or
+                                if the amounts are not paid for more than 20 (twenty) days as of the due date -
+                                Verita, at its sole discretion, may terminate the Contract, without any further
+                                formal notice of delay or other prior formality being required and without court
+                                intervention in accordance with the provisions of article 1553, paragraph (1) in
+                                the Civil Code (lex comissoria). The hereby provisions shall be coroborated with
+                                those that regulate the termination within Section II - General Terms And
+                                Conditions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                IV. Obligatii de plata in cazul incetarii Contractului inainte de inchiderea Anului
+                                Scolar - Retragerea Elevului
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                IV. Payment obligations in case of Contract termination prior to the expiry of the
+                                School Year - Student Withdrawal
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                In caz de retragere a Elevului la initiativa Parintelui/Reprezentantului legal,
+                                acesta trebuie sa respecte dispozitiile privind denuntarea unilaterala din
+                                cuprinsul Sectiunii II - Termeni si Conditii General.
+                            </p>
+                            <p>
+                                Obligatiile financiare stabilite in sarcina Parintilor/Reprezentantului Legal in
+                                caz de retragere:
+                                <ul>
+                                    <li>
+                                        Daca retragerea are loc pana la data de 30 iunie [de indicat anul]
+                                        (inclusiv): se va retine Taxa de inscriere (Depozitului de reinscriere -
+                                        dupa caz).
+                                    </li>
+                                    <li>
+                                        Daca retragerea are loc in intervalul 1 - 31 Iulie [de indicat anul]
+                                        (inclusiv): se va retine Taxa de inscriere (Depozitului de reinscriere -
+                                        dupa caz) plus 20% din Taxa anuala de scolarizare.
+                                    </li>
+                                    <li>
+                                        Daca retragerea are loc in intervalul 1 august [de indicat anul] -
+                                        ultima zi a primului Semestru (inclusiv): se va datora 60% din Taxa
+                                        anuala de scolarizare.
+                                    </li>
+                                    <li>
+                                        Daca retragerea are loc In orice moment dupa ultima zi a primului
+                                        Semestru: se va datora 100% din Taxa anuala de scolarizare.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                In case of Student withdrawal from school at the Parents/Legal Guardian
+                                initiative, the Parents/Legal Guardian must observe the provisions of unilateral
+                                termination - Section II - General Terms and Conditions.
+                            </p>
+                            <p>
+                                Parents/Legal Representative financial obligations in case of withdrawal:
+                                <ul>
+                                    <li>
+                                        If the withdrawal takes place until June 30th [year to be inserted]
+                                        (including): the Enrolment Fee (Re - enrolment Deposit as the case may
+                                        be) shall be retained as damages.
+                                    </li>
+                                    <li>
+                                        If the withdrawal takes place between July 1st - July 31th [year to be
+                                        inserted] (including): the Enrolment Fee (Re - enrolment Deposit as the
+                                        case may be) shall be retained plus 20% of the Annual Tuition Fee.
+                                    </li>
+                                    <li>
+                                        If the withdrawal takes place starting with August 1st [year to be
+                                        inserted] until the last day of the first Semester (including): 60% of
+                                        the Annual Tuition Fee.
+                                    </li>
+                                    <li>
+                                        If the withdrawal takes place any point after the end of first Semester:
+                                        100% of the Annual Tuition Fee.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                V. Obligatii de plata in cazul rezilierii la initiative Verita ca urmare a
+                                incalcarii obligatiilor contractuale de catre Parintilor/ Reprezentantului legal
+                                si/sau a Elevului
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                V. Payment obligations in case of Contract termination at Verita initiative due to
+                                breach of contract by the Parents/Legal Guardian and/or the Student
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Verita incurajeaza toti parintii sa contacteze reprezentantii scolii si sa
+                                comunice provocarile cu care se confrunta lor inainte de a ajunge la punctul de
+                                a incalca obligatiile Contractuale.
+                            </p>
+                            <p>
+                                Incalcarea obligatiilor contractuale da dreptul Verita sa considere contractul
+                                desfiintat de drept, fara interventia instantei de judecata, in conformitate cu
+                                prevederile articolului 11.4 - Termeni si Conditii Generale.
+                            </p>
+                            <p>
+                                In cazul in care Verita reziliaza Contractul, Verita va avea dreptul sa solicite
+                                Parintilor/Reprezentantului Legal - in plus fata de plata taxelor stabilite in
+                                sarcina Parintilor/Reprezentantului Legal pana la data rezilierii conform
+                                prevederilor prezentului Contract - ca si compensatie (daune) pentru incetarea
+                                prematura a prezentului Contract, o suma fixa echivalenta cu 50% din Taxa Anuala
+                                de Scolarizare.
+                            </p>
+                            <p>
+                                Incetarea contractului nu va avea niciun efect asupra obligatiilor deja scadente
+                                intre Parti.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+
+                                Verita encourages all parents to approach the school representatives, and
+                                communicate their challenges before reaching the point of breaching the
+                                contractual obligations.
+                            </p>
+                            <p>
+                                reach of contractual obligations entitles Verita to consider this Contract
+                                terminated by law, without court intervention in accordance with the provisions
+                                of article 11.4 - GeneralTerms and Conditions.
+                            </p>
+                            <p>
+                                If Verita terminates (Romanian “reziliere”) the Contract, it will be entitled to
+                                claim from the Parents/Legal Guardian - in addition to the payment of the
+                                stipulated fees charged to the Parents/Legal Guardian until the termination date
+                                - as compensation (damages) for such early termination of this Contract a flat
+                                amount equivalent to 50% of the Annual Tuition Fee.
+                            </p>
+                            <p>
+                                Termination of the Contract will have no effect on the obligations already due
+                                between the Parties.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VI. Manualul Verita
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VI. Verita Manual
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Parintii/Reprezentantul legal declara in mod expres ca au(a) fost informat si
+                                intelege ca incalcarile repetate ale prevederilor Manualului Verita - de catre
+                                Parintii/Reprezentantul legal si/sau de Beneficiarul Direct (de ex. mai mult de
+                                3 (trei) ori in orice perioada data de 90 zile) reprezinta o incalcare a unei
+                                obligatii esentiale, incalcare care da dreptul Verita sa inceteze prezentul
+                                Contract de plin drept, fara nicio notificare de punere in intarziere, fara
+                                interventia instantelor de judecata si/sau arbitrale, precum si fara nicio alta
+                                formalitate prealabila.
+                            </p>
+                            <p>
+                                Prin semnarea prezentului Contract, Parintii/Reprezentantul legal declara ca
+                                au(a) studiat Manualul, vor respecta si se vor conforma tuturor prevederilor,
+                                termenilor si conditiilor din Manualul Verita - anexa la prezentul Contract si
+                                vor/va lua toate masurile necesare ca Elevul sa le respecte si sa se conformeze
+                                acestora.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The Parents/Legal Guardian hereby represent(s) and guarantee(s) that he/she was
+                                informed and acknowledges that repeated breaches of the provisions of Verita
+                                Manual by the Parents/Legal Guardian and/or by the Direct Beneficiary (for
+                                example: more than three time within a period of 90 days entitles Verita to
+                                consider this Contract automatically terminated without formal notice, the
+                                intervention of the courts and/or arbitral tribunals and without any other prior
+                                formalities, by operation of the law.
+                            </p>
+                            <p>
+                                By signing this Contract, the Parents/Legal Guardian declare(s) that he/she
+                                examined the Manual, will respect and comply with all the provisions, terms and
+                                conditions of the Verita Manual – annexed to this Contract and shall take all
+                                the necessary measure for the Student to respect and comply with them as well.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VII. Supravegherea video in incinta Scolii Verita
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VII. Video surveillance within Verita premises
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Verita, prin intermediul sistemelor de supraveghere video, colecteaza si
+                                prelucreaza inregistrari video in scopul asigurarii securitatii persoanelor si
+                                bunurilor, pazei si protectiei elevilor, bunurilor, valorilor si a materialelor
+                                utilizate in procesul educational precum si pentru prevenirea si combaterea
+                                infractionalitatii.
+                            </p>
+                            <p>
+                                Sistemele de supraveghere video sunt instalate in spatiile comune.
+                            </p>
+                            <p>
+                                Prin semnarea prezentului Contract, Beneficiarul Indirect declara ca a fost
+                                informat cu privire la Politica de supraveghere video si este de acord cu
+                                utilizarea acestui sistem conform scopului declarat de catre Verita.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                Verita, via video surveillance systems, collects and processes video recordings
+                                for the purpose of ensuring the safety of persons and goods, the security and
+                                protection of students, goods, valuables and materials used in the educational
+                                process as well as for preventing and combatting crime.
+                            </p>
+                            <p>
+                                The video surveillance systems are installed in the common spaces.
+                            </p>
+                            <p>
+                                By signing this Contract, the Indirect Beneficiary declares that he/she was
+                                informed with respect to the video surveillance Policy and agrees to the use of
+                                this system for the purpose declared by Verita.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VIII. Obligatii esentiale privind starea de sanatate a Elevului
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                VIII. Essential obligations regarding the Student’s health condition
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    Parintele/tutorele/reprezentantul legal al Elevului are obligatia esentiala
+                                    de a prezenta documentele medicale solicitate la inscrierea Elevului sau pe
+                                    parcursul Anului Scolar de catre Verita, in vederea mentinerii unui climat
+                                    sanatos la nivel de clasa pentru evitarea degradarii starii de sanatate a
+                                    celorlalti beneficiari directi din cadrul Scolii Verita.
+                                </li>
+                                <li>
+                                    In mod periodic, dar si in cazul nerespectarii de catre
+                                    parintii/reprezentantii legali ai Elevului a prevederilor legale si
+                                    constractuale, categoriile de personal implicate in asigurarea starii de
+                                    sanatate a elevilor in cadrul Scolii Verita vor lua urmatoarele masuri:
+                                    <ol class="letter_list_number">
+                                        <li>
+                                            efectuarea de actiuni de investigare epidemiologica a elevilor
+                                            suspecti de boli transmisibile sau contacti;
+                                        </li>
+                                        <li>
+                                            depistarea, izolarea si declararea copiilor suspecti de boli
+                                            transmisibile;
+                                        </li>
+                                        <li>
+                                            anuntarea familiei/a reprezentantilor legali pentru preluarea
+                                            elevului in cauza, respectiv anuntarea medicului specialist/a
+                                            medicului de familie/ a Serviciului Unic de Urgenta;
+                                            parintele/tutorele sau o persoana desemnata de acesta are obligatia
+                                            de a se prezenta la scoala in cel mai scurt timp posibil pentru
+                                            preluarea elevului, fiind raspunzator de evolutia starii de sanatate
+                                            a acestuia;
+                                        </li>
+                                        <li>
+                                            refuzul de a permite reintrarea in colectivitate a elevilor pentru
+                                            care parintii/reprezentantii legali nu prezinta avizul epidemiologic
+                                            eliberat de medicul de familie dupa diagnosticarea cu o boala
+                                            contagioasa sau dupa o perioada de absenta din colectivitate de cel
+                                            putin 3 zile consecutive.
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="col-6">
+                            <ol class="letter_list">
+                                <li>
+                                    The Student’s parent/guardian/legal representative has the essential
+                                    obligation of presenting the medical documents requested by Verita upon the
+                                    Student’s enrollment or throughout the School Year, for the purpose of
+                                    maintaining a healthy climate in class in order to avoid the deterioration
+                                    of the health condition of the other direct beneficiaries from Verita
+                                    School.
+                                </li>
+                                <li>
+                                    Periodically, as well as in the case of non-compliance by the Student’s
+                                    parents/legal representatives with the legal and contractual provisions, the
+                                    personnel categories involved in protecting the health of the Verita School
+                                    students will take the following measures:
+                                    <ol class="letter_list_number">
+                                        <li>
+                                            conducting epidemiological investigations on the students suspected
+                                            of transmissible diseases or their contacts;
+                                        </li>
+
+                                        <li>
+                                            detecting, isolating and declaring the children suspected of
+                                            transmissible diseases;
+                                        </li>
+                                        <li>
+                                            announcing the family/legal representatives to pick up the child or
+                                            informing the specialist/family doctor/ calling the Emergency
+                                            Services Number; the parent/tutor/person delegated by the latter
+                                            must come to school within the shortest time possible in order to
+                                            pick up the student and will be responsible for the evolution of
+                                            his/her state of health;
+                                        </li>
+                                        <li>
+                                            refusing to allow re-entry into the school setting of students whose
+                                            parents/legal representatives do not provide the epidemiological
+                                            certificate issued by the family doctor after having been diagnosed
+                                            with a contagious disease or after an absence period from the school
+                                            setting of minimum 3 consecutive days.
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                IX. Notificari
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                IX. Notices
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>Toate comunicarile pot fi transmise:</p>
+                            <ul>
+                                <li>
+                                    <b>prin curier/ prin scrisoare recomandata – cu confirmare de
+                                        primire,</b>
+                                    la data din preambul;
+                                </li>
+                                <li>
+                                    <b>prin email</b> - la adresa de email comunicata de catre
+                                    Beneficiarul Indirect.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <p>All communications may be sent:</p>
+                            <ul>
+                                <li>
+                                    <b>By courier/ by registered letter – with acknowledgment of
+                                        receipt</b>
+                                    at the address mentioned in the preamble;
+                                </li>
+                                <li>
+                                    <b>My email</b> - at the address communicated by the Indirect
+                                    Beneficiary.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                X. Prelungirea valabilitatii Sectiunii II - Termeni si conditii general in cazul
+                                continuarii studiilor Elevului in cadrul Verita
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                X. Validity extension of Section II - General Terms and Conditions in case the
+                                Student continues his/her studies within Verita School
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                <i>
+                                    Decizia cu privire la continuarea studiilor in cadrul Scolii Verita a
+                                    Beneficiarului Direct apartine exclusiv Parintilor/Reprezentantului legal si
+                                    ea poate avea loc exclusiv cu conditia incheierii unui nou Contract
+                                    educational aplicabil noului An Scolar.
+                                </i>
+                            </p>
+
+                            <strong>Contractul educational este format din doua Sectiuni:</strong>
+                            <ul>
+                                <li><b>Sectiunea I</b> – Termeni si Conditii Speciale</li>
+                                <li><b>Sectiunea II</b> – Termeni si Conditii Generale</li>
+                            </ul>
+                            <p><b>
+                                Continuarea studiilor - dovedita prin incheierea unei noi Sectiuni I - Termeni
+                                si Conditii Speciale care sa corespunda noului An Scolar - va avea ca efect,
+                                prelungirea automata a valabilitatii Sectiunii II - Termeni si Conditii Generale
+                                (parte din Contractul de scolarizare incheiat pentru primul An Scolar al
+                                Elevului in cadrul Verita).
+                            </b></p>
+                            <p>
+                                In considerarea celor de mai sus,
+                                <b>Contractul de scolarizare aferent fiecarui nou An Scolar in cadrul Verita</b>
+                                va fi format din:
+                                <b>Sectiunea I - Termeni si Conditii Speciale</b>
+                                (aferenta Anului Scolar respectiv)
+                                <b>si Sectiunea II - Termeni si Conditii Generale</b>
+                                (ersiunea semnata de parti in cadrul primului Contract Educational incheiat de
+                                parti).
+                            </p>
+                            <p><b>
+                                Pentru evitarea oricarei neintelegeri, in cazul continuarii studiilor in cadrul
+                                Scolii Verita, partile vor negocia si semna Sectiunea I - Termeni si Conditii
+                                Speciale pentru fiecare An Scolar al Beneficiarului Direct in cadrul Scolii
+                                Verita, Sectiunea I urmand sa includa toate si orice modificari ale termenilor
+                                si conditiilor prevazute in cuprinsul Sectiunii II.
+                            </b></p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The decision regarding the Direct Beneficiary’s continuation of his/her studies
+                                within Verita School rests exclusively with the Parents/Legal Guardian and may
+                                occur exclusively pursuant to a new Educational Contract for the relevant School
+                                Year.
+                            </p>
+
+                            <strong>The Educational Service Contract is formed of the two Sections:</strong>
+                            <ul>
+                                <li><b>Section I</b> – Special Terms and Conditions</li>
+                                <li><b>Section II</b> – General Terms and Conditions</li>
+                            </ul>
+                            <p><b>
+                                The continuation of studies - proven by the conclusion of a new Section I -
+                                Special Terms and Conditions corresponding to the new School Year - will trigger
+                                the automatic extension of validity of Section II - General Terms and Conditions
+                                (part of the Educational Service Contract concluded in the first School Year of
+                                the Student).
+                            </b></p>
+                            <p>
+                                In view of the above, the <b>Educational Service Contract for each new School
+                                Year</b>
+                                within Verita will consist of: <b>Section I - Special Terms and Conditions</b> (for
+                                the
+                                respective School Year) <b>and Section II - General Terms and Conditions</b> (version
+                                signed by the parties within the first Educational Service Contract concluded by
+                                the parties).
+                            </p>
+                            <p><b>
+                                For the avoidance of any doubt, in the case of continuation of the studies within Verita
+                                School, the parties will negotiate and execute Section I – Special Terms and Conditions
+                                for each School Year of the Direct Beneficiary within Verita School, and Section I will
+                                include all and any modifications of the terms and conditions provided in Section II.
+                            </b></p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XI. Reguli generale de interpretare
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XI. General Interpretation Rules
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Contractul de scolarizare este format din prezenta Sectiune I - Termeni si
+                                Conditii Speciale si Sectiunea II - Termeni si Conditii Generale acestea formand
+                                un tot unitar.
+                            </p>
+                            <p>
+                                Prevederile Sectiunilor si respectiv ale Anexelor vor fi interpretate
+                                intotdeauna impreuna, in mod unitar, in scopul de a produce efectele urmarite de
+                                catre Parti prin semnarea Contractului.
+                            </p>
+                            <p>
+                                In caz de conflict sau de prevederi contradictorii intre Sectiuni si Anexe, vor
+                                prevala intodeauna prevederile contractuale ale Sectiunilor.
+                            </p>
+                            <p>
+                                In caz de conflict sau de prevederi contradictorii intre Sectiunea I si
+                                Sectiunea II vor prevala prevederile Sectiunii I.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The educational services contract is comprised of the present Section I
+                                - Special Terms and Conditions and Section II - General Terms and Conditions,
+                                which constitute a unitary whole.
+                            </p>
+                            <p>
+                                The provisions contained in the Sections and Annexes will always be interpreted
+                                together in a uniform manner in order to produce the effects intended by the
+                                Parties in concluding the Contract.
+                            </p>
+                            <p>
+                                In the case of conflict or conflicting provisions between Sections and Annexes,
+                                the contractual provisions of the Sections will always prevail.
+                            </p>
+                            <p>
+                                In case of conflict or conflicting provisions between Section I and Section II,
+                                the provisions of Section I will prevail.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XII. Parti integrante ale Contractului
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XII. Contract’s Parts
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Fac parte integranta din prezentul Contract urmatoarele anexe:
+                                <ul>
+                                    <li><b>Anexa 1:</b> Grafic de plata</li>
+                                    <li><b>Anexa 2:</b> Informatii cu caracter medical</li>
+                                    <li><b>Anexa 3:</b> Nota de informare si consimtamant date cu caracter
+                                        personal</li>
+                                    <li><b>Anexa 4:</b> Manualul Verita</li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The following annexes are part of this Contract:
+                                <ul>
+                                    <li><b>Annex 1:</b> Payment Schedule</li>
+                                    <li><b>Annex 2:</b> Medical Information</li>
+                                    <li><b>Annex 3:</b> Privacy Notice and Declaration of Consent</li>
+                                    <li><b>Annex 4:</b> Verita Manual</li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XIII. TERT PLATITOR
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XIII. THIRD PARTY PLAYER
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p><b><i>
+                                Preambul: Prezentul articol este aplicabil in cazul in care obligatiile
+                                financiare ale Parintilor/Reprezentantului legal sunt achitate de catre o terta
+                                persoana - fizica sau juridica.
+                            </i></b></p>
+                            <p><b>
+                                Tertul platitor se obliga sa plateasca orice sume datorate Verita in baza
+                                acestui Contract de catre Parinti/Reprezentantul legal obligandu-se solidar cu
+                                Beneficiarul Indirect la plata acestora.
+                            </b></p>
+                            <p><b>
+                                Obligatia de plata asumata de Tertul Platitor prin prezentul Contract e valabila
+                                si isi produce efectele juridice, de la data incheierii prezentului Contract
+                                pana la data achitarii integrale a obligatiilor de plata ale
+                                Parintilor/Reprezentantului legal.
+                            </b></p>
+                        </div>
+                        <div class="col-6">
+                            <p><b>
+                                Preamble: This Article will apply in the event the financial obligations of the
+                                Parents/Legal Guardian are discharged by a third person - whether natural or
+                                legal.
+                            </b></p>
+                            <p><b>
+                                The Third-party Payer undertakes to pay any amounts due to Verita under this
+                                Contract by the Parents/Legal Guardian and undertakes jointly with the latter to
+                                pay them.
+                            </b></p>
+                            <p><b>
+                                The payment obligation assumed by the Third-party Payer under this Contract will
+                                be valid and will become effective as of the date of conclusion of this Contract
+                                until the payment of the Parents/Legal Guardian’s payment obligations in full.
+                            </b></p>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XIV. Prevederi finale
+                            </div>
+                        </div>
+                        <div class="col-6 p-0">
+                            <div class="o_verita_contract_list__header">
+                                XIV. Fina Provisions
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-6">
+                            <p>
+                                Contractul de scolarizare este format din prezenta Sectiune I - Termeni si
+                                Conditii Speciale si Sectiunea II - Termeni si Conditii Generale acestea formand
+                                un tot unitar.
+                            </p>
+                            <p>
+                                Prezentul Contract contine intregul aranjament dintre Parti in legatura cu
+                                probleme stipulate in prezentul.
+                            </p>
+                            <p><b>
+                                Partile declara si confirma ca au citit toate prevederile prezentului Contract,
+                                au negociat cu buna credinta si inteleg caracterul angajant al continutului
+                                acestuia.
+                            </b></p>
+                            <p>
+                                Incheiat in varianta bilingva, romana si engleza, in 2 (doua) exemplare
+                                originale, 1 (unul) pentru fiecare Parte insa toate exemplarele impreuna
+                                constituie unul si acelasi document. In caz de discrepante in interpretarea
+                                prezentului document, versiunea in limba romana va prevala.
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                The educational services contract is comprised of the present Section I –
+                                Special Terms and Conditions and Section II – General Terms and Conditions,
+                                which constitute a unitary whole.
+                            </p>
+                            <p>
+                                This Contract shall constitute the entire contract between the Parties
+                                concerning the matters stipulated in this Contract.
+                            </p>
+                            <p><b>
+                                The Parties states that they have read all provisions, au negociat cu buna -
+                                credinta and attachments of this Contract and are aware of its contents being
+                                binding.
+                            </b></p>
+                            <p>
+                                Concluded in the bilingual version, in Romanian and English, in 2 (two) original
+                                counterparts, 1 (one) for each Party, but all the counterparts together construe
+                                one and the same document. In case of discrepancies in the interpretation of
+                                this document, the Romanian version shall prevail.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Appendix 1 -->
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-12 text-center ">
+                            <strong class="h3">ANEXA 1 / APPENDIX 1</strong>
+
+                            <p>
+                                <strong>
+                                    Grafic de plata pentru anul scolar 2021-2022 / Payment Plan 2021-2022 Academic Year*
+                                </strong>
+                            </p>
+
+                            <table class="w-100 bordered-table">
+                                <tr>
+                                    <td>Student Name</td>
+                                    <td><span t-field="o.partner_id.first_name"/> <span t-field="o.partner_id.last_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Student ID</td>
+                                    <td><span t-field="o.partner_id.facts_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Contract number</td>
+                                    <td>
+                                        <t t-set="next_grade_level"
+                                           t-value="o.partner_id.next_grade_level_id"/>
+                                        <t t-set="grade_level"
+                                           t-value="o.partner_id.grade_level_id"/>
+                                        <t t-esc="o.partner_id.facts_id"/> /
+                                        <t t-esc="school_year.name"/> /
+                                        <t t-esc="next_grade_level.name"/> /
+                                        Date <t t-esc="nowdate"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Year</td>
+                                    <td>
+                                        <p><t t-esc="grade_level.name"/> for Enrolled</p>
+                                        <p><t t-esc="next_grade_level.name"/> for Pre-enrolled</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table class="mt-4 w-100 bordered-table">
+                                <tr>
+                                    <th colspan="3"><u>Summary</u></th>
+                                </tr>
+                                <tr>
+                                    <td><u>No. of installments:</u></td>
+                                    <td>{no of installments in Odoo}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Tuition fee:</td>
+                                    <td><t t-esc="tuition_fee"/></td>
+                                    <td>eur</td>
+                                </tr>
+                                <tr>
+                                    <td>Food:</td>
+                                    <td><t t-esc="food_fee"/></td>
+                                    <td>eur</td>
+                                </tr>
+                                <tr>
+                                    <td>Surcharge:</td>
+                                    <td>{Surcharge Fee in Odoo}</td>
+                                    <td>eur</td>
+                                </tr>
+                                <tr>
+                                    <td><b><u>Total:</u></b></td>
+                                    <td><t t-esc="tuition_fee + food_fee"/></td>
+                                    <td><b>eur</b></td>
+                                </tr>
+                            </table>
+
+                            <table class="w-100 o_verita_table_guardian mt-4">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount/euro</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Appendix 2 -->
+                    <div class="row"
+                         style="page-break-inside: avoid;">
+                        <div class="col-12 text-center ">
+                            <strong class="h3">ANEXA 2 / APPENDIX 2</strong>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <strong>
+                                Grafic de plata pentru anul scolar 2021-2022 / Payment Plan 2021-2022 Academic Year*
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <p>In conformitate cu prevederile legale aplicabile, in vederea indeplinirii atributiilor
+                                legale de catre personalul implicat in asistenta medicala acordata prescolarilor si
+                                elevilor
+                                si pentru promovarea unui stil de viata sanatos si a educatiei pentru sanatate</p>
+                            <p>
+                                Toate datele si informatiile furnizate in cuprinsul prezentei sunt complete, reale si
+                                corecte in fiecare detaliu prezentat
+                            </p>
+                            <p>
+                                Imi dau acordul privind accesarea si prelucrarea datelor cu caracter personal de catre
+                                personalul Verita si de catre personalul medical tert, in vederea indeplinirii
+                                obligatiilor legale privind asistenta medicala pe durata orelor scolare si in vederea
+                                acordarii serviciilor medicale de urgenta (daca va fi cazul);
+                            </p>
+                            <p>
+                                Adresa de corespondenta electronica indicata in cadrul Contractului - Sectiunea I este
+                                veridica, functionala, verificata de catre subsemnatul si accept ca toate cererile,
+                                informatiile si documentele solicitate de catre personalul Verita in legatura cu sau
+                                avand ca obiect starea de sanatate a Beneficiarului Direct transmise catre adresa de
+                                e-mail indicata, sa fie considerata ca fiind corespondenta transmisa oficial si
+                                receptionata
+                            </p>
+                            <p>
+                                Subsemnatul declar ca:
+                                <ul>
+                                    <li>
+                                        <o class="letter_list">
+                                            <li>
+                                                Adeverinta medicala pentru inscrierea in colectivitate - eliberata de
+                                                catre
+                                                medicul de familie;
+                                            </li>
+                                            <li>
+                                                Aviz epidemiologic pentru (re)intrare in colectivitate. Acesta este
+                                                obligatoriu a fi prezentat:
+                                                <ol class="roman_list">
+                                                    <li>
+                                                        dupa o perioada de absenta din colectivitate de cel putin 3 zile
+                                                        consecutive;
+                                                    </li>
+                                                    <li>
+                                                        la plecarea in tabere, etc.
+                                                    </li>
+                                                </ol>
+                                            </li>
+                                            <li>
+                                                Adeverinta/Fisa medicala cuprinzand: antecedentele fiziolo-gice,
+                                                principalele antecedente patologice (inclusiv infecto-contagioase),
+                                                precum
+                                                si imunizarile efectuate;
+                                            </li>
+                                            <li>
+                                                <strong>
+                                                    Orice alt document si/sau informatie medicala solicitata de catre
+                                                    personalul Verita in conformitate cu Manualul Verita si/sau
+                                                    Sectiunea II
+                                                    - Termeni si Conditii Generale - Art. 9 - asistenta medicala.
+                                                    Administrarea de medicamente elevilor de catre personalul Verita.
+                                                </strong>
+                                            </li>
+                                        </o>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                Lipsa prezentatii documentelor mai sus mentionate poate rezulta in suspendarea de
+                                catre Verita a accesului Elevului la cursuri, pana la remedierea situatiei si/sau -
+                                dupa caz, imposibilitatea participarii de catre Elev la activitatile pentru care
+                                prezentarea avizului epidemeologic este obligatorie.
+                                <ul>
+                                    <li>
+                                        in cazul in care voi fi anuntat de catre personalul Verita ca copilul este
+                                        bolnav/exista o suspiciune de boala, ma voi deplasa de urgenta pentru a lua
+                                        copilul de la scoala.
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                Totodata declar ca autorizez personalul Verita ca in caz de urgenta medicala/pericol
+                                iminent si/sau in cazul in care nu pot fi contactat si/sau nu ma pot deplasa pentru a
+                                prelua copilul de la scoala:
+                                <ul>
+                                    <li>
+                                        Sa acorde primul ajutor de baza si/sau calificat in caz de urgenta medicala sau
+                                        pericol iminent, inclusiv sa apeleze la serviciile medicale ale unitatilor
+                                        spitalicesti.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p>
+                                Pursuant to the applicable legal provisions, for the purpose of fulfilling of the legal
+                                duties of the personnel involved in medical assistance provided to preschoolers and
+                                students and in order to promote a healthy lifestyle and providing health education,
+                            </p>
+                            <p>
+                                All the data and information provided herein are complete, truthful and correct in
+                                every detail;
+                            </p>
+                            <p>
+                                I hereby agree to the accessing and processing of personal data by Verita personnel
+                                and by
+                                third party medical personnel, for the purpose of fulfilling the legal obligations
+                                regarding medical assistance during school schedule and for providing emergency medical
+                                services (if necessary);
+                            </p>
+                            <p>
+                                The electronic correspondence address indicated in the Contract – Section I is truthful,
+                                functional, verified by me and I hereby accept that all the requests, information and
+                                documents requested by Verita personnel with respect to or about Direct Beneficiary’s
+                                health condition transmitted to the e-mail address indicated above will be considered to
+                                be officially sent and received correspondence.
+                            </p>
+                            <p>
+                                I hereby declare that:
+                                <ul>
+                                    <li>
+                                        <o class="letter_list">
+                                            <li>Medical certificate approving enrollment into the school setting –
+                                                issued by the family doctor;</li>
+                                            <li>
+                                                Epidemiological certificate for re(entry) into the school setting. This
+                                                is mandatory:
+                                                <ol class="roman_list">
+                                                    <li>
+                                                        after a period of absence from the school setting of at least 3
+                                                        consecutive days;
+                                                    </li>
+                                                    <li>
+                                                        upon departure for school trips, etc.
+                                                    </li>
+                                                </ol>
+                                            </li>
+                                            <li>
+                                                Medical record/certificate that contains: physiological history, the
+                                                main pathology history (including infection-contagious history) as well
+                                                as the immunization record;
+                                            </li>
+                                            <li>
+                                                Any other document and/or medical information requested by the Verita
+                                                personnel pursuant to the Verita Manual and/or Section II – General
+                                                Terms and Conditions – Art. 9 – Medical Assistance. The administration
+                                                of medication to students by Verita personnel.
+                                            </li>
+                                        </o>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+
+                                Failure to provide the aforementioned documentation may result in the suspension by
+                                Verita of the Student’s access to classes until the situation is remedied and/or – as
+                                the case may be, in the impossibility of the Student participating in activities for
+                                which the epidemiological certificate is mandatory.
+                                <ul>
+                                    <li>
+                                        If I will be announced by the Verita personnel that the child is sick/there is
+                                        suspicion of sickness, I will immediately come to school in order to pick up the
+                                        child.
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                I also declare that I authorize Verita personnel that, in case of medical
+                                emergency/imminent danger and/or if I cannot be contacted and/or I cannot travel to pick
+                                up the child from school:
+                                <ul>
+                                    <li>
+                                        To administer basic and/or qualified first aid measures in the case of a medical
+                                        emergency or imminent danger, including by resorting to the medical services of
+                                        hospital units.
+                                    </li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <strong class="h3">
+                                INFORMATII MEDICALE/MEDICAL INFORMATION
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <table border="1"
+                                   class="o_verita_table_guardian">
+                                <tr>
+                                    <th>
+                                        Sunt de accord ca asistenta medicala a scolii sa imi trateze copilul daca e
+                                        nevoie / I allow the school nurse to treat my child if needed:
+                                    </th>
+                                    <th>
+                                        <t t-esc="'yes' if o.permission_to_treat else 'no'"/>
+                                    </th>
+                                </tr>
+                            </table>
+                            <p class="p-4">
+                                Conditii medicale / fizice care pot afecta participarea la cursuri/ anumite
+                                activitati (de exemplu, boli sau leziuni recente, afectiuni cronice, fobii etc.) /
+                                Medical conditions/physical afflictions that may affect participation in
+                                courses/certain activities (for example, recen diseases or lesions, chronic
+                                afflictions, phobias, etc.)
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <t t-set="otc_medications"
+                           t-value="o.partner_id.medical_medications_ids.filtered(lambda m: m.type == 'otc')"/>
+                        <t t-set="prescription_drugs"
+                           t-value="o.partner_id.medical_medications_ids.filtered(lambda m: m.type == 'prescription_drug')"/>
+                        <div class="col-12">
+                            <table border="1"
+                                   class="w-100 o_verita_table_guardian">
+                                <tr class="bg-blue">
+                                    <th>Medicamente prescrise, conditii medicale, alergii/Prescription medication,
+                                        conditions, allergies</th>
+                                    <th>Note</th>
+                                    <th>Elevul si le administreaza singur / Self-administer: Yes No</th>
+                                    <th>Doza prescrisa / Medication dose:</th>
+                                </tr>
+                                <tr>
+                                    <td>Medicamentul 1 / Medication 1:</td>
+                                    <t t-set="medication" t-value="prescription_drugs[:1]"/>
+                                    <td><t t-esc="medication.name"/></td>
+                                    <td><t t-esc="'yes' if medication.self_administer else 'no'"/></td>
+                                    <td><t t-esc="medication.dose"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Medicamentul 2 / Medication 2:</td>
+                                    <t t-set="medication" t-value="prescription_drugs[1:2]"/>
+                                    <td><t t-esc="medication.name"/></td>
+                                    <td><t t-esc="'yes' if medication.self_administer else 'no'"/></td>
+                                    <td><t t-esc="medication.dose"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Condition 1:</td>
+                                    <td><t t-esc="o.partner_id.medical_conditions_ids[:1].name"/></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Condition 2:</td>
+                                    <td><t t-esc="o.partner_id.medical_conditions_ids[1:2].name"/></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Allergy to medicine:</td>
+                                    <td><t t-esc="o.partner_id.medical_allergies_ids[:1].name"/></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>Allergy to food or other:</td>
+                                    <td><t t-esc="o.partner_id.medical_allergies_ids[1:2].name"/></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <table border="1"
+                                   class="w-100 mt-4 o_verita_table_guardian">
+                                <tr class="bg-blue">
+                                    <th>Alte probleme medicale si diete / Other medical issues and diets</th>
+                                    <th>Detalii / Details</th>
+                                </tr>
+                                <tr>
+                                    <th>Health problems:</th>
+                                    <th>{Medical UD/Medical/Health problems}</th>
+                                </tr>
+                                <tr>
+                                    <th>Other physical characteristics:</th>
+                                    <th>{Medical UD/Medical/Other physical characteristics}</th>
+                                </tr>
+                                <tr>
+                                    <th>Medical diet:</th>
+                                    <th>{Medical UD/Medical/Medical diet restrictions}</th>
+                                </tr>
+                                <tr>
+                                    <th>Diet and eating habits:</th>
+                                    <th>{Medical UD/Medical/Diet and eating habits}</th>
+                                </tr>
+                            </table>
+                            <p class="p-4">
+                                Sunt de accord ca asistenta medicala a scolii sa administreze copilului meu urmatoarele
+                                medicamente care nu necesita prescriptie medicala in caz de nevoie / I allow the school
+                                nurse to administer my child the following over the counter medicine if needed:
+                            </p>
+                            <table class="w-100 o_verita_table_guardian"
+                                   border="1">
+                                <colgroup>
+                                    <col width="75%"/>
+                                    <col width="25%"/>
+                                </colgroup>
+                                <tr class="bg-blue">
+                                    <th colspan="2">MEDICAMENT / MEDICINE</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Paracetamol (acetaminophen)
+                                    </td>
+                                    <td>{Medical/OTC Medications}</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Ibuprofen:
+                                    </td>
+                                    <td>idem</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Bomboane pentru calmarea gatului / Throat lozenge:
+                                    </td>
+                                    <td>idem</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Antiacid pentru calmarea stomacului / Tummy antacid (calcium carbonate):
+                                    </td>
+                                    <td>idem</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Crema si sirop antihistaminic contra reactiei alergice / Antihistamine cream and
+                                        syrup for allergic reaction:
+                                    </td>
+                                    <td>
+                                        idem
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Crema hidrocortizon (contra scarpinare/muscaturi de insecte) / Hydrocortisone
+                                        cream (for itches/bites):
+                                    </td>
+                                    <td>idem</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Gel sau spray contra entorselor musclare / Muscle sprain gel or spray:
+                                    </td>
+                                    <td>idem</td>
+                                </tr>
+                            </table>
+
+                            <table class="w-100 mt-4 bordered-table">
+                                <colgroup>
+                                    <col width="75%" />
+                                    <col width="25%" />
+                                </colgroup>
+                                <tr>
+                                    <td>
+                                        In cazul in care copilul meu sufera o reactie alergica severa (soc anafilactic)
+                                        imi exprima acordul privind administrarea tratamentului cu EpiPen de catre orice
+                                        persoana ca si masura de prim ajutor/ In the event my child suffers from severe
+                                        allergic reactions (anaphylaxis) I agree with the administration of EpiPen
+                                        by any person as first aid measure
+                                    </td>
+                                    <td>{YES and No check boxes}</td>
+                                </tr>
+                            </table>
+                            <table border="1"
+                                   class="w-100 mt-4 o_verita_table_guardian">
+                                <colgroup>
+                                    <col width="50%"/>
+                                    <col width="25%"/>
+                                    <col width="25%"/>
+                                </colgroup>
+                                <tr class="bg-blue">
+                                    <th colspan="3">
+                                        ACORD ACTIVITATI AER LIBER/CONSENT OUTDOOR ACTIVITIES
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Ca regula, programul educational in cadrul Verita include si activitati in
+                                        aer liber, activitati care sunt mentionate in Orar si care sunt de scurta durata
+                                        si nu genereaza costuri suplimentare.
+                                    </td>
+                                    <td colspan="2">
+                                        <p>As a rule, the educational program at Verita includes outdoor activities,
+                                            which are specified in the Schedule, are limited in duration and do not
+                                            entail
+                                            additional expenses.</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p>Ca regula, pentru deplasarile in afara unitatii scolare in vederea
+                                            desfasurarii
+                                            activitatilor in aer liber care sunt parte din Pachetul Educational
+                                            (respectiv
+                                            sunt incluse in orar si nu genereaza costuri suplimentare) prin semnarea
+                                            prezentului Contract, Parintele/ Reprezentantul legal intelege ca isi da
+                                            acordul
+                                            in mod expres cu privire la parasirea temporara a incintei scolii.
+                                            Parintele/Reprezentantul legal are dreptul, fara nicio restrictie, ca
+                                            oricand pe
+                                            durata Contractului, pentru o astfel de activitate sa opteze pentru
+                                            neparticiparea copilului la activitatea respectiva, in acest sens informand
+                                            in
+                                            scris Verita.</p>
+                                    </td>
+                                    <td colspan="2">
+                                        <p>As a rule, for field trips outside the school premises for the purposes of
+                                            engaging in outdoor activities that are part of the Educational Package (are
+                                            included in the schedule and do not entail additional costs), by signing
+                                            this
+                                            Contract, the Parent/Legal Guardian undertakes to expressly agree to the
+                                            temporary departure from the school premises. The Parent/Legal Guardian has
+                                            the
+                                            unrestricted right, throughout the term of the Contract, to opt for his/her
+                                            child not participating in the respective activity, by informing Verita in
+                                            writing to this end.</p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Semnatura Parintelui/Reprezentantului legal /Parent/Legal Guardian
+                                        Signature</td>
+                                    <td>Da/Yes <input type="radio"
+                                                      name="legalcheck"/></td>
+                                    <td>Da/No <input type="radio"
+                                                     name="legalcheck"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center pl-4 pr-4"><input type="text"
+                                                                             class="p-1 w-100"/></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr style="border-bottom: #729fcf 3px solid;">
+                                    <td colspan="3">Observatii/Observations</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"
+                                        class="p-3">
+                                        <p></p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                        </div>
+                        <div class="col-6">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="pdf_reenrollment_inherit_custom"
+              inherit_id="adm_reenrollment.pdf_template_reenrollment_contract">
+        <xpath expr="//div[@id='contract_document_content']"
+               position="replace">
+            <t t-call="verita_customizations.adm_verita_contract_template_2021_2022"/>
+        </xpath>
+    </template>
+</odoo>
