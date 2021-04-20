@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pld_legal_document,access_pld_legal_document,model_pld_legal_document,,1,1,1,1
+access_pld_legal_document_type,access_pld_legal_document_type,model_pld_legal_document_type,,1,1,1,1
