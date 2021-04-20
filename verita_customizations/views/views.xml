@@ -12,13 +12,54 @@
                 <page name="verita_customs"
                       string="Verita Customizations">
                     <group>
-                        <field name="allow_paracetamol"/>
-                        <field name="allow_ibuprofen"/>
-                        <field name="allow_throat_lozenge"/>
-                        <field name="allow_tummy_antacid"/>
-                        <field name="allow_antihistamine_cream_syrup_allergic_reaction"/>
-                        <field name="allow_hydrocortisone_cream"/>
-                        <field name="allow_muscle_sprain_gel_spray"/>
+                        <group>
+                            <field name="allow_paracetamol"/>
+                            <field name="allow_ibuprofen"/>
+                            <field name="allow_throat_lozenge"/>
+                            <field name="allow_tummy_antacid"/>
+                            <field name="allow_antihistamine_cream_syrup_allergic_reaction"/>
+                            <field name="allow_hydrocortisone_cream"/>
+                            <field name="allow_muscle_sprain_gel_spray"/>
+                        </group>
+                        <group>
+                            <field name="health_problems"/>
+                            <field name="health_problems_characteristics"/>
+                            <field name="medical_diet_restrictions"/>
+                            <field name="diet_and_eating_habits"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+    <record id="adm_reenrollment_view_form_inherit_custom_verita"
+            model="ir.ui.view">
+        <field name="name">adm.reenrollment.view.form.inherit.verita</field>
+        <field name="model">adm.reenrollment</field>
+        <field name="inherit_id"
+               ref="adm_reenrollment.adm_reenrollment_view_form"/>
+        <field name="arch"
+               type="xml">
+            <notebook id="reenrollment_notebook"
+                      position="inside">
+                <page name="verita_customs"
+                      string="Verita Customizations">
+                    <group>
+                        <group>
+                            <field name="allow_paracetamol"/>
+                            <field name="allow_ibuprofen"/>
+                            <field name="allow_throat_lozenge"/>
+                            <field name="allow_tummy_antacid"/>
+                            <field name="allow_antihistamine_cream_syrup_allergic_reaction"/>
+                            <field name="allow_hydrocortisone_cream"/>
+                            <field name="allow_muscle_sprain_gel_spray"/>
+                        </group>
+                        <group>
+                            <field name="health_problems"/>
+                            <field name="health_problems_characteristics"/>
+                            <field name="medical_diet_restrictions"/>
+                            <field name="diet_and_eating_habits"/>
+                        </group>
                     </group>
                 </page>
             </notebook>
