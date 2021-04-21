@@ -119,6 +119,7 @@ class ApplicationController(AdmissionController):
         PartnerEnv = env["res.partner"]
         ApplicationEnv = env["adm.application"]
 
+        user = request.env.user
         field_ids = env.ref("adm.model_adm_application").field_id
         fields = [field_id.name for field_id in field_ids]
         keys = params.keys() & fields
@@ -155,28 +156,62 @@ class ApplicationController(AdmissionController):
                 })
 
         # noinspection PyUnresolvedReferences
-        partner = PartnerEnv.create({
+        student = PartnerEnv.create({
             "first_name": result.get("first_name"),
             "middle_name": result.get("middle_name"),
             "last_name": result.get("last_name"),
             "image_1920": params.get("file_upload") and base64.b64encode(
                 params["file_upload"].stream.read()),
-            "parent_id": family.id,
             "person_type": "student",
             "family_ids": [(4, family.id, False)],
             })
         family.write({
-            'member_ids': [(4, partner.id, False)]
+            'member_ids': [(4, student.id, False)]
             })
         application = ApplicationEnv.create({
             "first_name": result.get("first_name"),
             "middle_name": result.get("middle_name"),
             "last_name": result.get("last_name"),
             "family_id": family_id,
-            "partner_id": partner.id,
-            "responsible_user_id": request.env.user.id,
+            "partner_id": student.id,
+            "user_access_ids": [(0, False, {
+                'user_id': user.id,
+                'admin': True,
+                'family_id': family.id,
+                })],
+            "responsible_user_id": user.id,
             "responsible_user_ids": [(4, request.env.user.id, 0)],
             })
+        family.generate_missing_relationships()
+        # Change relationships
+        user.partner_id.person_type = 'parent'
+
+        # Auto parent relationship
+        parent_relationship_type = env['school_base.relationship_type'].search([('type', 'in', ['parent', 'father', 'mother'])])[:1]
+        if parent_relationship_type:
+            parents_in_family = family.member_ids.filtered(lambda m: m.person_type == 'parent')
+            for parent in parents_in_family:
+                parent_relationship = family.member_relationship_ids.filtered(
+                    lambda mr: (mr.partner_individual_id == parent and mr.partner_relation_id == student)
+                    or (mr.partner_relation_id == parent and mr.partner_individual_id == student))
+                parent_relationship.write({
+                    'relationship_type_id': parent_relationship_type.id
+                    })
+
+        # Auto sibling relationship
+        sibling_relationship_type = env['school_base.relationship_type'].search([('type', 'in', ['sibling', 'brother', 'sister'])])[:1]
+        if sibling_relationship_type:
+            siblings_in_family = family.member_ids.filtered(lambda m: m.person_type == 'student') - student
+            for sibling in siblings_in_family:
+                sibling_relationship = family.member_relationship_ids.filtered(
+                        lambda mr: (mr.partner_individual_id == sibling
+                                    and mr.partner_relation_id == student)
+                        or (mr.partner_relation_id == sibling
+                            and mr.partner_individual_id == student))
+                sibling_relationship.write({
+                    'relationship_type_id': sibling_relationship_type.id
+                    })
+
         # result["relationship_ids"] = [(0, 0, {
         #     "partner_relation_id": parent.id,
         #     "family_id": family_id,
