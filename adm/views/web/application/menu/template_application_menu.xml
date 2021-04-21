@@ -4,12 +4,15 @@
     <template id="template_application_menu_item">
         <t t-if="application_page_id.child_ids">
             <li class="nav-item nav-item-menu dropdown">
-                <a class="nav-link dropdown-toggle" role="button"
-                   href="#" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle"
+                   role="button"
+                   href="#"
+                   data-toggle="dropdown">
                     <t t-esc="application_page_id.name"/>
                 </a>
                 <div class="dropdown-menu">
-                    <t t-foreach="application_page_id.child_ids" t-as="page_child_id">
+                    <t t-foreach="application_page_id.child_ids"
+                       t-as="page_child_id">
                         <a t-attf-href="/admission/applications/#{application_id.id}/#{page_child_id.url}"
                            class="dropdown-item">
                             <t t-esc="page_child_id.name"/>
@@ -33,23 +36,143 @@
         <t t-set="page_access_list"
            t-value="application_id.current_user_access_id.page_access_ids.ids"/>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse text-center" id="application_nav_bar">
+            <div id="o_adm_invite_partner_modal"
+                 t-if="application_id.current_user_access_id.admin"
+                 class="modal fade">
+                <div class="modal-dialog"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Invite partner</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form class="container">
+                                <input type="hidden"
+                                       name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="alert alert-warning"
+                                             role="alert">
+                                            The link sent in the email will expire in 15 days.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col form-group">
+                                        <label for="o_adm_invitation_email">Email</label>
+                                        <input id="o_adm_invitation_email"
+                                               type="email"
+                                               placeholder="email@example.com"
+                                               name="email"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <t t-set="pages"
+                                           t-value="SUPER_ENV['adm.application.page'].search([])"/>
+                                        <table class="table w-100">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center">Check if it has access</th>
+                                                    <th>Access name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="pages"
+                                                    t-as="page">
+                                                    <td>
+                                                        <div class="d-flex justify-content-center align-items-center">
+                                                            <input type="checkbox"
+                                                                   checked="checked"
+                                                                   t-attf-id="access_student_info-#{page.id}"
+                                                                   name="page_access_ids[]"
+                                                                   t-att-value="page.id"/>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <label t-attf-for="access_student_info-#{page.id}">
+                                                            <t t-esc="page.display_name"/>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-danger js_btn_cancel"
+                                    data-dismiss="modal">Cancel
+                            </button>
+                            <button class="btn btn-primary d-none js_bnt_loading"
+                                    type="button"
+                                    disabled="disabled">
+                                Loading...
+                                <span class="spinner-border spinner-border-sm"
+                                      role="status"/>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-primary js_invite_partner">
+                                Send invitation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="o_adm_invite_partner_modal_msm"
+                 class="modal fade">
+                <div class="modal-dialog"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="msm"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" data-target=".modal"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapse navbar-collapse text-center"
+                 id="application_nav_bar">
                 <ul class="navbar-nav w-100 justify-content-center">
-                    <li class="nav-item nav-item-menu" id="nav-itm-instr">
+                    <li class="nav-item nav-item-menu" t-if="application_id.current_user_access_id.admin">
+                        <button class="nav-link btn btn-primary text-white"
+                                type="button"
+                                style="border-radius: 100px;"
+                                data-toggle="modal"
+                                data-target="#o_adm_invite_partner_modal">
+                            Invite Parent
+                        </button>
+                    </li>
+                    <li class="nav-item nav-item-menu"
+                        id="nav-itm-instr">
                         <a t-attf-href="/admission/applications/#{application_id.id}/"
                            class="nav-link">
                             General info
                         </a>
                     </li>
-                    <t t-foreach="application_page_ids" t-as="application_page_id">
+                    <t t-foreach="application_page_ids"
+                       t-as="application_page_id">
                         <t
                                 t-if="application_page_id.id in page_access_list and (not application_page_id.hidden_for_status_ids or application_id.status_id not in application_page_id.hidden_for_status_ids)"
-                           t-call="adm.template_application_menu_item"/>
+                                t-call="adm.template_application_menu_item"/>
                     </t>
                 </ul>
             </div>
@@ -57,33 +180,43 @@
 
         <t t-if="application_id.status_id.type_id in ['return', 'started', 'parents_can_edit']">
             <t t-if="application_id.total_required_fields_completed == 100">
-                <form t-att-action="'/admission/applications/{}/check'.format(application_id.id)" method="post"
-                      enctype="multipart/form-data" id="info-form">
+                <form t-att-action="'/admission/applications/{}/check'.format(application_id.id)"
+                      method="post"
+                      enctype="multipart/form-data"
+                      id="info-form">
                     <button class="btn btn-primary btn-lg fixed-bottom ml-auto mr-2 mb-2"
                             style="left: auto !important;">
                         Send to School &#10095;</button>
                 </form>
             </t>
             <t t-if="showPendingInformation">
-                <div class="modal show modal_shown" tabindex="-1" role="dialog"
-                     style="padding-right: 17px; display: block;" aria-modal="true">
-                    <div class="modal-dialog" role="document">
+                <div class="modal show modal_shown"
+                     tabindex="-1"
+                     role="dialog"
+                     style="padding-right: 17px; display: block;"
+                     aria-modal="true">
+                    <div class="modal-dialog"
+                         role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Pending Task</h5>
                             </div>
                             <div class="modal-body">
-                                <div class="alert alert-danger" role="alert">
+                                <div class="alert alert-danger"
+                                     role="alert">
                                     <ul>
 
-                                        <t t-foreach="pendingData" t-as="itm">
+                                        <t t-foreach="pendingData"
+                                           t-as="itm">
                                             <li t-raw="itm"/>
                                         </t>
                                     </ul>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-dismiss="modal"
                                         onclick="closeModal()">Close</button>
                             </div>
                         </div>
@@ -101,24 +234,51 @@
 
     <template id="template_application_family_submenu">
         <div class="row">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs"
+                id="myTab"
+                role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#" role="tab"
-                       aria-controls="home" aria-selected="true">Home</a>
+                    <a class="nav-link active"
+                       id="home-tab"
+                       data-toggle="tab"
+                       href="#"
+                       role="tab"
+                       aria-controls="home"
+                       aria-selected="true">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                       aria-controls="profile" aria-selected="false">Profile</a>
+                    <a class="nav-link"
+                       id="profile-tab"
+                       data-toggle="tab"
+                       href="#profile"
+                       role="tab"
+                       aria-controls="profile"
+                       aria-selected="false">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                       aria-controls="contact" aria-selected="false">Contact</a>
+                    <a class="nav-link"
+                       id="contact-tab"
+                       data-toggle="tab"
+                       href="#contact"
+                       role="tab"
+                       aria-controls="contact"
+                       aria-selected="false">Contact</a>
                 </li>
             </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+            <div class="tab-content"
+                 id="myTabContent">
+                <div class="tab-pane fade show active"
+                     id="home"
+                     role="tabpanel"
+                     aria-labelledby="home-tab">...</div>
+                <div class="tab-pane fade"
+                     id="profile"
+                     role="tabpanel"
+                     aria-labelledby="profile-tab">...</div>
+                <div class="tab-pane fade"
+                     id="contact"
+                     role="tabpanel"
+                     aria-labelledby="contact-tab">...</div>
             </div>
         </div>
     </template>

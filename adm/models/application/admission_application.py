@@ -825,15 +825,14 @@ class Application(models.Model):
         if not mail_template:
             mail_template = \
                 self.env.company.sudo().mail_inviting_partner_to_application_id
-
         invitation = self.env['adm.application.invitation'].sudo().create({
             'application_id': self.id,
             'by_partner_id': self.env.user.partner_id.id,
             'to_email': email,
             'mail_template_id': mail_template.id,
-            # 'access_ids': [(6, 0, access)]
+            'page_access_ids': [(6, 0, access)]
             })
-
+        self.message_post_with_template(template_id=mail_template.id, res_id=invitation.id)
         return invitation
 
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
@@ -853,13 +852,13 @@ class Application(models.Model):
                         field_id = field_config.field_id
                         context = field_config.custom_context
                         attrs = field_config.custom_attrs
-                        field_el = etree.SubElement(xml_group, 'field',
-                                                    name=field_id.name,
-                                                    attrs=attrs,
-                                                    context=context,)
+                        field_el = etree.SubElement(
+                            xml_group, 'field', name=field_id.name,
+                            attrs=attrs, context=context,)
                         self.fields_get()
                         if field_config.custom_xml_to_render:
-                            xml_to_render_el = etree.fromstring(field_config.custom_xml_to_render)
+                            xml_to_render_el = etree.fromstring(
+                                field_config.custom_xml_to_render)
                             field_el.append(xml_to_render_el)
 
                     xarch, xfields = View.postprocess_and_fields(self._name, xml_page, view_id)
@@ -1048,13 +1047,20 @@ class AdmApplicationInvitation(models.Model):
             if (invitation.state == 'accepted'
                     and invitation.access_family_id):
 
-                invitation.application_id.partner_id.write({
+                invitation.application_id.partner_id.sudo().write({
                     'family_ids': [(4, invitation.access_family_id.id, False)]
                     })
-                invitation.access_family_id.write({
+                invitation.access_family_id.sudo().write({
                     'member_ids': [
                         (4, invitation.application_id.partner_id.id, False)
                         ]
+                    })
+                invitation.application_id.sudo().write({
+                    'user_access_ids': [(0, False, {
+                        'family_id': invitation.access_family_id.id,
+                        'user_id': invitation.invited_user_id.id,
+                        'page_access_ids': [(6, 0, invitation.page_access_ids.ids)],
+                        })]
                     })
 
 
@@ -1099,10 +1105,12 @@ class AdmApplicationPage(models.Model):
     _name = 'adm.application.page'
     _description = "Application page"
     _order = "sequence"
+    _rec_name = 'display_name'
 
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default='-1')
     name = fields.Char(translate=True)
+    display_name = fields.Char(compute='compute_display_name')
     url = fields.Char()
     internal_reference = fields.Char()
     website_id = fields.Many2one('website')
@@ -1120,6 +1128,18 @@ class AdmApplicationPage(models.Model):
          'unique (internal_reference, website_id)',
          "The internal reference should be unique by website"),
         ]
+
+    def compute_display_name(self):
+        for page in self:
+            page.display_name = page._get_recursive_parent_name()
+
+    def _get_recursive_parent_name(self):
+        self.ensure_one()
+        if self.parent_id:
+            name = "%s / %s" % (self.parent_id._get_recursive_parent_name(), self.name)
+        else:
+            name = self.name
+        return name
 
     @api.model
     def find_by_reference(self, reference):

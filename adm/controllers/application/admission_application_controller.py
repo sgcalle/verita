@@ -29,6 +29,20 @@ class ApplicationController(AdmissionController):
         if hash_to_compare != secure_hash:
             raise exceptions.AccessError(_("Ensure to copy the url as you get it"))
 
+        # family = invitation_id.access_family_id
+        parent = request.env.user.partner_id
+        if not parent.family_ids:
+            family_name = "Family of %s" % parent.name
+            family = request.env['res.partner'].sudo().create({
+                'name': family_name,
+                'is_family': True,
+                'is_company': True,
+                'member_ids': [(4, parent.id, False)]
+                })
+            parent.write({
+                'family_ids': [(4, family.id, False)]
+                })
+
         return http.request.render('adm.template_application_invite_partner', {
             "application_id": application_id,
             "request": request,
@@ -287,3 +301,26 @@ class ApplicationController(AdmissionController):
             'page_id': page
             })
         return page.view_template_id.render(page_params)
+
+    @http.route('/admission/application/'
+                '<model(adm.application):application_id>/send/invitation',
+                methods=["POST"], csrf=True)
+    def send_invitation(self, application_id, **params):
+        email = params.get('email')
+
+        if not email:
+            raise exceptions.UserError(_("You should insert an email"))
+
+        page_access_ids = request.httprequest.form.getlist(
+            'page_access_ids[]', int)
+
+        if not page_access_ids:
+            raise exceptions.UserError(_("You should give access at least to one page"))
+
+        mail_template = request.env.company.sudo().mail_inviting_partner_to_application_id
+        application_id.with_user(request.env.user.id)\
+            .get_partner_invitation(
+                email=email,
+                access=page_access_ids,
+                mail_template=mail_template)
+        return 'ok'

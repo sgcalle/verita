@@ -2434,7 +2434,6 @@
             </div>
         </div>
     </template>
-
     <template id="pdf_reenrollment_inherit_custom"
               inherit_id="adm_reenrollment.pdf_template_reenrollment_contract">
         <xpath expr="//div[@id='contract_document_content']"

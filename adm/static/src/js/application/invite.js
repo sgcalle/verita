@@ -106,10 +106,14 @@ odoo.define('adm.application.invite', require => {
         saveNewFamilyButtonEl.addEventListener('click', submitNewFamily);
         acceptFamilyModalButtonEl.addEventListener('click', submitFamilyModalSelection);
         btnReject.addEventListener('click', e => {
+            e.preventDefault()
             invitationFormEl.querySelector('[name="state"]').value = 'rejected';
+            invitationFormEl.submit()
         });
         btnAccept.addEventListener('click', e => {
+            e.preventDefault()
             invitationFormEl.querySelector('[name="state"]').value = 'accepted';
+            invitationFormEl.submit()
         });
         // if (typeof notFamily !== 'undefined') {
         //     $familySelectModalEl.modal({backdrop: 'static', keyboard: false});

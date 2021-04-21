@@ -1,7 +1,7 @@
 odoo.define('adm.form.common', require => {
     "use strict";
 
-    require('web.core');
+    const {_t} = require('web.core');
 
     const fileList = {};
 
@@ -248,6 +248,49 @@ odoo.define('adm.form.common', require => {
         });
         $('.js_submit_json').on('click', sendJson);
         $('.js_country_select').on('change', refreshStates).trigger('change');
+        $('.js_invite_partner').on('click', (event) => {
+            const $submitButtonEl = $(event.currentTarget);
+            const $invitePartnerModal = $('#o_adm_invite_partner_modal');
+            const $invitePartnerModalMsm = $('#o_adm_invite_partner_modal_msm');
+            const $emailInput = $invitePartnerModal.find('.modal-body input[name=email]');
+            const $btnCancel = $invitePartnerModal.find('.js_btn_cancel');
+            const $btnLoading = $invitePartnerModal.find('.js_bnt_loading');
+
+            // Send invitation email
+            const emailFormData = new FormData($invitePartnerModal.find('form')[0]);
+            const resId = $('meta[name="_adm_res_id"]').attr("value");
+            let msm = "";
+            $.ajax({
+                url: '/admission/application/' + resId + '/send/invitation',
+                method: "POST",
+                data: emailFormData,
+                csrf_token: odoo.csrf_token,
+                processData: false,
+                contentType: false,
+                success: () => {
+                    msm = _t("The email has been sent");
+                },
+                error: function () {
+                    msm = _t("An error has ocurried, please try later");
+                },
+                complete: () => {
+                    $invitePartnerModalMsm.find('.msm').text(msm);
+                    $invitePartnerModalMsm.modal('show').on('hidden.bs.modal', () => {
+                        $invitePartnerModal.modal('hide');
+                    });
+                }
+            });
+
+            // Loading mode
+            $submitButtonEl.hide();
+            $btnLoading.removeClass('d-none');
+
+            $emailInput.prop('disabled', true);
+            $btnCancel.prop('disabled', true);
+
+            $invitePartnerModal.data('bs.modal')._config.keyboard = false;
+            $invitePartnerModal.data('bs.modal')._config.backdrop = 'static';
+        });
     });
 
     return {
