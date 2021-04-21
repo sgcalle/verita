@@ -1,16 +1,16 @@
 odoo.define('adm.application.create', require => {
     "use strict";
 
-    require('web.core');
+    const {_t} = require('web.core');
     const rpc = require('web.rpc');
+    const Dialog = require('web.Dialog');
 
-    document.addEventListener('DOMContentLoaded', () => {
+    $(document).ready(() => {
         // Variable and DOM elements
         const formCreateApplication = document.getElementById('form_create_application');
         const userPartnerId = parseInt(document.querySelector('meta[name="_user_partner_id"]').getAttribute('value'));
 
         const familySelectModalCreateEl = document.getElementById('family_select_modal_create');
-
 
         const notBelongToThisFamiliyInputEl = document.getElementById('notBelongToThisFamiliy');
 
@@ -54,6 +54,8 @@ odoo.define('adm.application.create', require => {
                     access: [1,2,3,4]
                 });
                 inviteMailsJSONListInputEl.value = JSON.stringify(inviteMailsJSONList);
+                const msm = _.str.sprintf(_t("The mail will be sent when you submit the form"));
+                Dialog.alert(this, msm);
             } else {
                 // Creating a new family for the students
                 const familyPartnerId = await rpc.query({
@@ -78,18 +80,21 @@ odoo.define('adm.application.create', require => {
                 const newFamilyLiEl = document.createElement('LI');
 
                 newFamilyLiEl.innerHTML = `
-                <li class="o_adm_family_select_item m-2 p-0" t-att-data-family-id="family_id.id">
+                <li class="o_adm_family_select_item m-2 p-0" 
+                    data-family-id="${familyPartnerId}">
                     <div class="p-2 d-flex justify-content-center">
-                        <input type="radio" name="familyResponsibleCheckbox" value="${familyPartnerId}" />
+                        <input type="radio" name="familyResponsibleCheckbox" 
+                            id="famili_add_${familyPartnerId}"
+                            value="${familyPartnerId}" />
                     </div>
-                    <img src="/adm/static/img/contact_photo_placeholder.png" alt="avatar"/>
-                    <p>${newFamilyNameInputEl.value}</p>
+                    <label class="pointer" for="famili_add_${familyPartnerId}">
+                        <img src="/adm/static/img/family_placeholder.svg" alt="avatar"/>
+                        <p class="mt-4">${newFamilyNameInputEl.value}</p>
+                    </label>
                 </li>
                 `;
                 newFamilyLiEl.class = 'o_adm_family_select_item m-2 p-0';
 
-                // The last child will be the + button
-                // We need to prepend it
                 familyUlList.insertBefore(newFamilyLiEl, familyUlList.lastElementChild);
                 console.log('Created new family: ' + familyPartnerId);
             }
@@ -103,11 +108,5 @@ odoo.define('adm.application.create', require => {
 
         // Showing modal
         $selectFamilyEl.modal({backdrop: 'static', keyboard: false});
-        // $('.o_adm_family_select_item').on('click', event => {
-        //     const familyItemEl = event.currentTarget;
-        //     $('input[name="family_id"]').val(familyItemEl.dataset.familyId);
-        //     $selectModal.modal('hide');
-        // });
-        // $selectModal.modal({backdrop: 'static', keyboard: false});
     });
 });
