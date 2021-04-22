@@ -152,7 +152,7 @@ class TuitionPlan(models.Model):
             installment_ids = []
             months = 0
             installment_date = plan.first_charge_date + relativedelta(months=months)
-            if period_date_to:
+            if plan.period_date_to:
                 while installment_date <= plan.period_date_to:
                     installment_ids.append((0, 0, {
                         "date": installment_date,
