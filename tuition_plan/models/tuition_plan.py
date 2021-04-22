@@ -152,12 +152,13 @@ class TuitionPlan(models.Model):
             installment_ids = []
             months = 0
             installment_date = plan.first_charge_date + relativedelta(months=months)
-            while installment_date <= plan.period_date_to:
-                installment_ids.append((0, 0, {
-                    "date": installment_date,
-                }))
-                months += 1
-                installment_date = plan.first_charge_date + relativedelta(months=months)
+            if period_date_to:
+                while installment_date <= plan.period_date_to:
+                    installment_ids.append((0, 0, {
+                        "date": installment_date,
+                    }))
+                    months += 1
+                    installment_date = plan.first_charge_date + relativedelta(months=months)
             plan.installment_ids = installment_ids
     
     def get_overlapping_plans(self):
