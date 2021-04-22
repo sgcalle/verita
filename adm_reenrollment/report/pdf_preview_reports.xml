@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <report
+        id="report_contract_reenrollment"
+        model="adm.reenrollment"
+        string="Contract Reenrollment Report"
+        report_type="qweb-pdf"
+        name="adm_reenrollment.pdf_template_reenrollment_contract"
+        menu="False"
+        attachment_use="True"
+        />
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="reenrollment_page_misc_info" model="adm.reenrollment.page">
+        <field name="name">Miscellaneous information</field>
+        <field name="url">misc-info</field>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_misc_info"/>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="reenrollment_page_student_info" model="adm.reenrollment.page">
+        <field name="name">Student information</field>
+        <field name="url">student-info</field>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_student_info"/>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="reenrollment_page_family_parent" model="adm.reenrollment.page">
+        <field name="name">Family</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="reenrollment_page_family_info" model="adm.reenrollment.page">
+        <field name="name">Information</field>
+        <field name="url">family/info</field>
+        <field name="parent_id" ref="adm_reenrollment.reenrollment_page_family_parent"/>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_family_info"/>
+    </record>
+
+    <record id="reenrollment_page_family_relationships" model="adm.reenrollment.page">
+        <field name="name">Relationships</field>
+        <field name="url">family/relationships</field>
+        <field name="parent_id" ref="adm_reenrollment.reenrollment_page_family_parent"/>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_family_relationships"/>
+    </record>
+
+    <record id="reenrollment_page_family_finance" model="adm.reenrollment.page">
+        <field name="name">Finance</field>
+        <field name="url">family/finance</field>
+        <field name="parent_id" ref="adm_reenrollment.reenrollment_page_family_parent"/>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_family_finance"/>
+    </record>
+
+    <record id="reenrollment_page_medical_info" model="adm.reenrollment.page">
+        <field name="name">Medical information</field>
+        <field name="url">medical-info</field>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_menu_medical_info"/>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="reenrollment_page_contract" model="adm.reenrollment.page">
+        <field name="name">Contract</field>
+        <field name="url">contract</field>
+        <field name="view_template_id" ref="adm_reenrollment.template_reenrollment_contract"/>
+        <field name="sequence">5</field>
+    </record>
+
+</odoo>

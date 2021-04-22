@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+from odoo.addons.school_base.models.res_partner import SELECT_STATUS_TYPES
 
 class TuitionPlan(models.Model):
     _name = "tuition.plan"
@@ -16,18 +17,22 @@ class TuitionPlan(models.Model):
     period_type = fields.Selection(string="Period Type",
         selection=[
             ("fiscal_year","Fiscal Year"),
-            ("year_after","Year After")],
+            ("year_after","Year After"),
+            ("manual","Manual")],
         default="fiscal_year",
         required=True)
     reference_date = fields.Date(string="Reference Date",
-        required=True,
         help="Used to identify the period based on the selected period type")
     period_date_from = fields.Date(string="Period Start",
         compute="_compute_period_dates",
+        required=True,
+        readonly=False,
         store=True,
         help="Autocomputed based on the selected reference date and period type")
     period_date_to = fields.Date(string="Period End",
         compute="_compute_period_dates",
+        required=True,
+        readonly=False,
         store=True,
         help="Autocomputed based on the selected reference date and period type")
     category_id = fields.Many2one(string="Category",
@@ -39,8 +44,11 @@ class TuitionPlan(models.Model):
         selection=[
             ("quotation", "Create Quotation"),
             ("sales_order", "Create Sales Order"),
+            ("sales_order_email", "Create Sales Order and send Sales Order by email"),
             ("draft_invoice", "Create Sales Order and Draft Invoice"),
-            ("posted_invoice", "Create Sales Order and Posted Invoice")],
+            ("posted_invoice", "Create Sales Order and Posted Invoice"),
+            ("posted_invoice_email", "Create Sales Order and Posted Invoice and send Invoice by email"),
+            ("posted_invoice_stmt_email", "Create Sales Order and Posted Invoice and send Statement by email")],
         required=True,
         default="quotation",
         help="Specify what will automatically be created when an installment of this tuition plan is executed")
@@ -60,6 +68,7 @@ class TuitionPlan(models.Model):
         comodel_name="tuition.plan.installment",
         inverse_name="plan_id",
         help="Installment dates generated for the tuition plan based on the first charge date")
+    override_installment_dates = fields.Boolean(string="Override Installment Dates")
     product_ids = fields.One2many(string="Products",
         comodel_name="tuition.plan.product",
         inverse_name="plan_id",
@@ -90,6 +99,15 @@ class TuitionPlan(models.Model):
         compute="_compute_default_partner_ids")
     use_student_payment_term = fields.Boolean(string="Use Student Payment Terms",
         help="If checked, the invoice payment terms is taken from the student if any")
+    surcharge_amount = fields.Float()
+    surcharge_percent = fields.Float()
+    report_ids = fields.One2many(string="Report Lines",
+        comodel_name="tuition.plan.report",
+        inverse_name="plan_id")
+    apply_for_status = fields.Selection(string="Apply for Status",
+        selection=SELECT_STATUS_TYPES,
+        help="Will only apply for students with matching status. If empty, applies to any status.",
+        default="enrolled")
 
     @api.constrains("default", "grade_level_ids", "period_date_from", "period_date_to", "category_id", "active")
     def _check_default(self):
@@ -126,17 +144,21 @@ class TuitionPlan(models.Model):
             plan.period_date_from = date_from
             plan.period_date_to = date_to
 
-    @api.constrains("first_charge_date")
+    @api.constrains("first_charge_date", "period_date_to")
     def _compute_installment_ids(self):
         for plan in self:
             plan.installment_ids.unlink()
             if not plan.first_charge_date:
                 continue
             installment_ids = []
-            for index in range(12):
+            months = 0
+            installment_date = plan.first_charge_date + relativedelta(months=months)
+            while installment_date <= plan.period_date_to:
                 installment_ids.append((0, 0, {
-                    "date": self.first_charge_date + relativedelta(months=index)
+                    "date": installment_date,
                 }))
+                months += 1
+                installment_date = plan.first_charge_date + relativedelta(months=months)
             plan.installment_ids = installment_ids
     
     def get_overlapping_plans(self):
@@ -144,8 +166,8 @@ class TuitionPlan(models.Model):
         return self.search([
             "&", ("category_id","=",self.category_id.id),
             "&", ("grade_level_ids","in",self.grade_level_ids.ids),
-            "|", ("period_date_from","=",self.period_date_from),
-                 ("period_date_to","=",self.period_date_to)
+            "!", "|", ("period_date_to","<",self.period_date_from),
+                      ("period_date_from",">",self.period_date_to)
         ])
     
     def _compute_default_partner_ids(self):
@@ -159,3 +181,49 @@ class TuitionPlan(models.Model):
                 ])
                 result = students.ids
             plan.default_partner_ids = result
+    
+    def action_open_report(self):
+        self.ensure_one()
+        action = self.env.ref("tuition_plan.tuition_plan_report_action").read()[0]
+        context = eval(action["context"])
+        context.update({
+            "search_default_plan_id": self.id,
+        })
+        action["context"] = context
+        return action
+    
+    def action_generate_forecast(self):
+        report_obj = self.env["tuition.plan.report"]
+        plan_reports = report_obj.search([("plan_id","in",self.ids)])
+        plan_reports.unlink()
+        for plan in self:
+            record_data = []
+            for installment in plan.installment_ids:
+                self._cr.execute("SAVEPOINT tuition_plan_report")
+                sales = installment.with_context(
+                    override_sale_order_name="For Tuition Plan Report",
+                    automation="quotation").execute()
+                for sale in sales:
+                    for line in sale.order_line:
+                        record_data.append({
+                            "plan_id": plan.id,
+                            "partner_id": sale.partner_id.id,
+                            "family_id": sale.family_id.id,
+                            "student_id": sale.student_id.id,
+                            "product_id": line.product_id.id,
+                            "price_subtotal": line.price_subtotal,
+                            "price_tax": line.price_tax,
+                            "price_total": line.price_total,
+                            "grade_level_id": sale.student_id.grade_level_id.id,
+                            "currency_id": sale.currency_id.id,
+                            "homeroom": sale.student_id.homeroom,
+                            "date": installment.date,
+                        })
+                try:
+                    self._cr.execute("ROLLBACK TO SAVEPOINT tuition_plan_report")
+                    self.pool.clear_caches()
+                    self.pool.reset_changes()
+                except psycopg2.InternalError:
+                    pass
+            for data in record_data:
+                report_obj.create(data)

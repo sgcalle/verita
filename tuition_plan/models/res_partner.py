@@ -3,7 +3,7 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError, MissingError
 
-class TuitionPlan(models.Model):
+class ResPartner(models.Model):
     _inherit = "res.partner"
 
     tuition_plan_ids = fields.Many2many(string="Tuition Plans",
@@ -17,6 +17,7 @@ class TuitionPlan(models.Model):
         comodel_name="tuition.plan",
         compute="_compute_default_tuition_plan_ids",
         help="Tuition plans used if no tuition plan is manually set for a given school year, category, and gradelevel")
+    email_statement = fields.Boolean(string="Email Statement Report")
     
     def _compute_default_tuition_plan_ids(self):
         for partner in self:

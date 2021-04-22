@@ -12,7 +12,7 @@
     'website': 'http://www.eduwebgroup.com',
 
     'category': 'Accounting',
-    'version': '0.1',
+    'version': '1.0',
 
     'depends': [
         'account',
@@ -21,13 +21,20 @@
         'school_base',
         'school_finance',
         'multiple_discounts',
+        'school_statement_report',
     ],
 
     'data': [
         'security/ir.model.access.csv',
         'security/tuition_plan_security.xml',
         'data/base_automation_data.xml',
+
+        'views/res_config_views.xml',
+        'data/ir_actions_server_data.xml',
+        'data/mail_template_data.xml',
+        'data/ir_cron_data.xml',
         'views/tuition_plan_views.xml',
         'views/res_partner_views.xml',
+        'views/tuition_plan_report_views.xml',
     ],
 }

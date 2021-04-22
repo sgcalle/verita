@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <template id="adm.template_application_menu_tuition_plan">
+        <t t-call="adm.template_application_form_commons">
+            <t t-set="title">Tuition Plans</t>
+            <t t-set="head">
+            </t>
+
+            <form class="container-fluid" data-adm-model-fields="1">
+                <div class="row">
+                    <!-- Variable declaration -->
+                    <t t-set="tuition_categ" t-value="int( SUPER_ENV['ir.config_parameter'].get_param('adm.tuition_plan_categ_id', 0) )"/>
+                    <t t-set="food_categ"
+                       t-value="int( SUPER_ENV['ir.config_parameter'].get_param('adm.food_plan_categ_id', 0) )"/>
+                    <t t-set="shadow_categ"
+                       t-value="int( SUPER_ENV['ir.config_parameter'].get_param('adm.shadow_teacher_categ_id', 0) )"/>
+                    <section class="col-12 col-md-4">
+                        <label>
+                            Tuition plan <span class="text-danger" t-if="is_required('application_id.tuition_plan_id')">*</span>
+                        </label>
+                        <select class="form-control"
+                               name="tuition_plan_id"
+                               data-adm-field="tuition_plan_id"
+                                data-adm-field-type="INTEGER"
+                               t-att-required="is_required('application_id.tuition_plan_id')">
+                               <option disabled="disabled" selected="selected">-Select a tuition plan-</option>
+                            <t t-foreach="application_id.available_tuition_plan_ids" t-as="tuition_plan">
+                                <t t-if="tuition_plan.category_id.id == tuition_categ">
+                                    <option t-att-selected="tuition_plan == application_id.tuition_plan_id"
+                                            t-att-value="tuition_plan.id">
+                                        <t t-esc="tuition_plan.name"/>
+                                    </option>
+                                </t>
+                            </t>
+                        </select>
+                    </section>
+
+                    <section class="col-12 col-md-4">
+                        <label>
+                            Food Options <span class="text-danger"
+                                           t-if="is_required('application_id.food_plan_id')">*</span>
+                        </label>
+                        <select class="form-control"
+                               name="food_plan_id"
+                               data-adm-field="food_plan_id"
+                                data-adm-field-type="INTEGER"
+                               t-att-required="is_required('application_id.food_plan_id')">
+                               <option disabled="disabled" selected="selected">-Select a food plan-</option>
+                            <t t-foreach="application_id.available_tuition_plan_ids" t-as="tuition_plan">
+                                <t t-if="tuition_plan.category_id.id == food_categ">
+                                    <option t-att-selected="tuition_plan == application_id.food_plan_id"
+                                            t-att-value="tuition_plan.id">
+                                        <t t-esc="tuition_plan.name"/>
+                                    </option>
+                                </t>
+                            </t>
+                        </select>
+                    </section>
+
+                    <section class="col-12 col-md-4">
+                        <label>
+                            Shadow Teacher<span class="text-danger"
+                                           t-if="is_required('application_id.shadow_teacher_plan_id')">*</span>
+                        </label>
+                        <select class="form-control"
+                               name="shadow_teacher_plan_id"
+                               data-adm-field="shadow_teacher_plan_id"
+                               data-adm-field-type="INTEGER"
+                               t-att-required="is_required('application_id.shadow_teacher_plan_id')">
+                               <option disabled="disabled" selected="selected">-Select a shadow teacher-</option>
+                            <t t-foreach="application_id.available_tuition_plan_ids" t-as="tuition_plan">
+                                <t t-if="tuition_plan.category_id.id == shadow_categ">
+                                    <option t-att-selected="tuition_plan == application_id.shadow_teacher_plan_id"
+                                            t-att-value="tuition_plan.id">
+                                        <t t-esc="tuition_plan.name"/>
+                                    </option>
+                                </t>
+                            </t>
+                        </select>
+                    </section>
+                </div>
+            </form>
+        </t>
+    </template>
+</odoo>
