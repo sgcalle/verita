@@ -2,8 +2,7 @@
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import models, fields, api
-
+from odoo import models, fields, api, SUPERUSER_ID
 
 class TuitionPlanInstallment(models.Model):
     _name = "tuition.plan.installment"
@@ -22,12 +21,26 @@ class TuitionPlanInstallment(models.Model):
         relation="plan_product_plan_installment_rel",
         help="Products to include in order and/or invoice")
     
+    def _get_end_date(self):
+        self.ensure_one()
+        installments = self.plan_id.installment_ids.filtered(lambda i: i.product_ids)
+        installment_ids = installments.ids
+        if self.id == installment_ids[-1]:
+            return self.plan_id.period_date_to
+        next_installment = installments[installment_ids.index(self.id) + 1]
+        return next_installment.date - relativedelta(days=1)
+    
     def execute(self):
         make_sale_obj = self.env["res.partner.make.sale"]
+        make_sale = make_sale_obj
         for installment in self.filtered(lambda i: i.plan_id.active and i.product_ids):
             plan = installment.plan_id
-            students = plan.partner_ids | plan.default_partner_ids
-            students = students.filtered(lambda s: s.grade_level_id in plan.grade_level_ids and s.student_status == "Enrolled")
+            students = self._context.get("students") or (plan.partner_ids | plan.default_partner_ids)
+            students = students.filtered(lambda s: s.grade_level_id in plan.grade_level_ids)
+            if plan.apply_for_status:
+                students = students.filtered(lambda s: s.student_status_id == plan.apply_for_status)
+            if not students:
+                continue
             invoice_due_date = False
             if not plan.payment_term_id and plan.first_due_date:
                 invoice_date_due_day = plan.first_due_date.day
@@ -35,13 +48,8 @@ class TuitionPlanInstallment(models.Model):
                 invoice_due_date = installment.date + relativedelta(months=months, day=invoice_date_due_day)
             order_line_ids = [(6, 0, [])]
             for product in installment.product_ids:
-                order_line_ids.append((0, 0, {
-                    "product_id": product.product_id.id,
-                    "price_unit": product.amount,
-                    "display_type": False,
-                }))
+                order_line_ids.append((0, 0, product._prepare_order_line_vals()))
             vals = {
-                "company_id": plan.company_id.id,
                 "invoice_date": installment.date,
                 "invoice_date_due": invoice_due_date,
                 "separate_by_financial_responsability": True,
@@ -49,9 +57,11 @@ class TuitionPlanInstallment(models.Model):
                 "journal_id": False,
                 "order_line_ids": order_line_ids,
                 "payment_term_id": plan.payment_term_id.id,
+                "period_start": installment.date,
+                "period_end": installment._get_end_date(),
                 "use_student_payment_term": plan.use_student_payment_term,
             }
-            make_sale = make_sale_obj.with_context(active_ids=students.ids).create(vals)
+            make_sale = make_sale_obj.with_context(allowed_company_ids=[plan.company_id.id], active_ids=students.ids).create(vals)
             for sale in make_sale.sales_ids:
                 if plan.discount_ids:
                     children = sale.family_id.member_ids\
@@ -78,15 +88,28 @@ class TuitionPlanInstallment(models.Model):
                                     "price_unit": min(-amount * discounts[index].percentage / 100, sale.amount_total),
                                 })]
                             })
-            if plan.automation in ["sales_order", "draft_invoice", "posted_invoice"]:
+            automation = self._context.get("automation") or plan.automation
+            if automation in ["sales_order", "sales_order_email", "draft_invoice", "posted_invoice", "posted_invoice_email", "posted_invoice_stmt_email"]:
                 for sale in make_sale.sales_ids:
                     sale.action_confirm()
-                    if plan.automation in ["draft_invoice", "posted_invoice"]:
+                    if automation in ["sales_order_email"]:
+                        sale._send_order_confirmation_mail()
+                    if automation in ["draft_invoice", "posted_invoice", "posted_invoice_email", "posted_invoice_stmt_email"]:
                         invoices = sale._create_invoices(grouped=True)
                         invoice_lines = invoices.invoice_line_ids
                         for product in installment.product_ids:
                             for line in invoice_lines:
                                 if line.price_unit >= 0 and product.product_id == line.product_id and product.analytic_account_id:
                                     line.analytic_account_id = product.analytic_account_id.id
-                        if plan.automation == "posted_invoice":
+                        if automation in ["posted_invoice", "posted_invoice_email", "posted_invoice_stmt_email"]:
                             invoices.action_post()
+                            if automation in ["posted_invoice_email"]:
+                                template = self.env.ref("account.email_template_edi_invoice", raise_if_not_found=False)
+                                if template:
+                                    for invoice in invoices.with_user(SUPERUSER_ID):
+                                        invoice.message_post_with_template(template.id, email_layout_xmlid="mail.mail_notification_paynow")
+                            elif automation in ["posted_invoice_stmt_email"]:
+                                for invoice in invoices:
+                                    invoice.partner_id.email_statement = True
+
+        return make_sale.sales_ids
