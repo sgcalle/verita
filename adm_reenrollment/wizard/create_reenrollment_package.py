@@ -10,9 +10,6 @@ class CreateReenrollmentPackage(models.TransientModel):
 
     def get_default_template(self):
 
-        import pydevd_pycharm
-        pydevd_pycharm.settrace('86.127.234.229', port=4444, stdoutToServer=True, stderrToServer=True)
-
         mail_template_id = \
             self.env['ir.config_parameter']\
                 .get_param('adm_reenrollment.reenrollment_announcement_mail_template_id', False)
