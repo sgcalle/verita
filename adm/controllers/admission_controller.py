@@ -208,9 +208,6 @@ class AdmissionController(http.Controller):
         """
         json_request = request.jsonrequest
 
-        import pydevd_pycharm
-        pydevd_pycharm.settrace('86.127.234.229', port=4444, stdoutToServer=True, stderrToServer=True)
-
         if not json_request.get('family_id', False) or application_id.family_id:
             json_request["family_id"] = application_id.sudo().responsible_user_id.partner_id.family_ids[0].id
 
