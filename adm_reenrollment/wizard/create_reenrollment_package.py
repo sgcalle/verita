@@ -9,6 +9,7 @@ class CreateReenrollmentPackage(models.TransientModel):
     _description = "Reenrollment package"
 
     def get_default_template(self):
+
         mail_template_id = \
             self.env['ir.config_parameter']\
                 .get_param('adm_reenrollment.reenrollment_announcement_mail_template_id', False)

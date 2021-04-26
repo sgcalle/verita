@@ -22,38 +22,24 @@
                    t-value="application_id.current_user_access_id.family_id"/>
                 <div class="row">
                     <div class="col-8 offset-2 col-md-6 offset-md-3 col-lg-4 offset-lg-4"
-                         data-adm-field="partner_id"
-                         data-adm-field-type="MANY2ONE">
-                        <div class="position-relative m-auto d-flex justify-content-center align-items-center"
-                             style="width: 175px;border-radius: 100px !important;height: 175px;overflow: hidden;">
-                            <t t-if="application_id.partner_id">
-                                <input type="hidden"
-                                       data-adm-field="id"
-                                       data-adm-field-type="INTEGER"
-                                       t-att-value="application_id.partner_id.id"/>
-                            </t>
-                            <img t-attf-src="data:image/*;base64,{{application_id.partner_id and application_id.partner_id.image_1920}}"
-                                 widget="image"
-                                 id="avatar_photo"
-                                 onerror="this.src = '/adm/static/img/contact_photo_placeholder.png';"
-                                 class="avatar h-100"
-                                 alt="avatar"/>
-                            <div class="spinner-grow text-light position-absolute w-50 h-50"
-                                 style="display: none;"
-                                 id="student_avatar_loading"
-                                 role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
-                        </div>
-                        <h6 class="mt-2">Upload a different photo...</h6>
+                                 data-adm-field="partner_id"
+                                 data-adm-field-type="MANY2ONE">
+                        <t t-if="application_id.partner_id">
+                            <input type="hidden" data-adm-field="id"
+                                   data-adm-field-type="INTEGER"
+                                   t-att-value="application_id.partner_id.id"/>
+                        </t>
+                        <input type="hidden"
+                               id="partner_avatar_base64"
+                               t-attf-value="data:image/*;base64,{{application_id.partner_id and application_id.partner_id.image_1920}}"/>
+
                         <input type="file"
-                               id="avatar_photo_file"
-                               name="image_1920"
+                               t-att-required="is_required('immunization_records_attachment_ids')"
+                               class="filepond"
+                               id="student_avatar"
                                data-adm-field="image_1920"
-                               class="form-control"
-                               accept="image/*"/>
-                        <div class='alert alert-info pt-0 pb-0 mt-1'
-                             role='alert'>Upload a student photo.</div>
+                               data-adm-field-type="BINARY"
+                               data-max-file-size="20MB"/>
                         <svg class=""
                              id="upload_image_success"
                              style="display: none;"
