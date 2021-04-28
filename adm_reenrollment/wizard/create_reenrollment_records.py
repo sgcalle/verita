@@ -31,20 +31,21 @@ class CreateReenrollmentRecords(models.TransientModel):
         for record in self:
             for student_id in record.student_ids:
                 next_grade_level_id = student_id.next_grade_level_id
-                district_code_id = next_grade_level_id.school_code_id.district_code_id
-                reenrollment_school_year_id = self.env['res.company'].search(
-                    [('district_code_id', '=', district_code_id.id)]).enrollment_school_year_id
+                if next_grade_level_id:
+                    district_code_id = next_grade_level_id.school_code_id.district_code_id
+                    reenrollment_school_year_id = self.env['res.company'].search(
+                        [('district_code_id', '=', district_code_id.id)]).enrollment_school_year_id
 
-                # Check if there is some existing reenrollment record for the school year
-                if (record.overwrite_existing_records or
-                    not student_id.reenrollment_record_ids
-                                  .filtered(lambda r: r.school_year_id == reenrollment_school_year_id)):
-                    student_id.write({
-                        'reenrollment_record_ids': [(0, 0, {
-                            'reenrollment_status': 'open',
-                            'next_grade_level_id': next_grade_level_id.id,
-                            'school_year_id': reenrollment_school_year_id.id,
-                            'note': "Created by %s at %s in \"CREATE REENROLLMENT RECORDS\" wizard" % (self.env.user.name, str(datetime.datetime.now())),
-                            })],
-                    })
-                student_id._compute_reenrollment_status()
+                    # Check if there is some existing reenrollment record for the school year
+                    if (record.overwrite_existing_records or
+                        not student_id.reenrollment_record_ids
+                                      .filtered(lambda r: r.school_year_id == reenrollment_school_year_id)):
+                        student_id.write({
+                            'reenrollment_record_ids': [(0, 0, {
+                                'reenrollment_status': 'open',
+                                'next_grade_level_id': next_grade_level_id.id,
+                                'school_year_id': reenrollment_school_year_id.id,
+                                'note': "Created by %s at %s in \"CREATE REENROLLMENT RECORDS\" wizard" % (self.env.user.name, str(datetime.datetime.now())),
+                                })],
+                        })
+                    student_id._compute_reenrollment_status()
