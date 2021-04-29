@@ -6,4 +6,8 @@ from odoo import models, fields
 class Users(models.Model):
     _inherit = "res.users"
 
-    reenrollment_ids = fields.One2many('adm.reenrollment', 'responsible_user_ids')
+    reenrollment_ids = fields.One2many('adm.reenrollment', compute='compute_reenrollment_ids')
+
+    def compute_reenrollment_ids(self):
+        for user in self:
+            user.reenrollment_ids = self.env['adm.reenrollment'].search([('responsible_user_ids', '=', user.id)])
