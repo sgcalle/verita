@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_res_partner_sincro_facts_odoo_log_form_view">
+        <field name="name">view.res.partner.school.fields.form.view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page name="Sincro from FACTS Log" string="Sincro from FACTS Log">
+                        <field name="import_log_ids" readonly="1">
+<!--                            <tree>-->
+<!--                                <field name="name"></field>-->
+<!--                                <field name="description"></field>-->
+<!--                                <field name="partner_id"></field>-->
+<!--                            </tree>-->
+                        </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!--    <act_window-->
+    <!--            id="action_sincro_to_facts_log"-->
+    <!--            name="Logs"-->
+    <!--            view_mode="kanban,tree,form,activity"-->
+    <!--            context="{'search_default_student': 1}"-->
+    <!--            res_model="res.partner"/>-->
+    <record model="ir.actions.act_window" id="action_sincro_from_facts_log">
+        <field name="name">Logs</field>
+        <field name="res_model">sincro_facts_odoo.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_contacts_sincro_from_facts"
+              parent="contacts.menu_contacts"
+              name="Sincro FACTS to ODOO"/>
+    <menuitem id="menu_contact_sincro_from_facts_log"
+              parent="menu_contacts_sincro_from_facts"
+              action="action_sincro_from_facts_log"/>
+</odoo>
+
