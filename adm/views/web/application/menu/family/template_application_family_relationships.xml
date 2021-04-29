@@ -318,25 +318,25 @@
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox"
-                                                                   data-adm-field="correspondence"
-                                                                   t-att-value="parent and parent.correspondence"
-                                                                   t-attf-name="relation_correspondence-#{parent and parent.id}"
-                                                                   t-attf-id="relation_correspondence-#{parent and parent.id}"
-                                                                   t-att-checked="parent and parent.correspondence"
-                                                                   data-adm-field-type="BOOLEAN"
-                                                                   class="custom-control-input"/>
-                                                            <label class="custom-control-label"
-                                                                   t-attf-for="relation_correspondence-#{parent and parent.id}">
-                                                                Correspondence
-                                                                <span class="text-danger"
-                                                                      t-if="is_required('parent_relationship_ids.correspondence')">
-                                                                    *</span>
-                                                            </label>
+                                                        <div class="col-12 col-md-6">
+                                                            <div class="custom-control custom-switch">
+                                                                <input type="checkbox"
+                                                                       data-adm-field="correspondence"
+                                                                       t-att-value="parent and parent.correspondence"
+                                                                       t-attf-name="relation_correspondence-#{parent and parent.id}"
+                                                                       t-attf-id="relation_correspondence-#{parent and parent.id}"
+                                                                       t-att-checked="parent and parent.correspondence"
+                                                                       data-adm-field-type="BOOLEAN"
+                                                                       class="custom-control-input"/>
+                                                                <label class="custom-control-label"
+                                                                       t-attf-for="relation_correspondence-#{parent and parent.id}">
+                                                                    Correspondence
+                                                                    <span class="text-danger"
+                                                                          t-if="is_required('parent_relationship_ids.correspondence')">
+                                                                        *</span>
+                                                                </label>
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </section>

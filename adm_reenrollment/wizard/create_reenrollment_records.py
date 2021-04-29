@@ -21,9 +21,11 @@ class CreateReenrollmentRecords(models.TransientModel):
     def onchange_next_enrrollment_status(self):
         for record in self:
             if record.next_enrollment_status_id and record.current_enrollment_status_id:
-                record.student_ids = self.env['res.partner'].search([('person_type', '=', 'student'),
-                                                                     ('student_next_status_id', '=', record.next_enrollment_status_id.id),
-                                                                     ('student_status_id', '=', record.current_enrollment_status_id.id)])
+                record.student_ids = self.env['res.partner'].search([
+                    ('person_type', '=', 'student'),
+                    ('next_grade_level_id', '=', False),
+                    ('student_next_status_id', '=', record.next_enrollment_status_id.id),
+                    ('student_status_id', '=', record.current_enrollment_status_id.id)])
             else:
                 record.student_ids = False
 
