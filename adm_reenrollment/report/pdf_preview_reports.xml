@@ -9,4 +9,13 @@
         menu="False"
         attachment_use="True"
         />
+    <report
+        id="report_gdpr_reenrollment"
+        model="adm.reenrollment"
+        string="GDPR Reenrollment Report"
+        report_type="qweb-pdf"
+        name="adm_reenrollment.pdf_template_reenrollment_gdpr"
+        menu="False"
+        attachment_use="True"
+        />
 </odoo>

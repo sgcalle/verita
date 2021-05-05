@@ -92,6 +92,68 @@ class ReenrollmentController(http.Controller):
             'ip_address': httprequest.remote_addr,
             'reenrollment_id': reenrollment_id.id,
             })
+        
+    @http.route("/my/reenrollment/<model(adm.reenrollment):reenrollment_id>/sign/gdpr", auth="public", methods=["PUT"], csrf=True, type='json')
+    def sign_gdpr_application_with_json(self, reenrollment_id, **params):
+        """ This method sign the gdpr :P """
+
+        httprequest = request.httprequest
+        json_request = request.jsonrequest
+
+        reenrollment_id = reenrollment_id.sudo()
+        write_vals = AdmissionController._parse_json_to_odoo_fields(reenrollment_id, json_request)
+        reenrollment_id.sudo().write(write_vals)
+
+        reenrollment_id.regenerate_gdpr_pdf(force=True)
+        reenrollment_id.gdpr_signed=True
+        user_agent = httprequest.user_agent
+        user_agent_vals = {
+            'browser': user_agent.browser,
+            'language': user_agent.language,
+            'platform': user_agent.platform,
+            'string': user_agent.string,
+            'version': user_agent.version,
+            }
+        request.env['adm.reenrollment.log'].sudo().create({
+            'name': _("SIGN Reenrollment GDPR"),
+            'timestamp': datetime.now(),
+            'user_id': request.env.user.id,
+            'json_values': json.dumps(json_request, indent=4, sort_keys=True),
+            'user_agent': json.dumps(user_agent_vals, indent=4, sort_keys=True),
+            'ip_address': httprequest.remote_addr,
+            'reenrollment_id': reenrollment_id.id,
+            })
+        
+    @http.route("/my/reenrollment/<model(adm.reenrollment):reenrollment_id>/sign/contract", auth="public", methods=["PUT"], csrf=True, type='json')
+    def sign_contract_application_with_json(self, reenrollment_id, **params):
+        """ This method sign the contract :P """
+
+        httprequest = request.httprequest
+        json_request = request.jsonrequest
+
+        reenrollment_id = reenrollment_id.sudo()
+        write_vals = AdmissionController._parse_json_to_odoo_fields(reenrollment_id, json_request)
+        reenrollment_id.sudo().write(write_vals)
+
+        reenrollment_id.regenerate_contract_pdf(force=True)
+        reenrollment_id.contract_signed=True
+        user_agent = httprequest.user_agent
+        user_agent_vals = {
+            'browser': user_agent.browser,
+            'language': user_agent.language,
+            'platform': user_agent.platform,
+            'string': user_agent.string,
+            'version': user_agent.version,
+            }
+        request.env['adm.reenrollment.log'].sudo().create({
+            'name': _("SIGN Reenrollment Contract"),
+            'timestamp': datetime.now(),
+            'user_id': request.env.user.id,
+            'json_values': json.dumps(json_request, indent=4, sort_keys=True),
+            'user_agent': json.dumps(user_agent_vals, indent=4, sort_keys=True),
+            'ip_address': httprequest.remote_addr,
+            'reenrollment_id': reenrollment_id.id,
+            })
 
     @http.route('/my/reenrollment/<model(adm.reenrollment):reenrollment_id>/<path:page_path>',
                 methods=["GET"], website=True, strict_slashes=False)
@@ -134,6 +196,7 @@ class ReenrollmentController(http.Controller):
 
         # Testing
         reenrollment_id.regenerate_contract_pdf()
+        reenrollment_id.regenerate_gdpr_pdf()
 
         # field_attachment_ids = SUPER_ENV['ir.attachment'].search([
         #     ('res_field', 'in', attachment_field_name_list),

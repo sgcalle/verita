@@ -148,6 +148,9 @@ class AdmReenrollment(models.Model):
 
     # Documentation
     contract_file = fields.Binary(attachment=True)
+    contract_signed = fields.Boolean()
+    gdpr_file = fields.Binary(attachment=True)
+    gdpr_signed = fields.Boolean()
 
     # Fee
     registration_fee_amount = fields.Float()
@@ -212,6 +215,7 @@ class AdmReenrollment(models.Model):
 
         # Contract default file
         reenrollment_id.regenerate_contract_pdf()
+        reenrollment_id.regenerate_gdpr_pdf()
 
         return reenrollment_id
 
@@ -222,11 +226,19 @@ class AdmReenrollment(models.Model):
     ####################
     # Business methods #
     ####################
-    def regenerate_contract_pdf(self):
+    def regenerate_contract_pdf(self, force=False):
         for reenrollment_id in self:
-            pdf_binary = self.env.ref('adm_reenrollment.report_contract_reenrollment').render_qweb_pdf(reenrollment_id.ids)
-            b64_pdf = base64.b64encode(pdf_binary[0])
-            reenrollment_id.contract_file = b64_pdf
+            if force or not reenrollment.contract_signed:
+                pdf_binary = self.env.ref('adm_reenrollment.report_contract_reenrollment').render_qweb_pdf(reenrollment_id.ids)
+                b64_pdf = base64.b64encode(pdf_binary[0])
+                reenrollment_id.contract_file = b64_pdf
+
+    def regenerate_gdpr_pdf(self, force=False):
+        for reenrollment_id in self:
+            if force or not reenrollment.gdpr_signed:
+                pdf_binary = self.env.ref('adm_reenrollment.report_gdpr_reenrollment').render_qweb_pdf(reenrollment_id.ids)
+                b64_pdf = base64.b64encode(pdf_binary[0])
+                reenrollment_id.gdpr_file = b64_pdf
 
     def get_required_fields(self):
         # First we get the all the fields
