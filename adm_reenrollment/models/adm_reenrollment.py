@@ -68,6 +68,7 @@ class AdmReenrollment(models.Model):
     family_ids = fields.Many2many(related='partner_id.family_ids')
     family_res_id = fields.Integer("Family ID")
 
+
     # Responsible
     user_access_ids = fields.One2many('adm.reenrollment.user.access', 'reenrollment_id')
     responsible_user_ids = fields.Many2many('res.users', compute="_compute_responsible_users", string="Responsible User")
@@ -148,9 +149,15 @@ class AdmReenrollment(models.Model):
 
     # Documentation
     contract_file = fields.Binary(attachment=True)
+    contract_signature = fields.Binary()
+    contract_signature_url = fields.Char()
     contract_signed = fields.Boolean()
+
     gdpr_file = fields.Binary(attachment=True)
+    gdpr_signature = fields.Binary()
+    gdpr_signature_url = fields.Char()
     gdpr_signed = fields.Boolean()
+
 
     # Fee
     registration_fee_amount = fields.Float()
@@ -228,14 +235,14 @@ class AdmReenrollment(models.Model):
     ####################
     def regenerate_contract_pdf(self, force=False):
         for reenrollment_id in self:
-            if force or not reenrollment.contract_signed:
+            if force or not reenrollment_id.contract_signed:
                 pdf_binary = self.env.ref('adm_reenrollment.report_contract_reenrollment').render_qweb_pdf(reenrollment_id.ids)
                 b64_pdf = base64.b64encode(pdf_binary[0])
                 reenrollment_id.contract_file = b64_pdf
 
     def regenerate_gdpr_pdf(self, force=False):
         for reenrollment_id in self:
-            if force or not reenrollment.gdpr_signed:
+            if force or not reenrollment_id.gdpr_signed:
                 pdf_binary = self.env.ref('adm_reenrollment.report_gdpr_reenrollment').render_qweb_pdf(reenrollment_id.ids)
                 b64_pdf = base64.b64encode(pdf_binary[0])
                 reenrollment_id.gdpr_file = b64_pdf

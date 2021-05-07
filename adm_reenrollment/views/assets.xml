@@ -8,6 +8,7 @@
 
     <template id="assets_contract" name="Adm Reenrollment assets frontend">
         <script type="text/javascript" src="/adm_reenrollment/static/src/js/contract.js"/>
+        <script type="text/javascript" src="/adm_reenrollment/static/src/js/signature_pages.js"/>
     </template>
 
     <template id="assets_frontend_form" name="Adm Reenrollment assets frontend">
