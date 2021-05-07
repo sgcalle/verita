@@ -2311,11 +2311,11 @@
                   <td>Semnatura Parintelui/Reprezentantului legal /Parent/Legal Guardian
                                         Signature</td>
                   <td>Da/Yes <input type="radio" name="legalcheck"/></td>
-                  <td>Da/No <input type="radio" name="legalcheck"/></td>
+                  <td>Nu/No <input type="radio" name="legalcheck"/></td>
                 </tr>
                 <tr>
                   <td class="text-center pl-4 pr-4">
-                    <input type="text" class="p-1 w-100"/>
+                    <img t-attf-src="data:image/png;base64,{{o.gdpr_signature_url}}"/>
                   </td>
                   <td/>
                   <td/>
@@ -2331,12 +2331,14 @@
               </table>
             </div>
           </div>
+          <!--
           <div class="row">
             <div class="col-6">
                         </div>
             <div class="col-6">
                         </div>
           </div>
+          -->
         </div>
       </div>
     </div>
